@@ -4,7 +4,7 @@
   
     
     <entry>
-      <title></title>
+      <title><![CDATA[2018-02-11-使用redis做相关统计]]></title>
       <url>https://aprilnops.github.io/2018/02/11/%E4%BD%BF%E7%94%A8redis%E8%BF%9B%E8%A1%8C%E7%BB%9F%E8%AE%A1/</url>
       <content type="html"><![CDATA[<h1 id="按照日期统计次数，不关心次数高低"><a href="#按照日期统计次数，不关心次数高低" class="headerlink" title="按照日期统计次数，不关心次数高低"></a>按照日期统计次数，不关心次数高低</h1><p>问题描述：<br>需要统计事件a、b、c每个小时、每天、每月的发生次数</p>
 <p>使用redis hash结构即可满足此需求</p>
@@ -99,6 +99,18 @@
 <p>b产品排行为：<br>zhang:30<br>li:20</p>
 ]]></content>
       
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> redis </tag>
+            
+        </tags>
         
     </entry>
     
