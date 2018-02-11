@@ -27,16 +27,20 @@
 
 
 
-<link rel="canonical" href="https://aprilnops.github.io/tags/vim/"/>
+<link rel="canonical" href="https://aprilnops.github.io/2018/02/11/使用redis进行统计/"/>
 
 
-<meta property="og:type" content="website">
+<meta name="description" content="按照日期统计次数，不关心次数高低问题描述：需要统计事件a、b、c每个小时、每天、每月的发生次数 使用redis hash结构即可满足此需求 key设计举例：    key field value 说明     a 2018-02-11-08 10 事件a在2018-02-11早上8点一个小时内发生的次数   a 2018-02-11-09 11    b 2018-02-11-08 10    b">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Nops Blog">
-<meta property="og:url" content="https://aprilnops.github.io/tags/vim/index.html">
+<meta property="og:url" content="https://aprilnops.github.io/2018/02/11/使用redis进行统计/index.html">
 <meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="按照日期统计次数，不关心次数高低问题描述：需要统计事件a、b、c每个小时、每天、每月的发生次数 使用redis hash结构即可满足此需求 key设计举例：    key field value 说明     a 2018-02-11-08 10 事件a在2018-02-11早上8点一个小时内发生的次数   a 2018-02-11-09 11    b 2018-02-11-08 10    b">
 <meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-11T09:44:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nops Blog">
+<meta name="twitter:description" content="按照日期统计次数，不关心次数高低问题描述：需要统计事件a、b、c每个小时、每天、每月的发生次数 使用redis hash结构即可满足此需求 key设计举例：    key field value 说明     a 2018-02-11-08 10 事件a在2018-02-11早上8点一个小时内发生的次数   a 2018-02-11-09 11    b 2018-02-11-08 10    b">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
@@ -73,11 +77,7 @@
 
 
 
-    <title>
-  
-    vim · Nops Blog
-  
-</title>
+    <title>  · Nops Blog </title>
   </head>
 
   <body>
@@ -206,43 +206,148 @@
           <div id="content" class="content">
             
   
-  <section id="archive" class="archive">
-    
-      
-        <div class="archive-title tag">
-          <h2 class="archive-name">vim</h2>
-        </div>
-      
-    
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          
+        
+      </h1>
 
-    
-      
-      
-      <div class="archive-post">
-        <span class="archive-post-time">
-          
-            2017-03-31
-          
-        </span>
-        <span class="archive-post-title">
-          <a href="/2017/03/31/vim快捷键/" class="archive-post-link">
-            2017-03-31-vim快捷键
-          </a>
+      <div class="post-meta">
+        <span class="post-time">
+          2018年2月11日
         </span>
       </div>
-    
-  </section>
+    </header>
 
-  
-  <nav class="pagination">
     
     
-  </nav>
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#按照日期统计次数，不关心次数高低"><span class="toc-text">按照日期统计次数，不关心次数高低</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#按照日期统计，需要按照次数进行排行"><span class="toc-text">按照日期统计，需要按照次数进行排行</span></a></li></ol>
+    </div>
+  </div>
 
+
+    <div class="post-content">
+      
+        <h1 id="按照日期统计次数，不关心次数高低"><a href="#按照日期统计次数，不关心次数高低" class="headerlink" title="按照日期统计次数，不关心次数高低"></a>按照日期统计次数，不关心次数高低</h1><p>问题描述：<br>需要统计事件a、b、c每个小时、每天、每月的发生次数</p>
+<p>使用redis hash结构即可满足此需求</p>
+<p>key设计举例：</p>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>field</th>
+<th>value</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td>2018-02-11-08</td>
+<td>10</td>
+<td>事件a在2018-02-11早上8点一个小时内发生的次数</td>
+</tr>
+<tr>
+<td>a</td>
+<td>2018-02-11-09</td>
+<td>11</td>
+<td></td>
+</tr>
+<tr>
+<td>b</td>
+<td>2018-02-11-08</td>
+<td>10</td>
+<td></td>
+</tr>
+<tr>
+<td>b</td>
+<td>2018-02-11-09</td>
+<td>11</td>
+<td></td>
+</tr>
+<tr>
+<td>a</td>
+<td>2018-02-11</td>
+<td>21</td>
+<td>事件a在2018-02-11这一天发生的次数</td>
+</tr>
+<tr>
+<td>a</td>
+<td>2018-02</td>
+<td>100</td>
+<td>事件a在2018-02这一个月发生的次数</td>
+</tr>
+</tbody>
+</table>
+<h1 id="按照日期统计，需要按照次数进行排行"><a href="#按照日期统计，需要按照次数进行排行" class="headerlink" title="按照日期统计，需要按照次数进行排行"></a>按照日期统计，需要按照次数进行排行</h1><p>问题描述：<br>需要统计每天、每个月完成手工品a、b、c最多的人<br>使用redis的zset结构即可满足此需求</p>
+<p>redis设计举例：</p>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>member</th>
+<th>score</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a:2018-02-11</td>
+<td>zhang</td>
+<td>10</td>
+<td>zhang在2018-02-11的早上8点这一个小时完成手工品a的数量</td>
+</tr>
+<tr>
+<td>a:2018-02-11</td>
+<td>li</td>
+<td>20</td>
+<td>li在2018-02-11的早上8点这一个小时完成手工品a的数量</td>
+</tr>
+<tr>
+<td>b:2018-02-11</td>
+<td>zhang</td>
+<td>30</td>
+<td>zhang在2018-02-11的早上8点这一个小时完成手工品b的数量</td>
+</tr>
+<tr>
+<td>b:2018-02-11</td>
+<td>li</td>
+<td>10</td>
+<td>li在2018-02-11的早上8点这一个小时完成手工品b的数量</td>
+</tr>
+</tbody>
+</table>
+<p>那么 在2018-02-11这一天完成a产品最多的人排行榜为：<br>li:20<br>zhang:10</p>
+<p>b产品排行为：<br>zhang:30<br>li:20</p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+  </article>
 
 
           </div>
           
+  <div class="comments" id="comments">
+    
+  </div>
+
         </div>  
       </main>
 
