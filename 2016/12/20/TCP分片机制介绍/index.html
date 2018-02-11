@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="TCP分片机制介绍"/>
+
+
+
+
+  <meta name="keywords" content="tcp,mtu,mss," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2016/12/20/TCP分片机制介绍/"/>
+
+
+<meta name="description" content="MTU，MSS概念tcp帧tcp协议规定的帧长度如下如所示通常情况下各个帧长度如下：以太网帧：1518bytes网卡MTU：1500bytesTCP最大段：1460bytes数据在网络中传输时，长度大于MTU的包会被IP层分片传输，到达目的地后再中心组装成一个完整的包。但是ip分片存在着严重的性能问题：  影响效率，消耗cpu和内存，server，router，and client都会进行分片 一">
+<meta name="keywords" content="tcp,mtu,mss">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP分片机制介绍">
+<meta property="og:url" content="https://aprilnops.github.io/2016/12/20/TCP分片机制介绍/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="MTU，MSS概念tcp帧tcp协议规定的帧长度如下如所示通常情况下各个帧长度如下：以太网帧：1518bytes网卡MTU：1500bytesTCP最大段：1460bytes数据在网络中传输时，长度大于MTU的包会被IP层分片传输，到达目的地后再中心组装成一个完整的包。但是ip分片存在着严重的性能问题：  影响效率，消耗cpu和内存，server，router，and client都会进行分片 一">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://aprilnops.github.io/images/1479730513156.jpg">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TCP分片机制介绍">
+<meta name="twitter:description" content="MTU，MSS概念tcp帧tcp协议规定的帧长度如下如所示通常情况下各个帧长度如下：以太网帧：1518bytes网卡MTU：1500bytesTCP最大段：1460bytes数据在网络中传输时，长度大于MTU的包会被IP层分片传输，到达目的地后再中心组装成一个完整的包。但是ip分片存在着严重的性能问题：  影响效率，消耗cpu和内存，server，router，and client都会进行分片 一">
+<meta name="twitter:image" content="https://aprilnops.github.io/images/1479730513156.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> TCP分片机制介绍 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          TCP分片机制介绍
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016年12月20日
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#MTU，MSS概念"><span class="toc-text">MTU，MSS概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp帧"><span class="toc-text">tcp帧</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PMTUD"><span class="toc-text">PMTUD</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h3 id="MTU，MSS概念"><a href="#MTU，MSS概念" class="headerlink" title="MTU，MSS概念"></a>MTU，MSS概念</h3><h4 id="tcp帧"><a href="#tcp帧" class="headerlink" title="tcp帧"></a>tcp帧</h4><p>tcp协议规定的帧长度如下如所示<br><img src="/images/1479730513156.jpg" alt="tcp协议帧结构" title="tcp帧结构.jpg"><br>通常情况下各个帧长度如下：<br>以太网帧：1518bytes<br>网卡MTU：1500bytes<br>TCP最大段：1460bytes<br>数据在网络中传输时，长度大于MTU的包会被IP层分片传输，到达目的地后再中心组装成一个完整的包。但是ip分片存在着严重的性能问题：</p>
+<ul>
+<li>影响效率，消耗cpu和内存，server，router，and client都会进行分片</li>
+<li>一个ip分片丢失将导致整个TCP数据包重传（ip层提供不可靠服务，无法知晓哪个分片丢失）</li>
+</ul>
+<p>因此TCP协议在TCP层，利用MSS避免数据分片问题。具体方法是：</p>
+<blockquote>
+<p>通信双方进行三次握手传递SYN包时，将自己的最大MSS值（根据MTU值计算）写在header中，传递给对方。最终双方将选取一个最小的MSS值作为TCP层可发送的最大数据长度。这个过程叫做MSS协商</p>
+</blockquote>
+<p>TCP的MSS只能保证通信的两端数据不会被分片，无法保证整个传输路径中数据不被分片，例如网络中的路由器。PMTUD就是为了解决这个问题的。<br><a id="more"></a></p>
+<h3 id="PMTUD"><a href="#PMTUD" class="headerlink" title="PMTUD"></a>PMTUD</h3><blockquote>
+<p>PMTUD was developed in order to avoid fragmentation in the path between the endpoints. It is used to dynamically determine the lowest MTU along the path from a packet’s source to its destination.</p>
+</blockquote>
+<p>PMTUD机制主要用于在两个tcp连接端动态选择mtu值从而避免tcp包被分片.<br>df标识都将被启用（==即不允许分片==）。<br>/proc/sys/net/ipv4/ip_no_pmtu_disc值默认为0，表示启用PMTUD</p>
+<p>当源端主机发送一个报文段给目的主机时，如果目的主机无法接收将会返回一个icmp包错误：主机不可达-不可分片：</p>
+<blockquote>
+<p>fragmentation needed and DF set</p>
+</blockquote>
+<p>接收到此消息后，PMTUD会自动减小MSS大小，以保证数据都可以不分片在链路上传输。<br>PMTUD主要依赖于ICMP返回的错误报文信息，但依然存在问题：icmp black hole（icmp黑洞）<br>即icmp报文丢失</p>
+<blockquote>
+<ul>
+<li>A router can drop a packet and not send an ICMP message. (Uncommon)</li>
+<li>A router can generate and send an ICMP message, but the ICMP message gets blocked by a router or firewall between this router and the sender. (Common)</li>
+<li>A router can generate and send an ICMP message, but the sender ignores the message. (Uncommon)</li>
+</ul>
+</blockquote>
+<p>解决办法：ICMP黑洞检测<br>Enable smart MTU black hole detection.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; /proc/sys/net/ipv4/tcp_mtu_probing</span><br><span class="line">echo 1024 &gt; /proc/sys/net/ipv4/tcp_base_mss</span><br></pre></td></tr></table></figure></p>
+<p>iptable设置MSS与MTUD<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/tcp/">tcp</a>
+          
+            <a href="/tags/mtu/">mtu</a>
+          
+            <a href="/tags/mss/">mss</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/01/26/docker mtu介绍/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">docker mtu介绍</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2016/10/25/openfalcon架构梳理/">
+        <span class="next-text nav-default">open-falcon架构介绍</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

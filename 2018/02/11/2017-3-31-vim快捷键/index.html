@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="2017-3-31-vim快捷键"/>
+
+
+
+
+  <meta name="keywords" content="vim," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2018/02/11/2017-3-31-vim快捷键/"/>
+
+
+<meta name="description" content="启动和退出vim  vim的启动：在Linux的提示符下键入vim(或使用vim myfile来编辑已经存在的文件)即可启动它。 vim的退出：先按下Esc键回到命令行模式，然后键入”:”，此时光标会停留在最下面一行，再键入”q”（如果强行退出则还在后面加 “!” ），最后按下Enter键即可。  vim中常用的复制文本命令  y+y： 将光标目前所在的位置整行复制 y+w： 复制光标所在的位置到">
+<meta name="keywords" content="vim">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2017-3-31-vim快捷键">
+<meta property="og:url" content="https://aprilnops.github.io/2018/02/11/2017-3-31-vim快捷键/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="启动和退出vim  vim的启动：在Linux的提示符下键入vim(或使用vim myfile来编辑已经存在的文件)即可启动它。 vim的退出：先按下Esc键回到命令行模式，然后键入”:”，此时光标会停留在最下面一行，再键入”q”（如果强行退出则还在后面加 “!” ），最后按下Enter键即可。  vim中常用的复制文本命令  y+y： 将光标目前所在的位置整行复制 y+w： 复制光标所在的位置到">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2017-3-31-vim快捷键">
+<meta name="twitter:description" content="启动和退出vim  vim的启动：在Linux的提示符下键入vim(或使用vim myfile来编辑已经存在的文件)即可启动它。 vim的退出：先按下Esc键回到命令行模式，然后键入”:”，此时光标会停留在最下面一行，再键入”q”（如果强行退出则还在后面加 “!” ），最后按下Enter键即可。  vim中常用的复制文本命令  y+y： 将光标目前所在的位置整行复制 y+w： 复制光标所在的位置到">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> 2017-3-31-vim快捷键 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          2017-3-31-vim快捷键
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年2月11日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        <p>启动和退出vim</p>
+<ul>
+<li>vim的启动：在Linux的提示符下键入vim(或使用vim myfile来编辑已经存在的文件)即可启动它。</li>
+<li>vim的退出：先按下Esc键回到命令行模式，然后键入”:”，此时光标会停留在最下面一行，再键入”q”（如果强行退出则还在后面加 “!” ），最后按下Enter键即可。</li>
+</ul>
+<p>vim中常用的复制文本命令</p>
+<ul>
+<li>y+y： 将光标目前所在的位置整行复制</li>
+<li>y+w： 复制光标所在的位置到整个单词所在的位置</li>
+<li>n+y+w： 若按3yw，则会将光标所在位置到单词结束以及后面两个单词(共3个单词)一起复制</li>
+<li>n+y+y： 若按3yy，则将连同光标所在位置的一行与下面两行一起复制</li>
+<li>p： 将复制的内容粘贴光标所在的位置之后。</li>
+<li>P： 将复制的内容粘贴光标所在的位置之前。</li>
+</ul>
+<p>vim中常用的删除文本命令</p>
+<ul>
+<li>d+h： 连续按d和h，将光标所在位置前一个字符删除</li>
+<li>d+l： 将光标所在位置字符删除</li>
+<li>d+k： 将光标所在位置行与其上一行同时删除</li>
+<li>d+j： 将光标所在位置与下一行同时删除</li>
+<li>d+d： 连按两次d，可将光标所在的行删除，若是连续删除，可以按住d不放</li>
+<li>d+w： 删除光标所在位置的单词，若是光标在两个字之间，则删除光标后面的一个字符</li>
+<li>n+d+d： 删除从光标所在行开始计数向下的n行</li>
+<li>n+d+k： 删除包括光标所在行及向上的n行</li>
+<li>n+d+j： 与n+d+d命令类似，但多删了一行，总共删除 n+1 行</li>
+<li>D： 将光标所在行后面所有的单词删除</li>
+<li>C： 将光标所在行后面所有的单词删除，并进入插入模式</li>
+<li>S： 整行删除，并进入插入模式</li>
+<li>x： 将光标所在位置字符删除</li>
+<li>X： 将光标所在位置前一个字符删除</li>
+<li>n+x： 删除光标所在位置及其后的n个字符</li>
+<li>n+X： 删除光标所在位置及其前的n个字符</li>
+<li>v/V+光标选中+d： 进入VISUAL/VISUAL LINE模式后移动光标选中文本再删除，可看清楚删了哪些文本</li>
+</ul>
+<p>vim中常用的找出行数等定位命令</p>
+<ul>
+<li>Ctrl+g： 在最后一行中显示光标所在位置的行数及文章的总行数</li>
+<li>nG： 将光标移至n行</li>
+<li>G： 将光标移至文件末尾</li>
+<li>gg： 将光标移至文件头部</li>
+<li>H: 将光标移至屏幕头部</li>
+<li>M: 将光标移至屏幕中部</li>
+<li>L: 将光标移至屏幕底部</li>
+<li>f+char: 在行内向前查找并定位到指定字符，如fa代表定位到下一个字符a</li>
+<li>F+char: 在行内向后查找并定位到指定字符，发现漏写字母时很实用</li>
+<li>$: 定位到行尾</li>
+<li>^: 定位到行首</li>
+<li>[{: 定位到段首</li>
+<li>]}: 定位到段尾</li>
+</ul>
+<p>vim中替换/撤销等</p>
+<ul>
+<li>r： 修改光标所在字符</li>
+<li>R： 修改光标所在位置的字符，可以一直替换字符，直到按下ESC键</li>
+<li>u： 表示复原功能</li>
+<li>U： 取消对行所作的所有改变</li>
+<li>.： 重复执行上一命令</li>
+<li>Z+Z： 连续按下两次Z，文件将保存并退出vim</li>
+<li>%： 符号匹配功能，在编辑时，如果输入”%(“，系统会自动匹配相应的”)”</li>
+</ul>
+<p>vim中命令行模式切换到输入模式</p>
+<ul>
+<li>a： 从目前光标所在位置的下一个字符开始输入。</li>
+<li>A： 从行尾开始输入。</li>
+<li>i： 从光标所在位置开始插入新输入的字符。</li>
+<li>I： 从行首开始输入。</li>
+<li>o： 新增加一行，并将光标移到下一行的开头。</li>
+<li>O：    在当前行之上新增一行。</li>
+</ul>
+<p>vim最后行模式主要的操作命令</p>
+<ul>
+<li>e ：若文件存在则打开文件否则新建文件</li>
+<li>n： 若文件存在则打开文件否则新建文件</li>
+<li>w： 写文件，也就是将编辑的内容保存到文件系统中。主要它是保存到临时文件中，直接退出，他并没有保存到文件中的</li>
+<li>w！： 如果想写只读文件，使用它强制写入文件</li>
+<li>q！： 不问你是否保存文件，强制退出</li>
+<li>set nu： set 可以设置vim的某些特性，这里是设置每行开头提示行数。想取消设置，使用命令 set nonu</li>
+<li>/： 查找匹配字符串功能。如/(，将查找(和)；如果想继续向下查找，可以按n键；向前继续查找则按N键</li>
+<li>?： 与/相似，但它是向前查找字符串</li>
+<li>:%s/reg1/char/cg 替换指定字符</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/vim/">vim</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/02/11/状态机设计模式简述/">
+        <span class="next-text nav-default">2018-02-11-python状态机设计模式</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

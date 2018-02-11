@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="http协议学习"/>
+
+
+
+
+  <meta name="keywords" content="http," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2017/02/26/http状态码/"/>
+
+
+<meta name="description" content="状态码502==502 Bad Gateway==  The HTTP 502 Bad Gateway server error response code indicates that the server, while acting as a gateway or proxy, received an invalid response from the upstream server.  50">
+<meta name="keywords" content="http">
+<meta property="og:type" content="article">
+<meta property="og:title" content="http协议学习">
+<meta property="og:url" content="https://aprilnops.github.io/2017/02/26/http状态码/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="状态码502==502 Bad Gateway==  The HTTP 502 Bad Gateway server error response code indicates that the server, while acting as a gateway or proxy, received an invalid response from the upstream server.  50">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://aprilnops.github.io/images/1482897161638.jpg">
+<meta property="og:image" content="https://aprilnops.github.io/images/1482898239710.jpg">
+<meta property="og:image" content="https://aprilnops.github.io/images/1482897503763.jpg">
+<meta property="og:image" content="https://aprilnops.github.io/images/1482898383557.jpg">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="http协议学习">
+<meta name="twitter:description" content="状态码502==502 Bad Gateway==  The HTTP 502 Bad Gateway server error response code indicates that the server, while acting as a gateway or proxy, received an invalid response from the upstream server.  50">
+<meta name="twitter:image" content="https://aprilnops.github.io/images/1482897161638.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> http协议学习 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          http协议学习
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年2月26日
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#状态码"><span class="toc-text">状态码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#502"><span class="toc-text">502</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#503"><span class="toc-text">503</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#504-Gateway-Timeout"><span class="toc-text">504 Gateway Timeout</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建立http连接过程"><span class="toc-text">建立http连接过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#http请求"><span class="toc-text">http请求</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h2><h3 id="502"><a href="#502" class="headerlink" title="502"></a>502</h3><p>==502 Bad Gateway==</p>
+<blockquote>
+<p>The HTTP 502 Bad Gateway server error response code indicates that the server, while acting as a gateway or proxy, received an invalid response from the upstream server.</p>
+</blockquote>
+<p>502错误通常是指==网关或者代理==(例如<em>nginx</em>)从==后端服务器==接收到==无效的响应==。这个无效的响应包括以下几个方面：</p>
+<ul>
+<li>响应为空（连接失败，没有建立连接）</li>
+<li>不完整的响应头或者body</li>
+</ul>
+<h3 id="503"><a href="#503" class="headerlink" title="503"></a>503</h3><blockquote>
+<p>The 503 (Service Unavailable) status code indicates that the server is currently unable to handle the request due to a temporary overloador scheduled maintenance, which will likely be alleviated after some delay.  The server MAY send a Retry-After header field to suggest an appropriate amount of time for the client to wait before retrying the request.</p>
+</blockquote>
+<p>503服务不可用，当后端服务器并发请求量+队列满了的时候，新来的请求就会出现503错误。<br>可以携带一个Retry-After头表明客户端需要等待多久再重试请求。<br>503表明后端服务器没有足够的资源（cpu、内存）接收请求或者需要调整tcp、文件打开数等相关参数<br><a id="more"></a></p>
+<h3 id="504-Gateway-Timeout"><a href="#504-Gateway-Timeout" class="headerlink" title="504 Gateway Timeout"></a>504 Gateway Timeout</h3><p>后端超时，可能得原因：</p>
+<ul>
+<li>网络差</li>
+<li>服务器性能变差，资源不够用</li>
+<li>超时时间设置太短</li>
+</ul>
+<h2 id="建立http连接过程"><a href="#建立http连接过程" class="headerlink" title="建立http连接过程"></a>建立http连接过程</h2><h3 id="http请求"><a href="#http请求" class="headerlink" title="http请求"></a>http请求</h3><p>请求行、header、空行、body</p>
+<ul>
+<li>请求行<br>请求方法  请求url  协议版本<br>get /index.html http/1.1</li>
+<li>请求头</li>
+</ul>
+<p><img src="/images/1482897161638.jpg" alt="http请求格式" title="1482897161638.jpg"></p>
+<ul>
+<li>例如：</li>
+<li><img src="/images/1482898239710.jpg" alt="http请求实例" title="1482898239710.jpg"></li>
+</ul>
+<p>http响应</p>
+<ul>
+<li><img src="/images/1482897503763.jpg" alt="http响应格式" title="1482897503763.jpg"><br>举例：</li>
+<li><p><img src="/images/1482898383557.jpg" alt="http响应" title="1482898383557.jpg"></p>
+</li>
+<li><p>http请求过程描述：<br>HTTP通信机制是在一次完整的HTTP通信过程中，Web浏览器与Web服务器之间将完成下列7个步骤：<br>（1）    建立TCP连接<br>在HTTP工作开始之前，Web浏览器首先要通过网络与Web服务器建立连接，该连接是通过TCP来完成的，该协议与IP协议共同构建Internet，即著名的TCP/IP协议族，因此Internet又被称作是TCP/IP网络。HTTP是比TCP更高层次的应用层协议，根据规则，只有低层协议建立之后才能，才能进行更层协议的连接，因此，首先要建立TCP连接，一般TCP连接的端口号是80<br>（2）    Web浏览器向Web服务器发送请求命令<br>一旦建立了TCP连接，Web浏览器就会向Web服务器发送请求命令<br>例如：GET/sample/hello.jsp HTTP/1.1<br>（3）    Web浏览器发送请求头信息<br>浏览器发送其请求命令之后，还要以头信息的形式向Web服务器发送一些别的信息，之后浏览器发送了一空白行来通知服务器，它已经结束了该头信息的发送。<br>（4）    Web服务器应答<br>客户机向服务器发出请求后，服务器会客户机回送应答，<br>HTTP/1.1 200 OK<br>应答的第一部分是协议的版本号和应答状态码<br>（5）    Web服务器发送应答头信息<br>正如客户端会随同请求发送关于自身的信息一样，服务器也会随同应答向用户发送关于它自己的数据及被请求的文档。<br>（6）    Web服务器向浏览器发送数据<br>Web服务器向浏览器发送头信息后，它会发送一个空白行来表示头信息的发送到此为结束，接着，它就以Content-Type应答头信息所描述的格式发送用户所请求的实际数据<br>（7）    Web服务器关闭TCP连接<br>一般情况下，一旦Web服务器向浏览器发送了请求数据，它就要关闭TCP连接，然后如果浏览器或者服务器在其头信息加入了这行代码<br>Connection:keep-alive<br>TCP连接在发送后将仍然保持打开状态，于是，浏览器可以继续通过相同的连接发送请求。保持连接节省了为每个请求建立新连接所需的时间，还节约了网络带宽。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/http/">http</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/02/26/hdfs架构学习/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">hdfs架构学习</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/26/java gc学习/">
+        <span class="next-text nav-default">java gc学习</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

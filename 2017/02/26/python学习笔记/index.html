@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="python学习笔记"/>
+
+
+
+
+  <meta name="keywords" content="python," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2017/02/26/python学习笔记/"/>
+
+
+<meta name="description" content="基本所有标准对象都可以进行bool判断，以下项的bool判断结果都为false：None,false,值为0的数,0,所有的浮点数,空字符串&amp;quot;&amp;quot;,[],{},() python的文件名不能和导入的模块名字相同，否则会报如下错误：1AttributeError: &amp;apos;module&amp;apos; object has no attribute &amp;apos;xxxx&amp;apos;">
+<meta name="keywords" content="python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python学习笔记">
+<meta property="og:url" content="https://aprilnops.github.io/2017/02/26/python学习笔记/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="基本所有标准对象都可以进行bool判断，以下项的bool判断结果都为false：None,false,值为0的数,0,所有的浮点数,空字符串&amp;quot;&amp;quot;,[],{},() python的文件名不能和导入的模块名字相同，否则会报如下错误：1AttributeError: &amp;apos;module&amp;apos; object has no attribute &amp;apos;xxxx&amp;apos;">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python学习笔记">
+<meta name="twitter:description" content="基本所有标准对象都可以进行bool判断，以下项的bool判断结果都为false：None,false,值为0的数,0,所有的浮点数,空字符串&amp;quot;&amp;quot;,[],{},() python的文件名不能和导入的模块名字相同，否则会报如下错误：1AttributeError: &amp;apos;module&amp;apos; object has no attribute &amp;apos;xxxx&amp;apos;">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> python学习笔记 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          python学习笔记
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年2月26日
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本"><span class="toc-text">基本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内建函数"><span class="toc-text">内建函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数字类型"><span class="toc-text">数字类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#可变对象和不可变对象"><span class="toc-text">可变对象和不可变对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#深拷贝与浅拷贝"><span class="toc-text">深拷贝与浅拷贝</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字典"><span class="toc-text">字典</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#集合"><span class="toc-text">集合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#条件与循环"><span class="toc-text">条件与循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列表解析"><span class="toc-text">列表解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生成器"><span class="toc-text">生成器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件"><span class="toc-text">文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异常"><span class="toc-text">异常</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h3 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h3><p>所有标准对象都可以进行bool判断，以下项的bool判断结果都为false：<br><code>None,false,值为0的数,0,所有的浮点数,空字符串&quot;&quot;,[],{},()</code></p>
+<p>python的文件名不能和导入的模块名字相同，否则会报如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: &apos;module&apos; object has no attribute &apos;xxxx&apos;</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<h3 id="内建函数"><a href="#内建函数" class="headerlink" title="内建函数"></a>内建函数</h3><ul>
+<li>type(obj):<br>返回一个对象的类型</li>
+<li>cmp(obj1,obj2):<br>比较两个对象的大小，返回值为：1、0、-1（默认调用对象的<strong>cmp()</strong>方法）</li>
+<li><p>str(obj)<br>返回对象的可读性较高的字符串值,更适合人阅读（用于print）</p>
+</li>
+<li><p>repr(obj)<br>返回对象的字符串值，符合解释器语法，可以使用evel方法返回原始对象</p>
+</li>
+<li><p>isinstance(obj1,(type1,type2,…))<br>判断一个对象是否是某种类型</p>
+</li>
+</ul>
+<h3 id="数字类型"><a href="#数字类型" class="headerlink" title="数字类型"></a>数字类型</h3><ul>
+<li><p>标准整型<br>类似于C语言中的32位和64位有符号整型。</p>
+</li>
+<li><p>长整形<br>python支持的长整形的长度不受机器位数的限制，只受虚拟内存的限制，因此python可以表示很大很大的数。只需要在数字后面加上L（大小写皆可）即可。支持十进制、八进制、十六进制。</p>
+</li>
+<li><p>双精度浮点数<br>类似于c语言中的double</p>
+</li>
+</ul>
+<h3 id="可变对象和不可变对象"><a href="#可变对象和不可变对象" class="headerlink" title="可变对象和不可变对象"></a>可变对象和不可变对象</h3><p>python中的不可变对象包括三类:数字、字符串和元组<br>可变对象有：列表，dict</p>
+<h3 id="深拷贝与浅拷贝"><a href="#深拷贝与浅拷贝" class="headerlink" title="深拷贝与浅拷贝"></a>深拷贝与浅拷贝</h3><p>浅拷贝会创建新对象，其内容是原对象的引用</p>
+<p>序列类型对象默认使用浅拷贝(对于不可见类型，使用深拷贝)，方法包括：完全切片（[:]），工厂函数（list，tuple，dict），copy模块的copy函数</p>
+<p>对于非容器类型，不存在浅拷贝的概念，产生的都是原对象的引用。如果元组变量值包含原子类型对象，即使采用了深拷贝，也只能得到浅拷贝</p>
+<p>浅拷贝只能做顶层复制，但是不能复制其嵌套的数据结构。例如，假设一个列表l包含了另外一个列表ll，则浅拷贝拷贝的是ll的引用,对ll的更改也会改变l。</p>
+<h3 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h3><p>dict的key不可更改，且必须是可hash的(所有不可变对象都是可hash的，少部分可变对象是可hash的，例如实现了<strong>hash()</strong>的自定义类)，数字、字符串都可以作为key，列表、字典不可以作为key。元组的所有元素都是数字或者字符串时才可以作为key。不可变集合可以作为key</p>
+<h3 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h3><p>集合对象是一组可hash的元素。<br>只能通过工厂方法set()或者frozenset()方法创建集合</p>
+<h3 id="条件与循环"><a href="#条件与循环" class="headerlink" title="条件与循环"></a>条件与循环</h3><p>python三元运算符：<br><code>min = x if x &gt; y else y</code><br>等价于：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">min = x</span><br><span class="line">if x &gt; y :</span><br><span class="line">	min = x</span><br><span class="line">else:</span><br><span class="line">	min = y</span><br></pre></td></tr></table></figure></p>
+<p>while/for else:<br>python中while或者for循环语句后面可以跟上一个else语句，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while condition1:</span><br><span class="line">	func1()</span><br><span class="line">else:</span><br><span class="line">	func2()</span><br></pre></td></tr></table></figure></p>
+<p>如果while语句中没有return、break语句，则while else这种语句和if else没有区别。while else语句的作用是在while中带有break，return语句时，else不会执行。只有在while正常结束才会执行else语句。举例：<br>判断一串数字是否存在可以被2整除的数字：<br>方法1：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> i &lt;= <span class="number">5</span>:</span><br><span class="line">	<span class="keyword">if</span> i / <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"flag true"</span></span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"flag false"</span></span><br></pre></td></tr></table></figure></p>
+<p>如果不适用while else语句，需要这么写：<br>方法2<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">0</span></span><br><span class="line">flag = false</span><br><span class="line"><span class="keyword">while</span> i &lt;= <span class="number">5</span>:</span><br><span class="line">	<span class="keyword">if</span> i / <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">		flag = true</span><br><span class="line">		<span class="keyword">print</span> flag true<span class="string">"</span></span><br><span class="line"><span class="string">		break;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">if flag == True:</span></span><br><span class="line"><span class="string">	print "</span>flat true<span class="string">"</span></span><br></pre></td></tr></table></figure></p>
+<p>第一种语法更加符合python风格，更加简明。</p>
+<h3 id="列表解析"><a href="#列表解析" class="headerlink" title="列表解析"></a>列表解析</h3><p>1 简单形式<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[(x ** <span class="number">2</span>) <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">3</span>)]</span><br><span class="line"><span class="number">0</span>, <span class="number">1</span>,<span class="number">4</span>,<span class="number">9</span></span><br></pre></td></tr></table></figure></p>
+<p>2 带if语句的形式<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#取序列中的奇数</span></span><br><span class="line">seq = [<span class="number">7</span>,<span class="number">3</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">9</span>,<span class="number">4</span>]</span><br><span class="line">[x <span class="keyword">for</span> x <span class="keyword">in</span> seq <span class="keyword">if</span> x % <span class="number">2</span>]</span><br></pre></td></tr></table></figure></p>
+<p>3 连用两次for<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 3行5列的矩阵</span></span><br><span class="line">[(x+<span class="number">1</span>, y+<span class="number">1</span>) <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">3</span>) <span class="keyword">for</span> y <span class="keyword">in</span> range(<span class="number">6</span>)]</span><br></pre></td></tr></table></figure></p>
+<p>4 统计文件中非空白字符长度（单词数目长度相加）<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">'file.txt'</span>, <span class="string">'r'</span>)</span><br><span class="line">sum(len([word <span class="keyword">for</span> line <span class="keyword">in</span> f <span class="keyword">for</span> word <span class="keyword">in</span> line.split()]))</span><br><span class="line"><span class="comment"># 缺点是需要生成一个包长度为单词个数的列表，如果单词数目很多，则会很占用内存</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h3><p>相对于列表解析，生成器表达式更加高效，因为生成器表达式并不真正生成列表，而是采用延迟计算，返回一个表达式，每次返回计算的一个结果。</p>
+<p>两者的区别：</p>
+<ul>
+<li>列表解析 返回的是一个完整的列表，如果对一个包含100万个元素的序列使用列表解析式，将得到一个包含100万的元素的列表。</li>
+<li>生成器表达式，返回的是一个计算方法，每调用一次next方法才会返回一个值。占用很少的内内存</li>
+</ul>
+<p>生成器创建方法：<br>1）列表解析式方法<br>只需要将”[]”更改为”()”即可。例如：<br><code>（x *2 for x in range(5)）</code></p>
+<p>2)使用yield定义生成器<br>例如，返回斐波那契数列函数定义如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></span><br><span class="line">	a ,b = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span>(i &lt; n):</span><br><span class="line">		<span class="keyword">print</span> b</span><br><span class="line">		a, b = b, a+b	</span><br><span class="line">		i += <span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<p>对应的生成器定义为：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></span><br><span class="line">	a ,b = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span>(i &lt; n):</span><br><span class="line">		<span class="keyword">yield</span> b <span class="comment">#注意这里</span></span><br><span class="line">		a, b = b, a+b	</span><br><span class="line">		i += <span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<p>生成器的原理：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">生成器利用yield关键字，每次执行netxt（）函数时返回yield的值（可以把yeild当做return），与return不一样的地方是，之后生成器会被冻结，yield之后下一行要执行的的所有代码，所有的变量值都会保存起来，下次调用next（）时，从上次执行到的地方发继续执行。</span><br></pre></td></tr></table></figure></p>
+<p>列表生成器计算文件中非空白字符的长度：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">"file.txt"</span>, <span class="string">'r'</span>)</span><br><span class="line">sum(len(word) <span class="keyword">for</span> line <span class="keyword">in</span> f <span class="keyword">for</span> word <span class="keyword">in</span> line.split())</span><br></pre></td></tr></table></figure></p>
+<p>找到一个文件中长度最长的行的长度<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 普通方式</span></span><br><span class="line">f = open(<span class="string">'file.txt'</span>,<span class="string">'r'</span>)</span><br><span class="line">longest = <span class="number">0</span></span><br><span class="line">alllines = f.readlines()<span class="comment">#读取所有的行</span></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> alllines:</span><br><span class="line">	linelen = len(line)</span><br><span class="line">	<span class="keyword">if</span> linelen &gt; longest:</span><br><span class="line">		longest = linlen</span><br><span class="line"><span class="keyword">return</span> longest</span><br><span class="line"></span><br><span class="line"><span class="comment"># 列表解析方式</span></span><br><span class="line">f = open(<span class="string">'file.txt'</span>,<span class="string">'r'</span>)</span><br><span class="line">alllineLen = [len(line) <span class="keyword">for</span> line <span class="keyword">in</span> f]<span class="comment">#读取所有的行</span></span><br><span class="line">f.close()</span><br><span class="line"><span class="keyword">return</span> max(alllineLen)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 列表生成器方式</span></span><br><span class="line">f = open(<span class="string">'file.txt'</span>,<span class="string">'r'</span>)</span><br><span class="line">longest = max(len(line) <span class="keyword">for</span> line <span class="keyword">in</span> f)</span><br><span class="line">f.close()</span><br><span class="line"><span class="keyword">return</span> longest</span><br><span class="line"></span><br><span class="line"><span class="comment"># 最优版本</span></span><br><span class="line"><span class="keyword">return</span> max(len(x) <span class="keyword">for</span> x <span class="keyword">in</span> open(<span class="string">"file.txt"</span>))</span><br></pre></td></tr></table></figure></p>
+<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>不同平台换行符：<br>windows|unix|mac<br>-|-|-<br>\r\n | \n | \r</p>
+<p>为了支持不同平台的换行符，python打开文件时支持使用U模式，即通用换行符模式（只在r或者a模式时）<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">"file"</span>, <span class="string">"rU"</span>)</span><br><span class="line">f = open(<span class="string">"file"</span>, <span class="string">"aU"</span>)</span><br></pre></td></tr></table></figure></p>
+<p>打开文件方式介绍<br>方式|介绍<br>-|-<br>+|可读可写<br>r|只读，若文件不存在则引发异常<code>IOError: [Errno 2] No such file or directory</code><br>r+|读写，若文件不存在则引发异常<code>IOError: [Errno 2] No such file or directory</code><br>w|只写，若文件存在则清空，若文件不存在则创建该文件<br>w+|可读可写，若文件不存在则创建该文件<br>a|追加方式，不可读，若文件不存在则创建该文件</p>
+<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><p>with语句：<br>屏蔽了try exception，异常的捕获交由python解释器来做，程序员只需要关注功能的实现。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> open(<span class="string">"file.txt"</span>) <span class="keyword">as</span> f:</span><br><span class="line">	<span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">		<span class="keyword">pass</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/python/">python</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/02/26/rrdtool原理/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">rrdtool原理</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/26/基础学习-ss命令/">
+        <span class="next-text nav-default">基础学习-ss命令</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

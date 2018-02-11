@@ -1,0 +1,1180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+    
+    <entry>
+      <title><![CDATA[2017-3-31-vim快捷键]]></title>
+      <url>https://aprilnops.github.io/2018/02/11/2017-3-31-vim%E5%BF%AB%E6%8D%B7%E9%94%AE/</url>
+      <content type="html"><![CDATA[<p>启动和退出vim</p>
+<ul>
+<li>vim的启动：在Linux的提示符下键入vim(或使用vim myfile来编辑已经存在的文件)即可启动它。</li>
+<li>vim的退出：先按下Esc键回到命令行模式，然后键入”:”，此时光标会停留在最下面一行，再键入”q”（如果强行退出则还在后面加 “!” ），最后按下Enter键即可。</li>
+</ul>
+<p>vim中常用的复制文本命令</p>
+<ul>
+<li>y+y： 将光标目前所在的位置整行复制</li>
+<li>y+w： 复制光标所在的位置到整个单词所在的位置</li>
+<li>n+y+w： 若按3yw，则会将光标所在位置到单词结束以及后面两个单词(共3个单词)一起复制</li>
+<li>n+y+y： 若按3yy，则将连同光标所在位置的一行与下面两行一起复制</li>
+<li>p： 将复制的内容粘贴光标所在的位置之后。</li>
+<li>P： 将复制的内容粘贴光标所在的位置之前。</li>
+</ul>
+<p>vim中常用的删除文本命令</p>
+<ul>
+<li>d+h： 连续按d和h，将光标所在位置前一个字符删除</li>
+<li>d+l： 将光标所在位置字符删除</li>
+<li>d+k： 将光标所在位置行与其上一行同时删除</li>
+<li>d+j： 将光标所在位置与下一行同时删除</li>
+<li>d+d： 连按两次d，可将光标所在的行删除，若是连续删除，可以按住d不放</li>
+<li>d+w： 删除光标所在位置的单词，若是光标在两个字之间，则删除光标后面的一个字符</li>
+<li>n+d+d： 删除从光标所在行开始计数向下的n行</li>
+<li>n+d+k： 删除包括光标所在行及向上的n行</li>
+<li>n+d+j： 与n+d+d命令类似，但多删了一行，总共删除 n+1 行</li>
+<li>D： 将光标所在行后面所有的单词删除</li>
+<li>C： 将光标所在行后面所有的单词删除，并进入插入模式</li>
+<li>S： 整行删除，并进入插入模式</li>
+<li>x： 将光标所在位置字符删除</li>
+<li>X： 将光标所在位置前一个字符删除</li>
+<li>n+x： 删除光标所在位置及其后的n个字符</li>
+<li>n+X： 删除光标所在位置及其前的n个字符</li>
+<li>v/V+光标选中+d： 进入VISUAL/VISUAL LINE模式后移动光标选中文本再删除，可看清楚删了哪些文本</li>
+</ul>
+<p>vim中常用的找出行数等定位命令</p>
+<ul>
+<li>Ctrl+g： 在最后一行中显示光标所在位置的行数及文章的总行数</li>
+<li>nG： 将光标移至n行</li>
+<li>G： 将光标移至文件末尾</li>
+<li>gg： 将光标移至文件头部</li>
+<li>H: 将光标移至屏幕头部</li>
+<li>M: 将光标移至屏幕中部</li>
+<li>L: 将光标移至屏幕底部</li>
+<li>f+char: 在行内向前查找并定位到指定字符，如fa代表定位到下一个字符a</li>
+<li>F+char: 在行内向后查找并定位到指定字符，发现漏写字母时很实用</li>
+<li>$: 定位到行尾</li>
+<li>^: 定位到行首</li>
+<li>[{: 定位到段首</li>
+<li>]}: 定位到段尾</li>
+</ul>
+<p>vim中替换/撤销等</p>
+<ul>
+<li>r： 修改光标所在字符</li>
+<li>R： 修改光标所在位置的字符，可以一直替换字符，直到按下ESC键</li>
+<li>u： 表示复原功能</li>
+<li>U： 取消对行所作的所有改变</li>
+<li>.： 重复执行上一命令</li>
+<li>Z+Z： 连续按下两次Z，文件将保存并退出vim</li>
+<li>%： 符号匹配功能，在编辑时，如果输入”%(“，系统会自动匹配相应的”)”</li>
+</ul>
+<p>vim中命令行模式切换到输入模式</p>
+<ul>
+<li>a： 从目前光标所在位置的下一个字符开始输入。</li>
+<li>A： 从行尾开始输入。</li>
+<li>i： 从光标所在位置开始插入新输入的字符。</li>
+<li>I： 从行首开始输入。</li>
+<li>o： 新增加一行，并将光标移到下一行的开头。</li>
+<li>O：    在当前行之上新增一行。</li>
+</ul>
+<p>vim最后行模式主要的操作命令</p>
+<ul>
+<li>e ：若文件存在则打开文件否则新建文件</li>
+<li>n： 若文件存在则打开文件否则新建文件</li>
+<li>w： 写文件，也就是将编辑的内容保存到文件系统中。主要它是保存到临时文件中，直接退出，他并没有保存到文件中的</li>
+<li>w！： 如果想写只读文件，使用它强制写入文件</li>
+<li>q！： 不问你是否保存文件，强制退出</li>
+<li>set nu： set 可以设置vim的某些特性，这里是设置每行开头提示行数。想取消设置，使用命令 set nonu</li>
+<li>/： 查找匹配字符串功能。如/(，将查找(和)；如果想继续向下查找，可以按n键；向前继续查找则按N键</li>
+<li>?： 与/相似，但它是向前查找字符串</li>
+<li>:%s/reg1/char/cg 替换指定字符</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 学习 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> vim </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[2018-02-11-python状态机设计模式]]></title>
+      <url>https://aprilnops.github.io/2018/02/11/%E7%8A%B6%E6%80%81%E6%9C%BA%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AE%80%E8%BF%B0/</url>
+      <content type="html"><![CDATA[<h1 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">&apos;&apos;&apos;状态机设计模式-demo&apos;&apos;&apos;</span><br><span class="line">import random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Machine(object):</span><br><span class="line">    &apos;&apos;&apos;糖果机类&apos;&apos;&apos;</span><br><span class="line"></span><br><span class="line">    def __init__(self, num):</span><br><span class="line">        self.num = num</span><br><span class="line">        self.set_state(&apos;no_coin&apos;)</span><br><span class="line"></span><br><span class="line">    def set_state(self, state):</span><br><span class="line">        if self.num &lt;= 0:</span><br><span class="line">            self.state = &apos;sold_out&apos;</span><br><span class="line">        else:</span><br><span class="line">            self.state = state</span><br><span class="line"></span><br><span class="line">    def get_state(self):</span><br><span class="line">        if self.state == &apos;coin_in&apos;:</span><br><span class="line">            return CoinInState(self)</span><br><span class="line"></span><br><span class="line">        if self.state == &apos;no_coin&apos;:</span><br><span class="line">            return NoCoinState(self)</span><br><span class="line"></span><br><span class="line">        if self.state == &apos;sold&apos;:</span><br><span class="line">            return SoldState(self)</span><br><span class="line"></span><br><span class="line">        if self.state == &apos;winner&apos;:</span><br><span class="line">            return WinnerState(self)</span><br><span class="line"></span><br><span class="line">        return SoldOutState(self)</span><br><span class="line"></span><br><span class="line">    def sub(self):</span><br><span class="line">        if self.num &gt; 0:</span><br><span class="line">            self.num -= 1</span><br><span class="line"></span><br><span class="line">    def coin_in(self):</span><br><span class="line">        self.get_state().coin_in()</span><br><span class="line"></span><br><span class="line">    def coin_out(self):</span><br><span class="line">        self.get_state().coin_out()</span><br><span class="line"></span><br><span class="line">    def turn(self):</span><br><span class="line">        self.get_state().turn()</span><br><span class="line"></span><br><span class="line">    def out(self):</span><br><span class="line">        self.get_state().out()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class State(object):</span><br><span class="line">    &apos;&apos;&apos;状态基类&apos;&apos;&apos;</span><br><span class="line"></span><br><span class="line">    def coin_in(self):</span><br><span class="line">        raise NotImplementedError</span><br><span class="line"></span><br><span class="line">    def coin_out(self):</span><br><span class="line">        raise NotImplementedError</span><br><span class="line"></span><br><span class="line">    def turn(self):</span><br><span class="line">        raise NotImplementedError</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class NoCoinState(State):</span><br><span class="line">    def __init__(self, machine):</span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    def coin_in(self):</span><br><span class="line">        print(&apos;你投入了5元&apos;)</span><br><span class="line">        self.machine.set_state(&apos;coin_in&apos;)</span><br><span class="line"></span><br><span class="line">    def coin_out(self):</span><br><span class="line">        print(&apos;您还没有投币，不能退币，想多了吧？&apos;)</span><br><span class="line"></span><br><span class="line">    def turn(self):</span><br><span class="line">        print(&apos;您还没有投币，不能转动手柄，想多了吧？&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class CoinInState(State):</span><br><span class="line">    def __init__(self, machine):</span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    def coin_in(self):</span><br><span class="line">        print(&apos;您已经投入了5元，无需再次投入&apos;)</span><br><span class="line"></span><br><span class="line">    def coin_out(self):</span><br><span class="line">        print(&apos;ok,马上退回您的5元&apos;)</span><br><span class="line">        self.machine.set_state(&apos;no_coin&apos;)</span><br><span class="line"></span><br><span class="line">    def turn(self):</span><br><span class="line">        print(&apos;ok, 稍等片刻，马上给您饮料&apos;)</span><br><span class="line">        winner = random.randint(1, 10)</span><br><span class="line">        if winner == 1:</span><br><span class="line">            self.machine.set_state(&apos;winner&apos;)</span><br><span class="line">        else:</span><br><span class="line">            self.machine.set_state(&apos;sold&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class SoldState(State):</span><br><span class="line">    def __init__(self, machine):</span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    def coin_in(self):</span><br><span class="line">        print(&apos;您已经投了5元，不要再投了&apos;)</span><br><span class="line"></span><br><span class="line">    def coin_out(self):</span><br><span class="line">        print(&apos;已经转动了手柄，不能再退回钱了&apos;)</span><br><span class="line"></span><br><span class="line">    def turn(self):</span><br><span class="line">        print(&apos;别着急，您已经转动了手柄，请稍等片刻取走您的商品&apos;)</span><br><span class="line"></span><br><span class="line">    def out(self):</span><br><span class="line">        &apos;&apos;&apos;售卖机内部动作,无需手动调用，由售卖机自动调用&apos;&apos;&apos;</span><br><span class="line">        self.machine.sub()</span><br><span class="line">        self.machine.set_state(&apos;no_coin&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class SoldOutState(State):</span><br><span class="line">    def __init__(self, machine):</span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    def coin_in(self):</span><br><span class="line">        print(&quot;所有商品已售完&quot;)</span><br><span class="line"></span><br><span class="line">    def coin_out(self):</span><br><span class="line">        print(&quot;所有商品已售完&quot;)</span><br><span class="line"></span><br><span class="line">    def turn(self):</span><br><span class="line">        print(&quot;所有商品已售完&quot;)</span><br><span class="line"></span><br><span class="line">    def out(self):</span><br><span class="line">        print(&quot;所有商品已售完&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class WinnerState(State):</span><br><span class="line">    def __init__(self, machine):</span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    def coin_in(self):</span><br><span class="line">        print(&apos;您已经投了5元，不要再投了&apos;)</span><br><span class="line"></span><br><span class="line">    def coin_out(self):</span><br><span class="line">        print(&apos;已经转动了手柄，不能再退回钱了&apos;)</span><br><span class="line"></span><br><span class="line">    def turn(self):</span><br><span class="line">        print(&apos;别着急，您已经转动了手柄，请稍等片刻取走您的商品&apos;)</span><br><span class="line"></span><br><span class="line">    def out(self):</span><br><span class="line">        print(&apos;中奖了，多赠送一个&apos;)</span><br><span class="line">        self.machine.sub()</span><br><span class="line">        if self.machine.num &gt; 0:</span><br><span class="line">            self.machine.sub()</span><br><span class="line">        else:</span><br><span class="line">            print(&apos;悲哀，库存不存，只能白中奖了&apos;)</span><br><span class="line">        self.machine.set_state(&apos;no_coin&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    machine = Machine(10)</span><br><span class="line">    for i in range(10):</span><br><span class="line">        machine.coin_in()</span><br><span class="line">        machine.turn()</span><br><span class="line">        machine.out()</span><br></pre></td></tr></table></figure>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 状态机，设计模式 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[2018-02-11-几种增量更新方案]]></title>
+      <url>https://aprilnops.github.io/2018/02/11/%E5%87%A0%E7%A7%8D%E5%A2%9E%E9%87%8F%E6%9B%B4%E6%96%B0%E6%96%B9%E6%A1%88/</url>
+      <content type="html"><![CDATA[<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。</p>
+<p><strong>分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意</strong></p>
+<h1 id="初步想法"><a href="#初步想法" class="headerlink" title="初步想法"></a>初步想法</h1><p>一个while循环，每次更新前1分钟的数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 伪代码</span><br><span class="line">while True:</span><br><span class="line">    now = time.time()</span><br><span class="line">    sync_to_local(update_time&gt;=now)</span><br><span class="line">    time.sleep(interval)</span><br></pre></td></tr></table></figure>
+<p>存在的问题：</p>
+<p>如果程序崩溃，不知道上一次同步结束的时间点，无法知道下一次增量更新的时间起始点</p>
+<h1 id="改进1"><a href="#改进1" class="headerlink" title="改进1"></a>改进1</h1><p>记录下每次更新后的时间戳last_sync_timestamp，使用定时任务下一次更新时从last_sync_timestamp拉取数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 伪代码</span><br><span class="line">sync_to_local(update_time&gt;last_sync_timestamp)</span><br></pre></td></tr></table></figure>
+<p>存在问题：记录丢失<br>同步的时候，如果使用：update_time&gt;last_sync_timestamp,则可能出现记录丢失的问题</p>
+<h1 id="改进2"><a href="#改进2" class="headerlink" title="改进2"></a>改进2</h1><p>改成大于等于：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sync_to_local(update_time&gt;=last_sync_timestamp)</span><br></pre></td></tr></table></figure>
+<p>存在问题：记录重复</p>
+<p>假设服务器存在如下记录：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0002</td>
+</tr>
+</tbody>
+</table>
+<p>每次获取2条记录，<br>第一次同步后，last_sync_timestamp=0001<br>本地同步到的记录为：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0001</td>
+</tr>
+</tbody>
+</table>
+<p>第二次继续同步2条记录，last_sync_timestamp=0001</p>
+<p>那么id为1，2的记录会重复获取。永远获取不到后面的记录</p>
+<h1 id="改进3"><a href="#改进3" class="headerlink" title="改进3"></a>改进3</h1><p>除了时间戳，还可在client端增加记录的唯一id，通过id+时间戳来去重。 </p>
+<p>假设服务器存在如下记录：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0002</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0002</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0002</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0003</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0003</td>
+</tr>
+</tbody>
+</table>
+<p>1）第一次获取数据：<br>last_sync_timestamp&gt;=0001</p>
+<p>假设返回数据：<br>count=2,total=6（count表示每页记录数，total表示总共符合条件的记录数）<br>则本地更新内容为：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0002</td>
+</tr>
+</tbody>
+</table>
+<p>本地记录下last_sync_timestamp和id，<br>last_sync_timestamp：0002<br>id：2</p>
+<p>2）第二次获取数据<br>last_sync_timestamp&gt;=0002 &amp;&amp; id not in (2)</p>
+<p>返回数据为：<br>count=2，total=4，</p>
+<p>更新后本地数据为：<br>id|update_time<br>—|—<br>1|0001<br>2|0002<br>3|0002<br>4|0002</p>
+<p>last_sync_timestamp=0002，<br>id=2,3,4</p>
+<p>4）第四次获取数据<br>last_sync_timestamp&gt;=0002 &amp;&amp; id not in (2,3,4)</p>
+<p>返回数据：count=2，total=2<br>更新后本地数据为：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0002</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0003</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0003</td>
+</tr>
+</tbody>
+</table>
+<p>last_sync_timestamp=0003，id=5,6</p>
+<h1 id="改进4"><a href="#改进4" class="headerlink" title="改进4"></a>改进4</h1><p>每条记录增加一个字段status，<br>indexed：表示记录是否已经被同步<br>unindexed：表示尚未同步</p>
+<p>获取记录的时候只需要给出条件：<br>status==unindexed并且按照update_time排序</p>
+<p>本地同步完成之后，更新服务器端响应记录的status即可</p>
+<p>问题：<br>使用场景受限，允许客户端更新服务端状态，不适用于例如微博客户端本地增量更新的场景</p>
+<p>参考文章：<br><a href="http://blog.csdn.net/newjueqi/article/details/19114469" target="_blank" rel="noopener">http://blog.csdn.net/newjueqi/article/details/19114469</a></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 增量更新 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[golang基础学习]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/golang%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/</url>
+      <content type="html"><![CDATA[<h4 id="golang基础类型"><a href="#golang基础类型" class="headerlink" title="golang基础类型"></a>golang基础类型</h4><ul>
+<li><code>bool:(true,false)</code></li>
+<li><code>int:32位或者64位整型</code></li>
+<li><code>int8,int16,int32,int64:8位、16位、32位、64位整型</code></li>
+<li><code>uint8,uint16,uint32,uint64:无符号8、16、32、64位整型</code></li>
+<li><code>byte:等价于uint8</code></li>
+<li><code>rune:等价于int32</code></li>
+<li><code>float32,float64:浮点32、64位</code></li>
+<li><code>complex32,complex64:复数32位、64位</code><br><strong>除非非常明确符号及位数，否则通常的整型最好都使用int</strong></li>
+</ul>
+<h4 id="默认值"><a href="#默认值" class="headerlink" title="默认值"></a>默认值</h4><p>各个类型都有默认值，基础类型的默认值通常为0或者false，<br>map、slice等的默认值为nil，因此nil只能赋值给指针、channel、func、interface、map或slice类型的变量。如果<br>用int于nil进行比较，会造成panic</p>
+<h4 id="string字符串"><a href="#string字符串" class="headerlink" title="string字符串"></a>string字符串</h4><p>raw字符串：使用``括起来的字符串将按照字面意思解释，不会进行转义</p>
+<h4 id="UTF-8编码："><a href="#UTF-8编码：" class="headerlink" title="UTF-8编码："></a>UTF-8编码：</h4><p>go源文件都以utf-8作为默认编码<br><img src="/images/1482581650243.jpg" alt="utf-8" title="1482581650243.jpg"><br><a id="more"></a></p>
+<h4 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h4><ul>
+<li><p>new<br>go中使用new分配内存，返回一个指针。例如：new(T) 分配了零值填充的T类型的内存空间,并且返回其地址,一个 *T 类型的值</p>
+</li>
+<li><p>make<br>内建函数 make(T, args) 与 new(T) 有着不同的功能。它只能创建 slice,map 和 channel,并且返回一个有初始值(非零)的 T 类型,而不是 *T。本质原因是数据结构的引用在使用前必须初始化。因此make函数封装了对引用对象的初始化。而new并不会进行初始化，只会分配对象内存（零值）并返回一个指向该内存的指针。</p>
+</li>
+</ul>
+<p>举例make和new的区别：<br>对于一个slice，其初始化值应该包括三个部分：一个底层数组array，一个长度length以及容量capacity。而零值则是直接都复制为0。make会分配内存并进行初始化，返回引用，new分配内存并分配零值返回指针。</p>
+<p>总结：</p>
+<blockquote>
+<p>上面的两段可以简单总结为:<br>• new(T)返回*T指向一个零值T<br>• make(T)返回初始化后的T<br>当然 make 仅适用于 slice,map 和 channel。</p>
+</blockquote>
+<h4 id="duck-typing"><a href="#duck-typing" class="headerlink" title="duck typing"></a>duck typing</h4><p>只要一个对象实现了一个接口所包含的所有方法，那么就可以将其看做该接口类型，无须显示声明。维基百科上的形象解释：</p>
+<blockquote>
+<p>When I see a bird that walks like a duck and swims like a duck and quacks like a duck, I call that bird a duck.</p>
+</blockquote>
+<h4 id="包"><a href="#包" class="headerlink" title="包"></a>包</h4><p>只引入包的全局变量和init函数：<br><code>import _ &quot;path/to/package&quot;</code></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 学习 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[hdfs架构学习]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/hdfs%E6%9E%B6%E6%9E%84%E5%AD%A6%E4%B9%A0/</url>
+      <content type="html"><![CDATA[<h4 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li>大文件存储，单个文件可达到G</li>
+<li>关注高吞吐量而非低延迟</li>
+<li>块大小默认为64MB，大文件会分为多个文件块存储在不同的datanode几点上。小文件单独占用块，多个小文件不会合并到一个块中。因此hdfs更加喜欢大文件。</li>
+</ul>
+<h4 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h4><p><img src="/images/1481871142257.jpg" alt="hdfs架构图1" title="1481871142257.jpg"><br> <img src="/images/1481873643673.jpg" alt="hdfs架构图2" title="1481873643673.jpg"></p>
+<h4 id="NameNode"><a href="#NameNode" class="headerlink" title="NameNode"></a>NameNode</h4><ul>
+<li>负责存放文件元数据，文件系统命名空间的维护，任何对命名空间的更改，例如属性、名字等都将记录到NameNode中</li>
+<li><strong>不记录文件保存的位置</strong>，文件位置信息会由DataNode上报并保存在内存中，同时也会持久化到本地文件系统(fsimage和edits)</li>
+<li>NameNode消耗大量内存和I/O资源。因此其不存储用户数据，也不进行mapreduce任务。<a id="more"></a>
+<h4 id="fsimage"><a href="#fsimage" class="headerlink" title="fsimage"></a>fsimage</h4></li>
+<li>hdfs文件元数据持久化点，保存了hdfs文件系统所有的命名空间和block块信息。</li>
+</ul>
+<h4 id="edits"><a href="#edits" class="headerlink" title="edits"></a>edits</h4><ul>
+<li>存放hdfs文件系统的更新操作</li>
+</ul>
+<h4 id="SecondNameNode"><a href="#SecondNameNode" class="headerlink" title="SecondNameNode"></a>SecondNameNode</h4><p>hdfs只使用一个NameNode存在单点故障问题，解决办法：</p>
+<ul>
+<li>元数据定期持久化到本地文件系统中</li>
+<li>namenode在重启的过程中需要合并edits和fsimage文件，获取文件元数据信息，但是这个动作会影响namenode启动的速度，因此通过SecondNameNode定期进行edits文件和fsimage文件的合并。</li>
+</ul>
+<h4 id="DataNode"><a href="#DataNode" class="headerlink" title="DataNode"></a>DataNode</h4><ul>
+<li>数据真正存放的地方，以块存储。为客户端提供读写服务</li>
+<li>向NameNode发送心跳数据，汇报文件包含的块列表和备份个数</li>
+<li>DataNode之间也会通信，进行数据库的负载，实现冗余备份</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> hdfs </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[http协议学习]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/http%E7%8A%B6%E6%80%81%E7%A0%81/</url>
+      <content type="html"><![CDATA[<h2 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h2><h3 id="502"><a href="#502" class="headerlink" title="502"></a>502</h3><p>==502 Bad Gateway==</p>
+<blockquote>
+<p>The HTTP 502 Bad Gateway server error response code indicates that the server, while acting as a gateway or proxy, received an invalid response from the upstream server.</p>
+</blockquote>
+<p>502错误通常是指==网关或者代理==(例如<em>nginx</em>)从==后端服务器==接收到==无效的响应==。这个无效的响应包括以下几个方面：</p>
+<ul>
+<li>响应为空（连接失败，没有建立连接）</li>
+<li>不完整的响应头或者body</li>
+</ul>
+<h3 id="503"><a href="#503" class="headerlink" title="503"></a>503</h3><blockquote>
+<p>The 503 (Service Unavailable) status code indicates that the server is currently unable to handle the request due to a temporary overloador scheduled maintenance, which will likely be alleviated after some delay.  The server MAY send a Retry-After header field to suggest an appropriate amount of time for the client to wait before retrying the request.</p>
+</blockquote>
+<p>503服务不可用，当后端服务器并发请求量+队列满了的时候，新来的请求就会出现503错误。<br>可以携带一个Retry-After头表明客户端需要等待多久再重试请求。<br>503表明后端服务器没有足够的资源（cpu、内存）接收请求或者需要调整tcp、文件打开数等相关参数<br><a id="more"></a></p>
+<h3 id="504-Gateway-Timeout"><a href="#504-Gateway-Timeout" class="headerlink" title="504 Gateway Timeout"></a>504 Gateway Timeout</h3><p>后端超时，可能得原因：</p>
+<ul>
+<li>网络差</li>
+<li>服务器性能变差，资源不够用</li>
+<li>超时时间设置太短</li>
+</ul>
+<h2 id="建立http连接过程"><a href="#建立http连接过程" class="headerlink" title="建立http连接过程"></a>建立http连接过程</h2><h3 id="http请求"><a href="#http请求" class="headerlink" title="http请求"></a>http请求</h3><p>请求行、header、空行、body</p>
+<ul>
+<li>请求行<br>请求方法  请求url  协议版本<br>get /index.html http/1.1</li>
+<li>请求头</li>
+</ul>
+<p><img src="/images/1482897161638.jpg" alt="http请求格式" title="1482897161638.jpg"></p>
+<ul>
+<li>例如：</li>
+<li><img src="/images/1482898239710.jpg" alt="http请求实例" title="1482898239710.jpg"></li>
+</ul>
+<p>http响应</p>
+<ul>
+<li><img src="/images/1482897503763.jpg" alt="http响应格式" title="1482897503763.jpg"><br>举例：</li>
+<li><p><img src="/images/1482898383557.jpg" alt="http响应" title="1482898383557.jpg"></p>
+</li>
+<li><p>http请求过程描述：<br>HTTP通信机制是在一次完整的HTTP通信过程中，Web浏览器与Web服务器之间将完成下列7个步骤：<br>（1）    建立TCP连接<br>在HTTP工作开始之前，Web浏览器首先要通过网络与Web服务器建立连接，该连接是通过TCP来完成的，该协议与IP协议共同构建Internet，即著名的TCP/IP协议族，因此Internet又被称作是TCP/IP网络。HTTP是比TCP更高层次的应用层协议，根据规则，只有低层协议建立之后才能，才能进行更层协议的连接，因此，首先要建立TCP连接，一般TCP连接的端口号是80<br>（2）    Web浏览器向Web服务器发送请求命令<br>一旦建立了TCP连接，Web浏览器就会向Web服务器发送请求命令<br>例如：GET/sample/hello.jsp HTTP/1.1<br>（3）    Web浏览器发送请求头信息<br>浏览器发送其请求命令之后，还要以头信息的形式向Web服务器发送一些别的信息，之后浏览器发送了一空白行来通知服务器，它已经结束了该头信息的发送。<br>（4）    Web服务器应答<br>客户机向服务器发出请求后，服务器会客户机回送应答，<br>HTTP/1.1 200 OK<br>应答的第一部分是协议的版本号和应答状态码<br>（5）    Web服务器发送应答头信息<br>正如客户端会随同请求发送关于自身的信息一样，服务器也会随同应答向用户发送关于它自己的数据及被请求的文档。<br>（6）    Web服务器向浏览器发送数据<br>Web服务器向浏览器发送头信息后，它会发送一个空白行来表示头信息的发送到此为结束，接着，它就以Content-Type应答头信息所描述的格式发送用户所请求的实际数据<br>（7）    Web服务器关闭TCP连接<br>一般情况下，一旦Web服务器向浏览器发送了请求数据，它就要关闭TCP连接，然后如果浏览器或者服务器在其头信息加入了这行代码<br>Connection:keep-alive<br>TCP连接在发送后将仍然保持打开状态，于是，浏览器可以继续通过相同的连接发送请求。保持连接节省了为每个请求建立新连接所需的时间，还节约了网络带宽。</p>
+</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 学习 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> http </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[java gc学习]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/java%20gc%E5%AD%A6%E4%B9%A0/</url>
+      <content type="html"><![CDATA[<h4 id="java堆内存结构"><a href="#java堆内存结构" class="headerlink" title="java堆内存结构"></a>java堆内存结构</h4><p><img src="/images/1482475434784.jpg" alt="java堆内存结构" title="1482475434784.jpg"></p>
+<h4 id="gc相关参数"><a href="#gc相关参数" class="headerlink" title="gc相关参数"></a>gc相关参数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-Xms 10m：最小堆内存10M</span><br><span class="line">-Xmx 10G：最大堆内存10G</span><br><span class="line">-Xmn 10m：新生代大小10M</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-XX:NewRatio:新生代和老年代的比例</span><br><span class="line">-XX:SurvivorRatio：s0、s1和eden的比例</span><br><span class="line">-XX:NewSize：新生代大小</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h4 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h4><ul>
+<li>标记-清除：先标记对象为不可达，然后回收内存，容易产生内存碎片</li>
+<li>标记-压缩：先标记对象不可达，然后统一将可达对象移动到内存的一端，然后统一回收边界外所有内存。有效解决内存碎片的问题（<strong>适合老年代</strong>）</li>
+<li>复制算法：<strong>针对新生代</strong>，将内存分为完全相同的两块，每次只用一块，gc时，将存活对象移到另一个空闲的内存块，然后清除整块内存。</li>
+<li><h4 id="gc垃圾收集器"><a href="#gc垃圾收集器" class="headerlink" title="gc垃圾收集器"></a>gc垃圾收集器</h4></li>
+<li>串行收集器，单线程进行垃圾回收，新生代采用标记-复制算法，老年代采用标记-压缩算法</li>
+<li>并行收集器ParNew：<strong>不适用于老年代</strong>，多个线程同时进行gc，<strong>采用标记-复制算法</strong></li>
+<li>CMS并发标记清除收集器：<strong>只能用于老年代</strong>gc和应用程序并发执行，很少的时间会出现stop the world现象。<strong>不适用压缩算法</strong>。</li>
+</ul>
+<p>串行收集器和cms对比图：<br><img src="/images/1482484140112.jpg" alt="对比" title="1482484140112.jpg"></p>
+<ul>
+<li><h4 id="gc正常情况参考"><a href="#gc正常情况参考" class="headerlink" title="gc正常情况参考"></a>gc正常情况参考</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">如果GC执行时间满足以下判断条件，那么GC调优并没那么必须。</span><br><span class="line"></span><br><span class="line">Minor GC执行迅速(50毫秒以内)</span><br><span class="line">Minor GC执行不频繁(间隔10秒左右一次)</span><br><span class="line">Full GC执行迅速(1秒以内)</span><br><span class="line">Full GC执行不频繁(间隔10分钟左右一次)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="gc调试命令"><a href="#gc调试命令" class="headerlink" title="gc调试命令"></a>gc调试命令</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">jstat:</span><br><span class="line"></span><br><span class="line">命令格式：jstat - [-t] [-h]  []]</span><br><span class="line">其中：</span><br><span class="line">option：</span><br><span class="line">     class:加载的类的数量及大小统计</span><br><span class="line">     gc：查看gc的次数和各个代容量大小及当前使用量，可以查看堆空间分配的容量大小</span><br><span class="line">     gccapacity:显示三代对象内存的使用情况，当前使用大小和总容量大小</span><br><span class="line">     gcutil:统计gc信息，各个堆内存剩余空间百分比，gc次数及时间。无法查看各个堆空间的大小</span><br><span class="line">     gcnew：查看年轻代gc统计信息</span><br><span class="line">     gcnewcapacity:查看年轻代空间容量统计信息</span><br><span class="line">     gcold:老年代gc统计信息</span><br><span class="line">     gcoldcapacity：老年代空间容量统计信息</span><br></pre></td></tr></table></figure>
+<p><strong>关键词解释</strong>：<br>以下容量的单位为kb，时间单位为秒<br><strong>jstat -gc</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">S0C：年轻代中第一个 survivor 的容量</span><br><span class="line">S1C：年轻代中第二个 survivor 的容量</span><br><span class="line">S0U：年轻代中第一个 survivor 已经使用的空间</span><br><span class="line">S1U：年轻代中第二个 survivor 已经使用的空间</span><br><span class="line">EC：年轻代中 eden 的总容量</span><br><span class="line">EU：年轻代中 eden 的已经使用容量</span><br><span class="line">OC：老年代（old）区域的总容量</span><br><span class="line">OU：老年代（old）区域已经使用的容量</span><br><span class="line">MC：元数据（Metaspace）区大小</span><br><span class="line">MU：元数据（Metaspace）区已经使用的空间</span><br><span class="line">CCSC：压缩类空间的大小</span><br><span class="line">CCSU：压缩类空间已经使用的大小</span><br><span class="line">YGC：年轻代垃圾回收的次数</span><br><span class="line">YGCT：年轻代垃圾回收所用的时间</span><br><span class="line">FGC：full gc 的次数</span><br><span class="line">FGCT：full gc 的总消耗时间</span><br><span class="line">GCT：从程序启动到程序统计时，gc 的总消耗时间</span><br></pre></td></tr></table></figure></p>
+<p><strong>jstat -gccapacity</strong>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">NGCMN：年轻代（young）的初始化内存容量</span><br><span class="line">NGCMX：年轻代（young）的最大内存容量</span><br><span class="line">NGC：年轻代（young）当前的容量</span><br><span class="line">S0C：当前 survivor 0 的容量</span><br><span class="line">S1C：当前 survivo 1 的容量</span><br><span class="line">EC：eden 的容量</span><br><span class="line">OGCMN：老年代（old）的最小容量</span><br><span class="line">OGCMX ：老年代（old）的最大容量</span><br><span class="line">OGC ：老年代（old）当前的容量</span><br><span class="line">OC：OGC=sum(all OC),hotspot中老年代空间个数为1个，年轻代为3个（eden，s0，s1），因此OGC==OC</span><br><span class="line">MCMN：元数据（Metaspace）区的最小容量</span><br><span class="line">MCMX： 元数据（Metaspace）区的最大容量</span><br><span class="line">MC：元数据（Metaspace）区当前的容量</span><br><span class="line">CCSMN：压缩类空间的最小容量</span><br><span class="line">CCSMX：压缩类空间的最大容量</span><br><span class="line">CCSC：压缩类空间的当前容量</span><br><span class="line">YGC：年轻代 gc 次数</span><br><span class="line">FGC：full gc 次数</span><br></pre></td></tr></table></figure></p>
+<p><strong>jstat -gcutil</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">S0：survivo 1 当前所用的比例</span><br><span class="line">S1： survivor 2 当前所用的比例</span><br><span class="line">E：eden 区所使用的比例</span><br><span class="line">O：老年代（old 区）所使用的比例</span><br><span class="line">M：元数据（Metaspace）区 所使用的比例</span><br><span class="line">CCS：压缩类使用的比例</span><br><span class="line">YGC：年轻代 gc 的次数</span><br><span class="line">YGCT：年轻代 gc 消耗的时间</span><br><span class="line">FGC：full gc的次数</span><br><span class="line">FGCT：full gc消耗的时间</span><br><span class="line">GCT：gc 消耗的总时间</span><br></pre></td></tr></table></figure></p>
+<p><strong>jstat -gccause</strong>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">与gcutil相比多了两列，上一次gc原因和当前gc原因。</span><br><span class="line">LGCC：Last Garbage Collection Cause.上一次gc原因</span><br><span class="line">GCC：Current Garbage Collection Cause.当前gc原因</span><br></pre></td></tr></table></figure></p>
+<h4 id="gc问题"><a href="#gc问题" class="headerlink" title="gc问题"></a>gc问题</h4><ul>
+<li><p>full gc频繁</p>
+</li>
+<li><p>full gc时间过久</p>
+</li>
+<li><p>young gc时间太久</p>
+</li>
+<li><p>young gc频繁</p>
+</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 学习 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[linux内核一些参数研究]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/linux%E5%86%85%E6%A0%B8%E4%B8%80%E4%BA%9B%E5%8F%82%E6%95%B0%E7%A0%94%E7%A9%B6/</url>
+      <content type="html"><![CDATA[<h1 id="linux内核中的参数："><a href="#linux内核中的参数：" class="headerlink" title="linux内核中的参数："></a>linux内核中的参数：</h1><ul>
+<li><strong>tcp_syncookies</strong><br>用于防止syn攻击。<strong>要慎用此参数</strong>，因为这与tcp协议的其他部分冲突。<blockquote>
+<p>SYN攻击：正常情况下，服务器收到客户端的连接SYN包后会将客户端加入半连接队列（SYN队列，这个队列长度有限，由==tcp_max_syn_backlog==参数控制）并回复一个ack包并等待客户端的确认，且超时会进行重试。重试次数由参数<code>tcp_synack_retries</code>==指定,重试间隔时间依次为1,2,4,8,16s,加上最后一次重试后等待32s，因此需要总共等待63s。<br>利用这种机制，攻击者向服务器发送大量SYN包，然后立即断开。会导致服务器的SYN队列长时间溢出，无法接受新的正常的连接。</p>
+</blockquote>
+</li>
+</ul>
+<p>==tcp_syncookies==设置为1后，当syn队列溢出后，服务器端将不再使用syn队列，对于新来的syn包服务器端TCP会利用源端地址、端口号和时间戳生成一个序号（也叫cookie）并返回给客户端（不再将其放入syn队列并分配内存），正常客户端会给出正确的响应，服务器端收到响应后直接建立连接（即使客户端不再SYN队列中），进入established状态。非正常连接不会给出正确响应同时不再被加入SYN队列也不会建立连接。</p>
+<p>虽然tcp<em>syncookies可以一定程度上使得在遭受DDos攻击时依然可以对外响应请求。<strong>但是正常情况下并不应该依赖此参数</strong>。因为在正常情况下，如果打开此参数会发哦之服务器真正过载时无法看到正确的错误日志。并且此参数使得TCP协议改变（妥协版TCP），</em><strong>TCP滑动窗口机制失效（有待验证）</strong>_</p>
+<p>正常情况下，对于并发量过高的问题，应该依赖以下三个参数解决：</p>
+<blockquote>
+<p>tcp_max_syn_backlog<br><br>tcp_synack_retries<br><br>tcp_abort_on_overflow </p>
+</blockquote>
+<a id="more"></a>
+<ul>
+<li><strong>tcp_synack_retries</strong><br>指服务器端TCP接受到客户端SYN包并返回ack+SYN后超时重试的次数。</li>
+<li><strong>tcp_syn_retries</strong><br>主动发送TCP连接的一方重试发送SYN的次数</li>
+<li><p>__tcp_max_syn_backlog<br>半连接队列最大长度，并发量过高时可适当增加此值。</p>
+</li>
+<li><p><strong>somaxconn</strong><br>established队列长度（完成三次握手），可以由listen函数中的backlog参数指定，但必须小于配置文件中somaxconn的值。</p>
+</li>
+<li><strong>tcp_abort_on_overflow</strong><br>设置服务器过载无法接受新的连接时直接返回RST包给客户端。默认不启用，<strong><em>慎用此参数</em></strong></li>
+<li><strong>tcp_tw_reuse</strong><br>time<em>wait端口重用,</em><strong>慎用</strong>_。NAT环境下会导致tcp连接建立错误，<strong>仅适用于客户端，对作为服务器端的机器无用</strong>。<br>使用要求客户端和服务器端都必须开启tcp_timestamps选项。内核依靠tcp_timestamps这个参数判断是旧的连接还是新的连接。旧连接直接丢弃，新连接复用端口号。</li>
+<li><strong>tcp_tw_recycle</strong><br>time<em>wait端口快速回收,</em><strong>慎用</strong>_。NAT环境下会导致tcp连接建立错误。打开此选项后，time_wait状态的端口会被快速回收，然后接收新的连接。linux内核通过timestamps防止旧的数据发送到新的连接上。这会导致NAT环境下客户端建立连接失败。原因：NAT下的多个客户端请求服务器时，源端地址相同，当第一个客户端建立短连接然后立马释放进入time_wait状态然后被回收后，另一个客户端再次以相同的端口号连接时，服务器端比较时间戳就认为是一个旧的数据，直接丢失，造成新的合法的连接失败。</li>
+<li><strong>tcp_timestamps</strong><br>tcp_tw_reuse和tcp_tw_recycle都需要同时设置此参数</li>
+<li><strong>tcp_max_tw_buckets</strong><br>设置time_wait状态连接的数量。这个参数只是为了防止简单的ddos攻击。默认值为180000，平时不要人为降低。当受到ddos攻击是，降低这个值可以快速清除time_wait状态的连接。</li>
+<li><p><strong>msl</strong>：<br>最大报文生存时间</p>
+<blockquote>
+<p>30s or 1min or 2min,通常为2分钟</p>
+</blockquote>
+</li>
+<li><p><strong>ip_local_port_range</strong><br>客户单允许使用的端口范围</p>
+</li>
+</ul>
+<h3 id="time-wait"><a href="#time-wait" class="headerlink" title="time_wait"></a>time_wait</h3><p>time_wait状态的tcp仍然占用端口号，因此如果time_wait状态的socket连接过多过导致系统剩余端口号不足，从而无法接受新的连接。</p>
+<p>主动关闭的一方才会进入time_wait状态，在传统c/s架构的系统中，通常是c端主动关闭连接；在http和ftp服务器上，通常是server主动关闭连接。</p>
+<h3 id="nf-conntrack-max"><a href="#nf-conntrack-max" class="headerlink" title="nf_conntrack_max"></a>nf_conntrack_max</h3><p>nf_conntrack是一个内核模块，用于跟踪一个连接的状态。这个连接状态可供其他模块使用，例如iptables的nat和state模块。（state模块用于定义防火墙规则，使用的连接的状态就是由nf_conntrack模块提供）。nf_conntrack_max记录了可以跟踪的最大连接个数，centos默认值为65536。如果iptable的防火墙规则太多，而服务器的连接数又非常多，容易出现如下错误：<br><code>kernel nf_conntrack table full dropping packet</code><br>解决办法是增大nf_conntrack_max的值（治标），如果无法解决，需要修改防火墙规则或者关闭iptables（治本）或者直接移除nf_conntrack模块。</p>
+<p>查看当前最大值：<br><code>cat /proc/sys/net/netfilter/nf_conntrack_max</code><br>或者<br><code>sysctl -a|grep nf_conntrack_max</code></p>
+<p>查看当前值：<br><code>cat /proc/sys/net/netfilter/nf_conntrack_count</code></p>
+<p>暂时修改：<br><code>sysctl -w nf_conntrack_max=6553600</code></p>
+<p>若需要永久更改（防止重启网卡或者系统失效）：<br>需要将设置写入/etc/sysctl.conf文件<br>执行<code>sysctl -p</code>会立即将配置文件/etc/sysctl.conf中的参数生效。</p>
+<h3 id="tcp-max-orphans"><a href="#tcp-max-orphans" class="headerlink" title="tcp_max_orphans"></a>tcp_max_orphans</h3><h3 id="tcp-RST"><a href="#tcp-RST" class="headerlink" title="tcp RST"></a>tcp RST</h3><h3 id="vm-dirty-ratio-hugepage"><a href="#vm-dirty-ratio-hugepage" class="headerlink" title="vm.dirty_ratio/hugepage/"></a>vm.dirty_ratio/hugepage/</h3><p>linux默认使用当前可用内存的40%作为文件系统的缓存，当文件缓存超过</p>
+<h3 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a>SO_REUSEADDR</h3><p>这个参数作用：<br>1）如果服务器端使用端口号8888开启一个server socket，然后由于某种原因服务端重启服务。如果不设置此参数，由于旧的socket处于timewait状态（通常持续2分钟）此时端口号8888被占用，服务将重启失败。因此需要设置SO_REUSEADDR参数，保证可以快速重用处于timewait状态的socket端口。</p>
+<p>2）若不设置此参数<br>如果使用如下方式绑定一个端口时：<br><code>0.0.0.0:port</code><br>将不再可以使用其他的ip绑定相同的port<br><code>10.103.16.30:port</code>将会失败</p>
+<p><a href="http://stackoverflow.com/questions/14388706/socket-options-so-reuseaddr-and-so-reuseport-how-do-they-differ-do-they-mean-t" target="_blank" rel="noopener">参考网址</a></p>
+<p><img src="/images/1484299490829.jpg" alt="enter description here" title="1484299490829.jpg"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> tcp，linux </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[nginx max_fails及proxy_next_upstream研究]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/nginx%20max_fails%E5%8F%8Aproxy_next_upstream%E7%A0%94%E7%A9%B6/</url>
+      <content type="html"><![CDATA[<p>测试nginx如何根据max_fails和proxy_next_upstream相关配置进行后端server的选择</p>
+<a id="more"></a>
+<p>一、测试环境<br>nginx配置文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">user  worker;</span><br><span class="line">worker_processes  1;</span><br><span class="line">pid        logs/nginx.pid;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    log_format test &apos;&quot;$remote_addr|$upstream_addr&quot; &apos;</span><br><span class="line">                     &apos;[$time_local] &apos;</span><br><span class="line">                     &apos;&quot;$request&quot; $status $body_bytes_sent &apos;</span><br><span class="line">                     &apos;&quot;$cookie_jsessionid&quot; &quot;$http_referer&quot; &quot;$http_user_agent&quot;&apos;;</span><br><span class="line">    access_log  logs/access.log  main;</span><br><span class="line"></span><br><span class="line">    sendfile        on;</span><br><span class="line">    #tcp_nopush     on;</span><br><span class="line"></span><br><span class="line">    #keepalive_timeout  0;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line"></span><br><span class="line">    #gzip  on;</span><br><span class="line">    upstream backend&#123;</span><br><span class="line">        server 10.103.16.30:23456 weight=1 max_fails=3 fail_timeout=30;</span><br><span class="line">        server 10.103.16.28:23456 weight=1 max_fails=3 fail_timeout=30;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    server&#123;</span><br><span class="line">        listen 22222;</span><br><span class="line">        access_log logs/test.log test;</span><br><span class="line">        error_log logs/test.err;</span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_set_header Host    $host;</span><br><span class="line">            proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">            proxy_pass http://backend;</span><br><span class="line">            proxy_next_upstream     error timeout invalid_header http_500,http_404;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>nginx所在机器：10.103.16.30<br>后端服务器列表：<br>10.103.16.28<br>10.103.16.30<br>两个机器的weight一样，正常情况下nginx会交替访问两者。<br>如下图所示：<br><img src="/images/1486972435415.jpg" alt="enter description here" title="1486972435415.jpg"><br>proxy_next_upstream中配置了http_500和http_404</p>
+<p>二、测试过程<br>1、配置proxy_next_upstream,加上http_500,http_404参数<br>a、5xx错误测试<br>10.103.16.30返回500，10.103.16.28返回200<br>nginx日志结果如下：<br><img src="/images/1486972455480.jpg" alt="enter description here" title="1486972455480.jpg"><br>实验结果说明：<br>客户端访问16.30失败，返回500错误，失败3次后，nginx不再将请求转发给16.30机器。fail_timeout（30s）时间过后，nginx会再次尝试访问16.30机器，同样得到500错误，之后不再访问16.30机器。如此循环下去。</p>
+<p>后端10.103.16.30 http server显示的日志同样可以说明16.30失败3次后不再被访问，30s之后再次被访问一次</p>
+<p><img src="/images/1486972469802.jpg" alt="enter description here" title="1486972469802.jpg"><br>b、4xx错误测试<br>16.30返回404，16.28返回200<br><img src="/images/1486972478695.jpg" alt="enter description here" title="1486972478695.jpg"><br>结果说明：<br>nginx会交替访问16.28和16.30两个机器，即使16.30返回404错误。</p>
+<p>2、不配置proxy_next_upstream：<br>a：5xx错误<br>16.30返回500，16.28返回200<br><img src="/images/1486972495982.jpg" alt="enter description here" title="1486972495982.jpg"><br>结果说明：<br>nginx会交替访问16.28和16.30两个机器，即使16.30返回500错误。</p>
+<p>b、4xx测试<br>16.30返回404，16.28返回200<br><img src="/images/1486972504572.jpg" alt="enter description here" title="1486972504572.jpg"><br>结果说明：<br>nginx会交替访问16.28和16.30两个机器，即使16.30返回404错误。</p>
+<p><strong>结论</strong>：<br>max_fails:<br>当客户端访问后端某服务器，”失败的访问”次数达到max_fails时，nginx在一定时间内（这个时间由fail_timeout指定，默认为10s）不会将请求转发给此机器。<br>这个”失败的访问”的定义包括以下几个方面：<br>1.error, timeout and invalid_header这三种错误都算作”失败的访问”</p>
+<ul>
+<li>error:     和后端服务器建立连接时，或者向后端服务器发送请求时，或者从后端服务器接收响应头时，出现错误</li>
+<li>timeout:   和后端服务器建立连接时，或者向后端服务器发送请求时，或者从后端服务器接收响应头时，出现超时</li>
+<li>invalid_header:后端服务器返回空响应或者非法响应头<br>2.由proxy_next_upstream指令所定义的错误，包括：http_500 | http_502 | http_503 |http_504 | http_403 | http_404<br>其中，http_5xx等同于http 5xx错误返回码,http_4xx等同于http 4xx错误返回码。<br>1）若在proxy_next_upstream中配置了http_5xx参数，客户端访问后端服务器返回的5xx错误都属于”失败的访问”,达到max_fails定义的次数后，nginx在fail_timeout定义的时间周期内将停止转发请求给此服务器，过了这个时间会重新尝试访问一次，若失败则重复之前的步骤，停止转发请求给此机器。<br>2）若proxy_next_upstream中没有配置http_5xx参数，客户端访问后端服务器返回的5xx错误将被忽略，不属于”失败的访问”。<br>3）无论proxy_next_upstream中是否配置了http_4xx参数，客户端访问后端服务器返回的4xx错误都不属于”失败的访问”</li>
+</ul>
+<p>官方文档解释：</p>
+<blockquote>
+<p>max_fails=number<br>sets the number of unsuccessful attempts to communicate with the server that should happen in the duration set by the fail_timeout parameter to consider the server unavailable for a duration also set by the fail_timeout parameter. By default, the number of unsuccessful attempts is set to 1. The zero value disables the accounting of attempts. What is considered an unsuccessful attempt is defined by the proxy_next_upstream, fastcgi_next_upstream, uwsgi_next_upstream,scgi_next_upstream, and memcached_next_upstream directives.</p>
+<p>fail_timeout=time<br>sets the time during which the specified number of unsuccessful attempts to communicate with the server should happen to consider the server unavailable;<br>and the period of time the server will be considered unavailable.<br>By default, the parameter is set to 10 seconds.</p>
+<p>proxy_next_upstream<br>The directive also defines what is considered an unsuccessful attempt of communication with a server. The cases of error, timeout and invalid_header are always considered unsuccessful attempts, even if they are not specified in the directive. The cases of http_500, http_502, http_503 and http_504are considered unsuccessful attempts only if they are specified in the directive. The cases of http_403and http_404 are never considered unsuccessful attempts.</p>
+</blockquote>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> nginx </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[opentsdb、hbase、hdfs集群搭建]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/opentsdb-hbase-hdfs%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</url>
+      <content type="html"><![CDATA[<p>HBase通过访问Zookeeper来获取-ROOT-表所在地址，通过-ROOT-表得到相应.META.表信息，从而获取数据存储的region位置</p>
+<h3 id="hadoop搭建："><a href="#hadoop搭建：" class="headerlink" title="hadoop搭建："></a>hadoop搭建：</h3><p>参考网址：<a href="http://www.alexjf.net/blog/distributed-systems/hadoop-yarn-installation-definitive-guide/#single-node-installation" target="_blank" rel="noopener">http://www.alexjf.net/blog/distributed-systems/hadoop-yarn-installation-definitive-guide/#single-node-installation</a></p>
+<h4 id="单节点搭建"><a href="#单节点搭建" class="headerlink" title="单节点搭建"></a>单节点搭建</h4><ol>
+<li>下载hadoop压缩包，hadoop-2.5.2.tar.gz并解压.进入解压目录，修改jdk路径，修改文件etc/hadoop/hadoop-env.sh<br><code>export JAVA_HOME=/usr/local/jdk/</code></li>
+</ol>
+<p>2.修改bashrc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">export HADOOP_PREFIX=&quot;/home/worker/hadoop-2.5.2&quot;</span><br><span class="line">export HADOOP_HOME=$HADOOP_PREFIX</span><br><span class="line">export HADOOP_COMMON_HOME=$HADOOP_PREFIX</span><br><span class="line">export HADOOP_CONF_DIR=$HADOOP_PREFIX/etc/hadoop</span><br><span class="line">export HADOOP_HDFS_HOME=$HADOOP_PREFIX</span><br><span class="line">export HADOOP_MAPRED_HOME=$HADOOP_PREFIX</span><br><span class="line">export HADOOP_YARN_HOME=$HADOOP_PREFIX</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>3.配置hdfs<br>修改<code>$HADOOP_PREFIX/etc/hadoop/hdfs-site.xml</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;file:///home/alex/Programs/hadoop-2.2.0/hdfs/datanode&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Comma separated list of paths on the local filesystem of a DataNode where it should store its blocks.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;file:///home/alex/Programs/hadoop-2.2.0/hdfs/namenode&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Path on the local filesystem where the NameNode stores the namespace and transaction logs persistently.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>修改<code>$HADOOP_PREFIX/etc/hadoop/core-site.xml</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;hdfs://localhost/&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;NameNode URI&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>4.配置yarn<br>修改<code>$HADOOP_PREFIX/etc/hadoop/yarn-site.xml.</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.minimum-allocation-mb&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;128&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Minimum limit of memory to allocate to each container request at the Resource Manager.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.maximum-allocation-mb&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;2048&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Maximum limit of memory to allocate to each container request at the Resource Manager.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.minimum-allocation-vcores&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;1&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;The minimum allocation for every container request at the RM, in terms of virtual CPU cores. Requests lower than this won&apos;t take effect, and the specified value will get allocated the minimum.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.maximum-allocation-vcores&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;2&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;The maximum allocation for every container request at the RM, in terms of virtual CPU cores. Requests higher than this won&apos;t take effect, and will get capped to this value.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.nodemanager.resource.memory-mb&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;4096&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Physical memory, in MB, to be made available to running containers&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.nodemanager.resource.cpu-vcores&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;4&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Number of CPU cores that can be allocated for containers.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>5.启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">## Start HDFS daemons</span><br><span class="line"># Format the namenode directory (DO THIS ONLY ONCE, THE FIRST TIME)</span><br><span class="line">$HADOOP_PREFIX/bin/hdfs namenode -format</span><br><span class="line"># Start the namenode daemon</span><br><span class="line">$HADOOP_PREFIX/sbin/hadoop-daemon.sh start namenode</span><br><span class="line"># Start the datanode daemon</span><br><span class="line">$HADOOP_PREFIX/sbin/hadoop-daemon.sh start datanode</span><br><span class="line"></span><br><span class="line">## Start YARN daemons</span><br><span class="line"># Start the resourcemanager daemon</span><br><span class="line">$HADOOP_PREFIX/sbin/yarn-daemon.sh start resourcemanager</span><br><span class="line"># Start the nodemanager daemon</span><br><span class="line">$HADOOP_PREFIX/sbin/yarn-daemon.sh start nodemanager</span><br></pre></td></tr></table></figure></p>
+<h4 id="集群安装"><a href="#集群安装" class="headerlink" title="集群安装"></a>集群安装</h4><p>三台机器，运行一个namenode实例、一个resourcemanager实例，三个机器都运行datanode和nodemanager<br>1.接上一步操作，直接在单节点机器上操作，修改配置文件<br>修改<code>$HADOOP_PREFIX/etc/hadoop/core-site.xml</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;hdfs://namenode.alexjf.net/&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;NameNode URI&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>修改<code>yarn-site.xml</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.resourcemanager.hostname&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;resourcemanager.alexjf.net&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;The hostname of the RM.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>2.将整个hadoop文件夹拷贝到另外两个机器上<br><strong>注意删除hdfs目录下datanode和namenode目录,否则会出现总有几个datanode无法起来的情况</strong></p>
+<p>3.启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">## Start HDFS daemons</span><br><span class="line"># Format the namenode directory (DO THIS ONLY ONCE, THE FIRST TIME)</span><br><span class="line"># ONLY ON THE NAMENODE NODE</span><br><span class="line">$HADOOP_PREFIX/bin/hdfs namenode -format</span><br><span class="line"># Start the namenode daemon</span><br><span class="line"># ONLY ON THE NAMENODE NODE</span><br><span class="line">$HADOOP_PREFIX/sbin/hadoop-daemon.sh start namenode</span><br><span class="line"># Start the datanode daemon</span><br><span class="line"># ON ALL SLAVES</span><br><span class="line">$HADOOP_PREFIX/sbin/hadoop-daemon.sh start datanode</span><br><span class="line"></span><br><span class="line">## Start YARN daemons</span><br><span class="line"># Start the resourcemanager daemon</span><br><span class="line"># ONLY ON THE RESOURCEMANAGER NODE</span><br><span class="line">$HADOOP_PREFIX/sbin/yarn-daemon.sh start resourcemanager</span><br><span class="line"># Start the nodemanager daemon</span><br><span class="line"># ON ALL SLAVES</span><br><span class="line">$HADOOP_PREFIX/sbin/yarn-daemon.sh start nodemanager</span><br></pre></td></tr></table></figure></p>
+<h3 id="hbase集群搭建"><a href="#hbase集群搭建" class="headerlink" title="hbase集群搭建"></a>hbase集群搭建</h3><p>参考网址：<a href="https://hbase.apache.org/book.html#quickstart" target="_blank" rel="noopener">https://hbase.apache.org/book.html#quickstart</a></p>
+<p>准备：</p>
+<p>a,b,c三台机器都下载hbase的bin包(hbase-1.2.4-bin.tar.gz)，并解压<br>进入解压后的目录，修改 <code>conf/hbase-env.sh</code>，配置java_home</p>
+<p>节点安排：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a:master,zookeeper</span><br><span class="line">b:master(backup),zookeeper,regionserver</span><br><span class="line">c:zookeeper,regionserver</span><br></pre></td></tr></table></figure></p>
+<p>1.配置a节点ssh无密码登陆a,b,c。<br><strong>注意,也要配置a机器本身</strong><br>由于b节点作为备份的master，同样设置b节点ssh无密码登陆a,b,c</p>
+<p><strong>注意删除know_hosts文件中的相关记录，否则可能出现hostkey验证失败错误</strong></p>
+<p>2.修改<code>conf/regionservers</code><br>删除localhost，添加b、和c的hostname或者ip<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-29-sh-100-i05 hbase-1.2.4]# cat conf/regionservers </span><br><span class="line">10.103.16.28</span><br><span class="line">10.101.1.229</span><br></pre></td></tr></table></figure></p>
+<p>3.新增文件conf/backup-masters:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-29-sh-100-i05 hbase-1.2.4]# cat conf/backup-masters </span><br><span class="line">103-16-28-sh-100-i05.yidian.com</span><br></pre></td></tr></table></figure></p>
+<p>4.配置zookeeper<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;node-a.example.com,node-b.example.com,node-c.example.com&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.zookeeper.property.dataDir&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;/usr/local/zookeeper&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure></p>
+<p>5.配置b和c机器<br>将a机器的配置文件目录conf文件夹拷贝到b和c对应的位置</p>
+<p>6.在a机器启动所有实例<br>确认所有机器都没有hmaster、HRegionServer, and HQuorumPeer实例在运行，执行<code>bin/start-hbase.sh</code></p>
+<p>此时可能需要输入yes，同时<strong>注意删除know_hosts文件中的相关记录，否则可能出现hostkey验证失败错误</strong></p>
+<p>若启动成功，在三台机器都使用jps命令将看到各个实例都已启动。</p>
+<p>7.webui查看<br>master机器上登陆ip:16010可看到web 界面</p>
+<h3 id="opentsdb安装"><a href="#opentsdb安装" class="headerlink" title="opentsdb安装"></a>opentsdb安装</h3><p>1.依赖安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gnuplot</span><br></pre></td></tr></table></figure></p>
+<p>2.下载rpm包，安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -iv opentsdb-2.2.1.rpm</span><br></pre></td></tr></table></figure></p>
+<p>安装后程序目录结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/etc/opentsdb - Configuration files</span><br><span class="line">/tmp/opentsdb - Temporary cache files</span><br><span class="line">/usr/share/opentsdb - Application files</span><br><span class="line">/usr/share/opentsdb/bin - The &quot;tsdb&quot; startup script that launches a TSD or commandline tools</span><br><span class="line">/usr/share/opentsdb/lib - Java JAR library files</span><br><span class="line">/usr/share/opentsdb/plugins - Location for plugin files and dependencies</span><br><span class="line">/usr/share/opentsdb/static - Static files for the GUI</span><br><span class="line">/usr/share/opentsdb/tools - Scripts and other tools</span><br><span class="line">/var/log/opentsdb - Logs</span><br></pre></td></tr></table></figure></p>
+<p>3.修改配置文件<code>/etc/opentsdb/opentsdb.conf</code><br>修改以下几项：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tsd.core.auto_create_metrics = true</span><br><span class="line">tsd.core.meta.enable_realtime_ts = true</span><br><span class="line">tsd.storage.hbase.zk_quorum = localhost(若hbase安装在本机可以不修改此项)</span><br></pre></td></tr></table></figure></p>
+<p>4.创建opentsdb表：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">env COMPRESSION=NONE HBASE_HOME=path/to/hbase-0.94.X /usr/share/opentsdb/tools/create_table.sh</span><br></pre></td></tr></table></figure></p>
+<p>5.启动tsd<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup /bin/tsdb tsd &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure></p>
+<p>日志会自动写入/var/log/opentsdb/opentsdb.log</p>
+<p>6.登陆http:127.0.0.1:4242查看界面</p>
+<h3 id="openfalcon配置修改"><a href="#openfalcon配置修改" class="headerlink" title="openfalcon配置修改"></a>openfalcon配置修改</h3><p>修改falcon-transfer配置文件，修改enable和address两厢，其余保持默认即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&quot;tsdb&quot;: &#123;</span><br><span class="line">        &quot;enabled&quot;: true,</span><br><span class="line">        &quot;batch&quot;: 200,</span><br><span class="line">        &quot;connTimeout&quot;: 1000,</span><br><span class="line">        &quot;callTimeout&quot;: 5000,</span><br><span class="line">        &quot;maxConns&quot;: 32,</span><br><span class="line">        &quot;maxIdle&quot;: 32,</span><br><span class="line">        &quot;retry&quot;: 3,</span><br><span class="line">        &quot;address&quot;: &quot;10.103.16.29:4242&quot;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>重启transfer，之后数据便会存储到opentsdb中。<br>通过登陆opentsdb的web界面可以查看。</p>
+<h3 id="grafana配置"><a href="#grafana配置" class="headerlink" title="grafana配置"></a>grafana配置</h3><p>1.下载grafana的rpm包，安装,启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service grafana-server start</span><br></pre></td></tr></table></figure></p>
+<p>2.添加opentsdb源<br><img src="/images/1481795557150.jpg" alt="opentsdb数据源" title="1481795557150.jpg"></p>
+<p>3.添加监控趋势图：<br><img src="/images/1481795825889.jpg" alt="监控图" title="1481795825889.jpg"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> hdfs </tag>
+            
+            <tag> hbase </tag>
+            
+            <tag> opentsdb </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[opentsdb学习]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/opentsdb%E5%AD%A6%E4%B9%A0/</url>
+      <content type="html"><![CDATA[<h3 id="数据库设计"><a href="#数据库设计" class="headerlink" title="数据库设计"></a>数据库设计</h3><p>tsdb表，存放具体的时间序列数据<br><img src="/images/1480591907962.jpg" alt="tsdb表设计" title="1480591907962.jpg">    </p>
+<p>tsdb-uid表，存放metric、tagk、tagv与id之间的映射关系<br><img src="/images/1480591956082.jpg" alt="tsdb-uid" title="1480591956082.jpg"></p>
+<p><code>上面这两个图非常重要，必须看懂。</code><br><a id="more"></a></p>
+<h3 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h3><ul>
+<li><p>数据查询<br>查询数据时必须指定开始时间，若不指定结束时间，则默认查询到当前时间的数据</p>
+</li>
+<li><p>聚合和采样<br>聚合：将相同时间戳的多个时间序列值(metric)聚合(sum,avg,etc.)成一个值<br>采样：将一段时间同一个时间序列值(metric)计算(sum,avg,etc.)成一个值。<br>新数据的采样时间为当前时间mod采样周期,即<code>timestamp%interval</code></p>
+</li>
+<li><p>填充策略<br>聚合或采样时，对于丢失的数据opentsdb默认采用<code>线性插值法</code>填充丢失的数据，也可以配置其他的填充策略，例如0，null，nan</p>
+</li>
+<li><p>时间矫正<br>opentsdb不对数据进行时间矫正，时间可以精确到毫秒，因此数据上传的时间戳是多少就保存为多少。</p>
+</li>
+</ul>
+<blockquote>
+<p>从OpenTSDB的处理上我们可以总结出一点：在处理时间序列数据时，如果系统中存在“理想的”“天然的”起哈希作用的字段应该优先考虑其作为rowkey的起始组成部分，后接时间字段，但如果找不到这样的字段再设置人工的哈希字段</p>
+<h3 id="HBASE"><a href="#HBASE" class="headerlink" title="HBASE"></a>HBASE</h3><p><a href="https://www.mapr.com/blog/in-depth-look-hbase-architecture#.VdMxvWSqqko" target="_blank" rel="noopener">参考网址</a><br>HBASE的数据存储原则：<br>1） 需要一起访问的数据存储在一起。<br>    比如一个月内某个metric的监控数据，集中保存在hbase的内部。</p>
+</blockquote>
+<p>hbase meta表结构：<br><img src="/images/1485158795503.jpg" alt="HBASE meta table" title="1485158795503.jpg"></p>
+<h3 id="HDFS"><a href="#HDFS" class="headerlink" title="HDFS"></a>HDFS</h3><p>HDFS数据以块存储，默认块大小64MB</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> hbase </tag>
+            
+            <tag> opentsdb </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[php参数研究]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/php%E5%8F%82%E6%95%B0%E7%A0%94%E7%A9%B6/</url>
+      <content type="html"><![CDATA[<h3 id="部分参数解释"><a href="#部分参数解释" class="headerlink" title="部分参数解释"></a>部分参数解释</h3><ul>
+<li>memory_limit<br>限制单个脚本允许分配的最大内存。若整个进程占用的总内存超过这个限制时就会报如下错误：<blockquote>
+<p>“Fatal Error： Allowed memory size of xxxxxx bytes exhausted”</p>
+</blockquote>
+</li>
+</ul>
+<a id="more"></a>
+<h3 id="php-502原因"><a href="#php-502原因" class="headerlink" title="php 502原因"></a>php 502原因</h3><ol>
+<li>php进程数不够用<br><code>netstat -napo |grep &quot;php-fpm&quot; | wc -l</code>查看当前php-fpm进程数<br>max_children和max_request设置不合理导致进程数不够，无法处理请求就会返回502</li>
+<li>php执行时间太长而超时导致nginx超时返回502</li>
+<li>超过linux打开文件数限制<br>当linux打开文件数超过ulimit时，就会提示如下错误（socket也是文件，linux中一切皆是文件）：<blockquote>
+<p>Socket/File: Can’t open so many files</p>
+</blockquote>
+</li>
+</ol>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> php </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[rrdtool原理]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/rrdtool%E5%8E%9F%E7%90%86/</url>
+      <content type="html"><![CDATA[<p>RRD全称是Round Roubin Database，即环形数据库，他是一种循环使用存储空间的数据库，在创建的时候就一定定义好了大小（通过RRA），因此他所创建的数据库大小可控，不会线性增长。(一个rrd文件就是一个数据库文件)</p>
+<p>创建一个rrd文件时需要设定以下几个参数：<br>创建 RRD 基本语法</p>
+<blockquote>
+<p>rrdtool create filename<br>[–start|-b start-time]<br>[–step|-s step]<br>[DS:ds-name:DST:dst-arguments]<br>[RRA:CF:xff:step:rows]</p>
+</blockquote>
+<a id="more"></a>
+<p>其中：<br>–start指定存放数据的起始时间戳<br>–step设定数据存入的时间间隔<br>ds：数据源名称，是一个变量，通常设定为metric的名字<br>dst：数据源的类型，主要有以下几种：</p>
+<blockquote>
+<p>GAUGE：保持上传的原始值<br>COUNTER：只能递增的数值（例如汽车里程，网卡流量），保存时保存的是平均值即变化率，计算方法：(本次值-上次值)/step<br>DRIVE:和COUNTER类似，数据可以递增也可以递减<br>ABSOLUTE：假定上一次的值为0，然后求变化率。计算方法：(本次值-0)/step</p>
+</blockquote>
+<p>rra：归档模型，假如每秒上传一个值，每次上传的值都存储，一年后将有1<em>60秒</em>60分<em>24小时</em>365天个数值，这么多个数据点根本无法通过图像展示。因此需要利用rra进行数据归档。</p>
+<p>RRA:AVERAGE:0.5:2:8：表示保存平均值，有效因子为50%，即必须至少有一个周期的值是有效的才能计算得到最终的值，否则将归档为UNKNOWN。每2个周期保存一个值，一个保存8个值。</p>
+<p>创建rrd文件举例：</p>
+<blockquote>
+<p>rrdtool create test.rrd –start 920804400<br>DS:speed:COUNTER:600:U:U<br>RRA:AVERAGE:0.5:1:24<br>RRA:AVERAGE:0.5:6:10</p>
+</blockquote>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> rrdtool </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[python学习笔记]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+      <content type="html"><![CDATA[<h3 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h3><p>所有标准对象都可以进行bool判断，以下项的bool判断结果都为false：<br><code>None,false,值为0的数,0,所有的浮点数,空字符串&quot;&quot;,[],{},()</code></p>
+<p>python的文件名不能和导入的模块名字相同，否则会报如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: &apos;module&apos; object has no attribute &apos;xxxx&apos;</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<h3 id="内建函数"><a href="#内建函数" class="headerlink" title="内建函数"></a>内建函数</h3><ul>
+<li>type(obj):<br>返回一个对象的类型</li>
+<li>cmp(obj1,obj2):<br>比较两个对象的大小，返回值为：1、0、-1（默认调用对象的<strong>cmp()</strong>方法）</li>
+<li><p>str(obj)<br>返回对象的可读性较高的字符串值,更适合人阅读（用于print）</p>
+</li>
+<li><p>repr(obj)<br>返回对象的字符串值，符合解释器语法，可以使用evel方法返回原始对象</p>
+</li>
+<li><p>isinstance(obj1,(type1,type2,…))<br>判断一个对象是否是某种类型</p>
+</li>
+</ul>
+<h3 id="数字类型"><a href="#数字类型" class="headerlink" title="数字类型"></a>数字类型</h3><ul>
+<li><p>标准整型<br>类似于C语言中的32位和64位有符号整型。</p>
+</li>
+<li><p>长整形<br>python支持的长整形的长度不受机器位数的限制，只受虚拟内存的限制，因此python可以表示很大很大的数。只需要在数字后面加上L（大小写皆可）即可。支持十进制、八进制、十六进制。</p>
+</li>
+<li><p>双精度浮点数<br>类似于c语言中的double</p>
+</li>
+</ul>
+<h3 id="可变对象和不可变对象"><a href="#可变对象和不可变对象" class="headerlink" title="可变对象和不可变对象"></a>可变对象和不可变对象</h3><p>python中的不可变对象包括三类:数字、字符串和元组<br>可变对象有：列表，dict</p>
+<h3 id="深拷贝与浅拷贝"><a href="#深拷贝与浅拷贝" class="headerlink" title="深拷贝与浅拷贝"></a>深拷贝与浅拷贝</h3><p>浅拷贝会创建新对象，其内容是原对象的引用</p>
+<p>序列类型对象默认使用浅拷贝(对于不可见类型，使用深拷贝)，方法包括：完全切片（[:]），工厂函数（list，tuple，dict），copy模块的copy函数</p>
+<p>对于非容器类型，不存在浅拷贝的概念，产生的都是原对象的引用。如果元组变量值包含原子类型对象，即使采用了深拷贝，也只能得到浅拷贝</p>
+<p>浅拷贝只能做顶层复制，但是不能复制其嵌套的数据结构。例如，假设一个列表l包含了另外一个列表ll，则浅拷贝拷贝的是ll的引用,对ll的更改也会改变l。</p>
+<h3 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h3><p>dict的key不可更改，且必须是可hash的(所有不可变对象都是可hash的，少部分可变对象是可hash的，例如实现了<strong>hash()</strong>的自定义类)，数字、字符串都可以作为key，列表、字典不可以作为key。元组的所有元素都是数字或者字符串时才可以作为key。不可变集合可以作为key</p>
+<h3 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h3><p>集合对象是一组可hash的元素。<br>只能通过工厂方法set()或者frozenset()方法创建集合</p>
+<h3 id="条件与循环"><a href="#条件与循环" class="headerlink" title="条件与循环"></a>条件与循环</h3><p>python三元运算符：<br><code>min = x if x &gt; y else y</code><br>等价于：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">min = x</span><br><span class="line">if x &gt; y :</span><br><span class="line">	min = x</span><br><span class="line">else:</span><br><span class="line">	min = y</span><br></pre></td></tr></table></figure></p>
+<p>while/for else:<br>python中while或者for循环语句后面可以跟上一个else语句，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while condition1:</span><br><span class="line">	func1()</span><br><span class="line">else:</span><br><span class="line">	func2()</span><br></pre></td></tr></table></figure></p>
+<p>如果while语句中没有return、break语句，则while else这种语句和if else没有区别。while else语句的作用是在while中带有break，return语句时，else不会执行。只有在while正常结束才会执行else语句。举例：<br>判断一串数字是否存在可以被2整除的数字：<br>方法1：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> i &lt;= <span class="number">5</span>:</span><br><span class="line">	<span class="keyword">if</span> i / <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"flag true"</span></span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"flag false"</span></span><br></pre></td></tr></table></figure></p>
+<p>如果不适用while else语句，需要这么写：<br>方法2<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">0</span></span><br><span class="line">flag = false</span><br><span class="line"><span class="keyword">while</span> i &lt;= <span class="number">5</span>:</span><br><span class="line">	<span class="keyword">if</span> i / <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">		flag = true</span><br><span class="line">		<span class="keyword">print</span> flag true<span class="string">"</span></span><br><span class="line"><span class="string">		break;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">if flag == True:</span></span><br><span class="line"><span class="string">	print "</span>flat true<span class="string">"</span></span><br></pre></td></tr></table></figure></p>
+<p>第一种语法更加符合python风格，更加简明。</p>
+<h3 id="列表解析"><a href="#列表解析" class="headerlink" title="列表解析"></a>列表解析</h3><p>1 简单形式<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[(x ** <span class="number">2</span>) <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">3</span>)]</span><br><span class="line"><span class="number">0</span>, <span class="number">1</span>,<span class="number">4</span>,<span class="number">9</span></span><br></pre></td></tr></table></figure></p>
+<p>2 带if语句的形式<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#取序列中的奇数</span></span><br><span class="line">seq = [<span class="number">7</span>,<span class="number">3</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">9</span>,<span class="number">4</span>]</span><br><span class="line">[x <span class="keyword">for</span> x <span class="keyword">in</span> seq <span class="keyword">if</span> x % <span class="number">2</span>]</span><br></pre></td></tr></table></figure></p>
+<p>3 连用两次for<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 3行5列的矩阵</span></span><br><span class="line">[(x+<span class="number">1</span>, y+<span class="number">1</span>) <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">3</span>) <span class="keyword">for</span> y <span class="keyword">in</span> range(<span class="number">6</span>)]</span><br></pre></td></tr></table></figure></p>
+<p>4 统计文件中非空白字符长度（单词数目长度相加）<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">'file.txt'</span>, <span class="string">'r'</span>)</span><br><span class="line">sum(len([word <span class="keyword">for</span> line <span class="keyword">in</span> f <span class="keyword">for</span> word <span class="keyword">in</span> line.split()]))</span><br><span class="line"><span class="comment"># 缺点是需要生成一个包长度为单词个数的列表，如果单词数目很多，则会很占用内存</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h3><p>相对于列表解析，生成器表达式更加高效，因为生成器表达式并不真正生成列表，而是采用延迟计算，返回一个表达式，每次返回计算的一个结果。</p>
+<p>两者的区别：</p>
+<ul>
+<li>列表解析 返回的是一个完整的列表，如果对一个包含100万个元素的序列使用列表解析式，将得到一个包含100万的元素的列表。</li>
+<li>生成器表达式，返回的是一个计算方法，每调用一次next方法才会返回一个值。占用很少的内内存</li>
+</ul>
+<p>生成器创建方法：<br>1）列表解析式方法<br>只需要将”[]”更改为”()”即可。例如：<br><code>（x *2 for x in range(5)）</code></p>
+<p>2)使用yield定义生成器<br>例如，返回斐波那契数列函数定义如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></span><br><span class="line">	a ,b = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span>(i &lt; n):</span><br><span class="line">		<span class="keyword">print</span> b</span><br><span class="line">		a, b = b, a+b	</span><br><span class="line">		i += <span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<p>对应的生成器定义为：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></span><br><span class="line">	a ,b = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span>(i &lt; n):</span><br><span class="line">		<span class="keyword">yield</span> b <span class="comment">#注意这里</span></span><br><span class="line">		a, b = b, a+b	</span><br><span class="line">		i += <span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<p>生成器的原理：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">生成器利用yield关键字，每次执行netxt（）函数时返回yield的值（可以把yeild当做return），与return不一样的地方是，之后生成器会被冻结，yield之后下一行要执行的的所有代码，所有的变量值都会保存起来，下次调用next（）时，从上次执行到的地方发继续执行。</span><br></pre></td></tr></table></figure></p>
+<p>列表生成器计算文件中非空白字符的长度：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">"file.txt"</span>, <span class="string">'r'</span>)</span><br><span class="line">sum(len(word) <span class="keyword">for</span> line <span class="keyword">in</span> f <span class="keyword">for</span> word <span class="keyword">in</span> line.split())</span><br></pre></td></tr></table></figure></p>
+<p>找到一个文件中长度最长的行的长度<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 普通方式</span></span><br><span class="line">f = open(<span class="string">'file.txt'</span>,<span class="string">'r'</span>)</span><br><span class="line">longest = <span class="number">0</span></span><br><span class="line">alllines = f.readlines()<span class="comment">#读取所有的行</span></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> alllines:</span><br><span class="line">	linelen = len(line)</span><br><span class="line">	<span class="keyword">if</span> linelen &gt; longest:</span><br><span class="line">		longest = linlen</span><br><span class="line"><span class="keyword">return</span> longest</span><br><span class="line"></span><br><span class="line"><span class="comment"># 列表解析方式</span></span><br><span class="line">f = open(<span class="string">'file.txt'</span>,<span class="string">'r'</span>)</span><br><span class="line">alllineLen = [len(line) <span class="keyword">for</span> line <span class="keyword">in</span> f]<span class="comment">#读取所有的行</span></span><br><span class="line">f.close()</span><br><span class="line"><span class="keyword">return</span> max(alllineLen)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 列表生成器方式</span></span><br><span class="line">f = open(<span class="string">'file.txt'</span>,<span class="string">'r'</span>)</span><br><span class="line">longest = max(len(line) <span class="keyword">for</span> line <span class="keyword">in</span> f)</span><br><span class="line">f.close()</span><br><span class="line"><span class="keyword">return</span> longest</span><br><span class="line"></span><br><span class="line"><span class="comment"># 最优版本</span></span><br><span class="line"><span class="keyword">return</span> max(len(x) <span class="keyword">for</span> x <span class="keyword">in</span> open(<span class="string">"file.txt"</span>))</span><br></pre></td></tr></table></figure></p>
+<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>不同平台换行符：<br>windows|unix|mac<br>-|-|-<br>\r\n | \n | \r</p>
+<p>为了支持不同平台的换行符，python打开文件时支持使用U模式，即通用换行符模式（只在r或者a模式时）<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">"file"</span>, <span class="string">"rU"</span>)</span><br><span class="line">f = open(<span class="string">"file"</span>, <span class="string">"aU"</span>)</span><br></pre></td></tr></table></figure></p>
+<p>打开文件方式介绍<br>方式|介绍<br>-|-<br>+|可读可写<br>r|只读，若文件不存在则引发异常<code>IOError: [Errno 2] No such file or directory</code><br>r+|读写，若文件不存在则引发异常<code>IOError: [Errno 2] No such file or directory</code><br>w|只写，若文件存在则清空，若文件不存在则创建该文件<br>w+|可读可写，若文件不存在则创建该文件<br>a|追加方式，不可读，若文件不存在则创建该文件</p>
+<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><p>with语句：<br>屏蔽了try exception，异常的捕获交由python解释器来做，程序员只需要关注功能的实现。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> open(<span class="string">"file.txt"</span>) <span class="keyword">as</span> f:</span><br><span class="line">	<span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">		<span class="keyword">pass</span></span><br></pre></td></tr></table></figure></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 学习 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> python </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[基础学习-ss命令]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0-ss%E5%91%BD%E4%BB%A4/</url>
+      <content type="html"><![CDATA[<h3 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h3><p>ss [option] [filter]<br><strong>option</strong>:    </p>
+<ul>
+<li>-V:显示当前ss版本</li>
+<li>-n:不解析服务名字(默认端口号可能会被解析为服务的名字）.例如不加n参数，80端口可能显示为http，22端口显示为ssh。</li>
+<li>-a 显示所有的连接</li>
+<li>-l 仅显示处于listen状态的socket</li>
+<li>-o 显示计时器信息，例如timer:(keepalive,24sec,0)</li>
+<li><p>-m 显示端口socket内存占用，</p>
+<blockquote>
+<p>r: represents the read (inbound) buffer<br>w represents the write (outbound) buffer<br>f represents the “forward allocated memory” (memory available to the socket)<br>t represents the transmit queue (stuff waiting to be sent or waiting on an ACK)</p>
+<a id="more"></a>
+</blockquote>
+</li>
+<li><p>-p:显示套接字进程信息，用户，程序等</p>
+</li>
+<li>-4：仅显示ipv4套接字</li>
+<li>-6：仅显示ipv6套接字</li>
+<li>-t：仅显示tcp套接字</li>
+<li>-u：仅显示udp套接字</li>
+<li>-w：仅显示原始套接字</li>
+<li>-d：仅显示dccp套接字</li>
+<li>-x：仅显示unix套接字</li>
+<li>-f：显示family套接字，支持：unix，inet,inet6,link,netlink</li>
+<li><p>ss state状态过滤</p>
+<blockquote>
+<p>ss -ta state established ‘( dport = :http or sport = :http )’ </p>
+</blockquote>
+</li>
+<li><p>ss src:过滤原地址，格式ip:port</p>
+</li>
+<li>ss dst:过滤目的地址</li>
+<li>ss sport：源端口过滤，sport = xx</li>
+<li>ss dport：目的端口过滤</li>
+</ul>
+<h3 id="orphans"><a href="#orphans" class="headerlink" title="orphans"></a>orphans</h3>]]></content>
+      
+        <categories>
+            
+            <category> 学习 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> linux </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[教程-利用aws ec2搭建shadowshocks服务]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/%E6%95%99%E7%A8%8B-%E5%88%A9%E7%94%A8aws%20ec2%E6%90%AD%E5%BB%BAshadowshocks%E6%9C%8D%E5%8A%A1/</url>
+      <content type="html"><![CDATA[<h3 id="1-申请一台aws-ec2服务器（可免费使用一年）"><a href="#1-申请一台aws-ec2服务器（可免费使用一年）" class="headerlink" title="1. 申请一台aws ec2服务器（可免费使用一年）"></a>1. 申请一台aws ec2服务器（可免费使用一年）</h3><p>注册完amazon账户后，1申请一台虚拟机并启动。详细过程参考网上教程。这里提别提醒一点网上没有提到的内容：需要打开两个端口，<br> 一个是用于远程ssh登录的22端口,另一个是shadowsocks server所使用的端口号，否则无法使用翻墙功能。如下图所示<br><img src="/images/1479619965462.jpg" alt="入站规则配置" title="1479619965462.jpg"></p>
+<p>另外还可以申请一个==弹性IP==，绑定到实例上（aws为避免IP滥用，如果不绑定将会收取一定费用），公有ip在每次重启实例后ip地址会改变，弹性ip的好处是只要绑定到实例上不释放，重启实例ip也不会改变</p>
+<h3 id="2-安装shaodowsocks服务端，编写如下配置文件"><a href="#2-安装shaodowsocks服务端，编写如下配置文件" class="headerlink" title="2. 安装shaodowsocks服务端，编写如下配置文件"></a>2. 安装shaodowsocks服务端，编写如下配置文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/shaodowsocks/config.json</span><br><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:&quot;0.0.0.0&quot;,</span><br><span class="line">    &quot;server_port&quot;:9999,</span><br><span class="line">    &quot;local_address&quot;:&quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;local_port&quot;:8888,</span><br><span class="line">    &quot;password&quot;:&quot;yourpassword&quot;,</span><br><span class="line">    &quot;timeout&quot;:600,</span><br><span class="line">    &quot;method&quot;:&quot;aes-256-cfb&quot;,</span><br><span class="line">    &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="3-启动shadowsocks服务器"><a href="#3-启动shadowsocks服务器" class="headerlink" title="3.启动shadowsocks服务器"></a>3.启动shadowsocks服务器</h3><h3 id="4-配置客户端访问"><a href="#4-配置客户端访问" class="headerlink" title="4.配置客户端访问"></a>4.配置客户端访问</h3>]]></content>
+      
+        <categories>
+            
+            <category> 教程 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> shadowsocks </tag>
+            
+            <tag> ec2 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[docker mtu介绍]]></title>
+      <url>https://aprilnops.github.io/2017/01/26/docker%20mtu%E4%BB%8B%E7%BB%8D/</url>
+      <content type="html"><![CDATA[<p><strong>本文所述内容是针对旧版本docker（doker 1.10版本以下不包括1.10版本）</strong></p>
+<h3 id="docker-mtu"><a href="#docker-mtu" class="headerlink" title="docker mtu"></a>docker mtu</h3><blockquote>
+<p>By default, the Docker server creates and configures the host system’s docker0 interface as an Ethernet bridge inside the Linux kernel that can pass packets back and forth between other physical or virtual network interfaces so that they behave as a single Ethernet network.</p>
+</blockquote>
+<p>==启动docker时==,docker服务器会在内核中创建一个docker0网卡接口作为网桥，通过此网桥，虚拟网卡和物理网卡之间可以互相传输数据包。</p>
+<blockquote>
+<p>Docker configures docker0 with an IP address, netmask and IP allocation range. The host machine can both receive and send packets to containers connected to the bridge, and gives it an MTU – the maximum transmission unit or largest packet length that the interface will allow – of either 1,500 bytes or else a more specific value copied from the Docker host’s interface that supports its default route. These options are configurable at server startup:</p>
+</blockquote>
+<p>具体的，docker会为docker0配置一个IP地址、子网掩码和ip地址池，物理机可以与连接到docker0的任何容器传输数据。同时设置docker0的mtu值为1500或者宿主机默认网卡的mtu值（==docker1.10以下版本==）。这些工作在docker启动时进行。</p>
+<blockquote>
+<p>Once you have one or more containers up and running, you can confirm that Docker has properly connected them to the docker0 bridge by running the brctl command on the host machine and looking at the interfaces column of the output. Here is a host with two different containers connected:</p>
+</blockquote>
+<p>一旦启动一个容器，docker便会将这个容器连接到docker0上。可通过<code>sudo brctl show</code>命令查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo brctl show</span><br><span class="line">bridge name     bridge id               STP enabled     interfaces</span><br><span class="line">docker0         8000.3a1d7362b4ee       no              veth65f9</span><br><span class="line">                                                        vethdda6</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<blockquote>
+<p>Finally, the docker0 Ethernet bridge settings are used every time you create a new container. Docker selects a free IP address from the range available on the bridge each time you docker run a new container, and configures the container’s eth0 interface with that IP address and the bridge’s netmask. The Docker host’s own IP address on the bridge is used as the default gateway by which each container reaches the rest of the Internet.</p>
+</blockquote>
+<p>最后，每当新建一个容器时，docker会使用docker0的配置新建容器的eth0网卡。包括从ip地址池选择一个ip地址、配置eth0，物理机的ip地址将作为网关，供容器访问网络。<br><a href="https://github.com/docker/docker/blob/43077f9b6406e3d5e401a361b4c9742c00be528b/docs/userguide/networking/default_network/custom-docker0.md" target="_blank" rel="noopener">参考网址</a></p>
+<p>总结：docker会使用当前host主机的默认网卡的mtu值作为容器的mtu值（其次使用1500），在==运行一个新的容器或者重启容器时==docker server会自动修改docker0的mtu值为物理机的mtu值。具体看下文测试</p>
+<p>docker1.10之后的版本改掉了这个设置，原因是：</p>
+<blockquote>
+<ul>
+<li>本机网卡mtu可能被随时更改，</li>
+<li>本机可能有多个默认route，</li>
+<li>docker可能不走默认route，</li>
+<li>kernel的path mtu discovery机制可以解决这个问题。</li>
+</ul>
+</blockquote>
+<p>==<strong>docker1.10版本后采用的方案是仅使用默认值1500，不再根据主机默认网卡mtu设定dockermtu，由内核的PMTUD机制解决mtu值问题</strong>==<br><a href="https://github.com/docker/docker/pull/18108" target="_blank" rel="noopener">参考网址</a></p>
+<p>最新版本docker mtu说明如下：</p>
+<blockquote>
+<p>Docker configures docker0 with an IP address, netmask and IP allocation range. The host machine can both receive and send packets to containers connected to the bridge, and gives it an MTU – the maximum transmission unit or largest packet length that the interface will allow – ==of 1,500bytes==. These options are configurable at server startup:</p>
+</blockquote>
+<p><a href="https://docs.docker.com/engine/userguide/networking/default_network/custom-docker0/" target="_blank" rel="noopener">详见官方文档</a></p>
+<h3 id="docker-mtu值测试"><a href="#docker-mtu值测试" class="headerlink" title="docker mtu值测试"></a>docker mtu值测试</h3><h4 id="环境：centos7-docker-1-8-2"><a href="#环境：centos7-docker-1-8-2" class="headerlink" title="环境：centos7 docker 1.8.2"></a>环境：centos7 docker 1.8.2</h4><p>当前mtu值 主机eth0：1500，docker0：1500：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-30-sh-100-i05 ~]# ifconfig</span><br><span class="line">docker0: flags=4099  mtu 1500</span><br><span class="line">        inet 172.17.42.1  netmask 255.255.0.0  broadcast 0.0.0.0</span><br><span class="line">        ether 02:42:de:68:5d:70  txqueuelen 0  (Ethernet)</span><br><span class="line">        RX packets 14195  bytes 4644224 (4.4 MiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 19776  bytes 24864803 (23.7 MiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">eth0: flags=4163  mtu 1500</span><br><span class="line">        inet 10.103.16.30  netmask 255.255.248.0  broadcast 10.103.23.255</span><br><span class="line">        ether 90:b1:1c:41:55:55  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 57092433  bytes 5068956141 (4.7 GiB)</span><br><span class="line">        RX errors 0  dropped 1295  overruns 0  frame 0</span><br><span class="line">        TX packets 22613383  bytes 4554035489 (4.2 GiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line">        device interrupt 16</span><br></pre></td></tr></table></figure></p>
+<p>更改主机eth0的mtu值为1460：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-30-sh-100-i05 ~]# ifconfig</span><br><span class="line">docker0: flags=4099  mtu 1500</span><br><span class="line">        inet 172.17.42.1  netmask 255.255.0.0  broadcast 0.0.0.0</span><br><span class="line">        ether 02:42:de:68:5d:70  txqueuelen 0  (Ethernet)</span><br><span class="line">        RX packets 14195  bytes 4644224 (4.4 MiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 19776  bytes 24864803 (23.7 MiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">eth0: flags=4163  mtu 1460</span><br><span class="line">        inet 10.103.16.30  netmask 255.255.248.0  broadcast 10.103.23.255</span><br><span class="line">        ether 90:b1:1c:41:55:55  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 57097432  bytes 5069384517 (4.7 GiB)</span><br><span class="line">        RX errors 0  dropped 1295  overruns 0  frame 0</span><br><span class="line">        TX packets 22614564  bytes 4554268290 (4.2 GiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line">        device interrupt 16</span><br></pre></td></tr></table></figure></p>
+<p>运行一个新的容器：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-30-sh-100-i05 ~]# docker run busybox ifconfig</span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:01  </span><br><span class="line">          inet addr:172.17.0.1  Bcast:0.0.0.0  Mask:255.255.0.0</span><br><span class="line">          UP BROADCAST MULTICAST  MTU:1460  Metric:1</span><br><span class="line">          RX packets:0 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)</span><br></pre></td></tr></table></figure></p>
+<p>再次查看mtu值已经改变：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-30-sh-100-i05 ~]# ifconfig</span><br><span class="line">docker0: flags=4099  mtu 1460</span><br><span class="line">        inet 172.17.42.1  netmask 255.255.0.0  broadcast 0.0.0.0</span><br><span class="line">        ether 02:42:de:68:5d:70  txqueuelen 0  (Ethernet)</span><br><span class="line">        RX packets 14195  bytes 4644224 (4.4 MiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 19776  bytes 24864803 (23.7 MiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">eth0: flags=4163  mtu 1460</span><br><span class="line">        inet 10.103.16.30  netmask 255.255.248.0  broadcast 10.103.23.255</span><br><span class="line">        ether 90:b1:1c:41:55:55  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 57099443  bytes 5069560510 (4.7 GiB)</span><br><span class="line">        RX errors 0  dropped 1295  overruns 0  frame 0</span><br><span class="line">        TX packets 22615341  bytes 4554430631 (4.2 GiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line">        device interrupt 16</span><br></pre></td></tr></table></figure></p>
+<p>==docker1.10之后的版本默认使用1500作为mtu值，不再使用主机默认网卡的mtu值==。实验步骤相同，实验结果不再贴出。</p>
+<h3 id="主机mtu与docker-mtu不匹配带来的问题"><a href="#主机mtu与docker-mtu不匹配带来的问题" class="headerlink" title="主机mtu与docker mtu不匹配带来的问题"></a>主机mtu与docker mtu不匹配带来的问题</h3><p>当docker的mtu值与主机网卡的mtu值不匹配时可能会带来严重的问题。例如：<br>docker0 mtu=1500<br>host eth0=1400<br>可能出现的问题：在docker中发出的包经过主机eth0时都会被丢弃，例如apt-get update会卡住，提示<code>waiting for headers</code>详情见：<a href="https://github.com/docker/docker/issues/22028以及https://github.com/docker/docker/issues/12565" target="_blank" rel="noopener">https://github.com/docker/docker/issues/22028以及https://github.com/docker/docker/issues/12565</a></p>
+<p>出现这个问题的主要原因：<br>PMTUD未正确工作，原因可能是ICMP黑洞问题（ICMP-FRAGMENTATION-NEEDED包丢失）</p>
+<p>解决办法：</p>
+<ol>
+<li><p>最简单的办法是将docker的mtu与主机mtu设置一致。通过docker daemon的”–mtu”参数设置docker的mtu值。若是docker1.10以下版本，通过重启docker和容器即可以将docker的mtu值设置为主机默认的mtu值</p>
+</li>
+<li><p>另外一种办法是确保PMTUD正确执行</p>
+</li>
+</ol>
+<ul>
+<li>检查PMTU参数配置是否正确<br><code>/proc/sys/net/ipv4/ip_no_pmtu_disc=0（0表示启用PMTUD）</code></li>
+<li>增加一条路由表设置<br><code>iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu（通过PMTUD机制设定MSS值）</code></li>
+<li>确保ICMP包未丢失</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> mtu </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[TCP分片机制介绍]]></title>
+      <url>https://aprilnops.github.io/2016/12/20/TCP%E5%88%86%E7%89%87%E6%9C%BA%E5%88%B6%E4%BB%8B%E7%BB%8D/</url>
+      <content type="html"><![CDATA[<h3 id="MTU，MSS概念"><a href="#MTU，MSS概念" class="headerlink" title="MTU，MSS概念"></a>MTU，MSS概念</h3><h4 id="tcp帧"><a href="#tcp帧" class="headerlink" title="tcp帧"></a>tcp帧</h4><p>tcp协议规定的帧长度如下如所示<br><img src="/images/1479730513156.jpg" alt="tcp协议帧结构" title="tcp帧结构.jpg"><br>通常情况下各个帧长度如下：<br>以太网帧：1518bytes<br>网卡MTU：1500bytes<br>TCP最大段：1460bytes<br>数据在网络中传输时，长度大于MTU的包会被IP层分片传输，到达目的地后再中心组装成一个完整的包。但是ip分片存在着严重的性能问题：</p>
+<ul>
+<li>影响效率，消耗cpu和内存，server，router，and client都会进行分片</li>
+<li>一个ip分片丢失将导致整个TCP数据包重传（ip层提供不可靠服务，无法知晓哪个分片丢失）</li>
+</ul>
+<p>因此TCP协议在TCP层，利用MSS避免数据分片问题。具体方法是：</p>
+<blockquote>
+<p>通信双方进行三次握手传递SYN包时，将自己的最大MSS值（根据MTU值计算）写在header中，传递给对方。最终双方将选取一个最小的MSS值作为TCP层可发送的最大数据长度。这个过程叫做MSS协商</p>
+</blockquote>
+<p>TCP的MSS只能保证通信的两端数据不会被分片，无法保证整个传输路径中数据不被分片，例如网络中的路由器。PMTUD就是为了解决这个问题的。<br><a id="more"></a></p>
+<h3 id="PMTUD"><a href="#PMTUD" class="headerlink" title="PMTUD"></a>PMTUD</h3><blockquote>
+<p>PMTUD was developed in order to avoid fragmentation in the path between the endpoints. It is used to dynamically determine the lowest MTU along the path from a packet’s source to its destination.</p>
+</blockquote>
+<p>PMTUD机制主要用于在两个tcp连接端动态选择mtu值从而避免tcp包被分片.<br>df标识都将被启用（==即不允许分片==）。<br>/proc/sys/net/ipv4/ip_no_pmtu_disc值默认为0，表示启用PMTUD</p>
+<p>当源端主机发送一个报文段给目的主机时，如果目的主机无法接收将会返回一个icmp包错误：主机不可达-不可分片：</p>
+<blockquote>
+<p>fragmentation needed and DF set</p>
+</blockquote>
+<p>接收到此消息后，PMTUD会自动减小MSS大小，以保证数据都可以不分片在链路上传输。<br>PMTUD主要依赖于ICMP返回的错误报文信息，但依然存在问题：icmp black hole（icmp黑洞）<br>即icmp报文丢失</p>
+<blockquote>
+<ul>
+<li>A router can drop a packet and not send an ICMP message. (Uncommon)</li>
+<li>A router can generate and send an ICMP message, but the ICMP message gets blocked by a router or firewall between this router and the sender. (Common)</li>
+<li>A router can generate and send an ICMP message, but the sender ignores the message. (Uncommon)</li>
+</ul>
+</blockquote>
+<p>解决办法：ICMP黑洞检测<br>Enable smart MTU black hole detection.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; /proc/sys/net/ipv4/tcp_mtu_probing</span><br><span class="line">echo 1024 &gt; /proc/sys/net/ipv4/tcp_base_mss</span><br></pre></td></tr></table></figure></p>
+<p>iptable设置MSS与MTUD<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> tcp </tag>
+            
+            <tag> mtu </tag>
+            
+            <tag> mss </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[open-falcon架构介绍]]></title>
+      <url>https://aprilnops.github.io/2016/10/25/openfalcon%E6%9E%B6%E6%9E%84%E6%A2%B3%E7%90%86/</url>
+      <content type="html"><![CDATA[<p>1.open-falcon整体架构</p>
+<p>下图是open-falcon的整体架构，模块比较多，可以看完整篇文章介绍再回头看这个架构图。<br>注：图中的memcache并未使用，uic模块现已更名为fe<br><img src="/images/open-falcon-architecture.png?raw=True" alt="architecture"></p>
+<p>2.主要组件</p>
+<p>open-falcon主要包括以下几大组件</p>
+<p><strong>核心组件</strong>：</p>
+<ul>
+<li>agent：    数据采集组件，需要部署到每台需要监控的机器上，会自动采集一些基础监控信息并上报。</li>
+<li>transfer： 数据接收及转发组件</li>
+<li>graph：    历史数据存储组件，接收transfer发送的监控数据并保存在rrd数据库中</li>
+<li>judge：    告警判断组件，接收transfer发送的监控数据，并根据告警策略判断事件是否需要告警。</li>
+<li>hbs：       心跳服务器，用于接收agent心跳数据、向agent同步其他监控项、从mysql中同步告警策略。</li>
+<li>query：    数据查询组件，面向终端用户，主要用于查询graph绘图数据并返回给用户</li>
+<li>alarm：    告警组件，judge组件判断后需要告警的事件会写入redis，alarm组件负责定期去redis中读取事件，并对告警事件进行处理转化为短信及邮件。</li>
+<li>sender      告警信息发送组件，alarm组件处理完成的短信及邮件会分别写入短信以及邮件redis队列中，sender组件定期从中读取短信和邮件内容，调用公司自己提供的短信和邮件发送接口，                  发送告警信息。</li>
+</ul>
+<p><strong>web组件</strong>：</p>
+<ul>
+<li>dashboard：绘图展示组件，所有的监控数据都可以在此界面上查看，只要提供endpoint、metric就可以查看绘图数据。</li>
+<li>portal        ：策略配置界面，用于配置告警策略，保存在mysql数据库中。</li>
+<li>fe              ：后台管理界面统一入口，可跳转到dashboard、portal界面，并提供用户信息管理，告警接收人，告警接收分组等。</li>
+</ul>
+<p><strong>非必须组件</strong>：</p>
+<ul>
+<li>nodata     ：用于数据上报丢失的监控。例如，当几分钟之内接收不到某机器的agent.alive的信息，可以说明该机器agent崩溃或该机器网络异常或该机器死机。</li>
+<li>links         ：报警合并组件，alarm中会对低优先级的事件进行报警合并，需要用到此模块产生一个短url链接并将合并后的报警内容保存到mysql数据库中。</li>
+<li>aggregator：集群监控组件。可提供某一个集群机器的某项监控数据。比如某一个分组（多台机器）的网络流量</li>
+</ul>
+<p><strong>数据存储组件</strong>：</p>
+<ul>
+<li>rrd           ：基于时间序列的数据库，用于存储上报的历史监控数据</li>
+<li>mysql      ：作为web界面的数据库，保存用户信息、告警策略、机器信息、监控screen信息、索引信息等等</li>
+<li>redis        ：模块与模块之间提供数据缓存队列，保存告警事件、告警合并后事件、告警短信。</li>
+</ul>
+<p>3.主要组件详细介绍</p>
+<p>1）agent</p>
+<p>每台需要监控的机器都要部署一个agent，进行监控数据采集，采集的数据可分为以下几类：</p>
+<ul>
+<li>agent默认会去采集一些基础监控信息，例如cpu、磁盘、内存、网络流量等等</li>
+<li>用户配置的需要主动监控的信息，目前包括：端口存活（port.listen）、目录磁盘使用量（du -bs）、url监控（否是返回200）</li>
+<li>用户主动上报的监控数据（agent提供一个http接口，用于接收用户主动push的监控数据，数据格式符合规范即可）<br>agent支持用户自定义上传的监控数据格式如下：</li>
+<li>endpoint：某一监控项所属的机器，open-falcon使用的是机器的hostname</li>
+<li>metric：具体的监控项名词，例如cpu.idle表示cpu空闲时间</li>
+<li>timestamp:时间戳，监控数据上报的时间</li>
+<li>step：某一监控数据上报的时间周期，默认60s上报一次</li>
+<li>counterType：rrd数据库支持的数据格式，主要有GAUGE、COUNTER等，详细信息可搜索下rrdtool。</li>
+<li>tags：标签，用于更加细致的区分监控数据，方便告警。例如cpu.idle/group=ops，project=ceph表示ops组的ceph项目上传的cpu.idle监控数据。</li>
+</ul>
+<p>2）HBS</p>
+<p>HBS（HeartBeat server）主要负责以下几个功能：</p>
+<ul>
+<li>agent自动发现功能。部署了agent的机器会定期向HBS发送心跳数据，其中包含了该机器的ip、hostname、agent版本。</li>
+<li>自定义监控配置同步。agent定期从HBS获取用户自定义的监控配置项，然后进行数据采集上报</li>
+<li>从mysql中同步告警策略。HBS定期从mysql中同步告警策略，并保存在内存中，供judge组件查询。</li>
+</ul>
+<p>3）transfer</p>
+<p>transfer模块接收到agent模块上报的数据后，会将其转发给graph组件和judge组件，分别用于存储历史数据和告警判断。</p>
+<p>为保证可用性，可以配置多个transfer实例，目前我们配置2个。agent在上报数据时，随机选择一个transfer发送，若发送失败才会尝试选择另外一个transfer发送数据。可以保证在一个transfer崩溃时，数据依然可以正常上报。</p>
+<p>graph和judge同样可配置多个实例，目前我们是各配置2个。transfer模块在向graph和judge转发数据时，使用一致性hash算法，选择将数据发送给某一台graph/judge实例。</p>
+<p>4）graph</p>
+<p>由于监控数据量庞大，单独使用一个graph实例，在数据量逐渐增长后会出现磁盘空间不够的情况。因此根据监控的数据量的大小，graph通常需要配置多个实例，实现一个graph集群。</p>
+<p>transfer在转发数据给graph时，会根据一致性hash算法选择转发到哪台graph。</p>
+<p>graph数据存储选择的是rrd数据库，详细信息科查询rrdtool相关概念</p>
+<p>5）judge</p>
+<p>通graph一样，每一条上报的监控数据都需要judge进行告警判断，对于大量的监控数据来说，一台judge压力过大。因此同样可配置多个judge实例，由一致性hash算法选择将数据发送给任意一台judge进行告警判断。</p>
+<p>juege组件定期从hbs组件同步告警策略，一条监控数据上报后，judge查询该数据对应的告警策略，然后进行告警判断，最后将满足告警条件的事件按照优先级分别写入不同的redis队列。</p>
+<p>6）alarm</p>
+<p>judge组件进行告警判断后会将需要告警的事件按照优先级写入redis队列，alarm组件定期去读取这个队列，然后将告警事件转换为告警短息，主要包括：从告警事件中提取告警内容，根据公司短息格式要求产生告警短信内容，读取告警接收人信息，最后组合成一条条告警短信写入redis短信队列。对于低优先级的告警事件，alarm同时进行告警合并，并将告警合并后的短信写入redis短信队列。</p>
+<p>7）sender</p>
+<p>sender组件定期从redis短息队列和邮件队列中读取短信和邮件，调用短信和邮件接口发送告警信息。将告警短息放入redis中可以防止短信量过大导致短信接口发送不完全，最后导致信息丢失。</p>
+<p>8）nodata</p>
+<p>falcon可以通过agent主动上报监控数据，根据监控数据来判断系统是否异常。但是无法应对由于某些原因（网络故障、机器死机、agent崩溃等）导致监控数据未上报的情况。</p>
+<p>nodata的作用就是在发现监控数据未上报时，由nodata主动上报一个伪数据，用户创建相关的nodata告警策略，当接收到此伪数据告警时便可以发现某个监控指标数据未上报。</p>
+<p>我们目前主要使用nodata进行宕机监控。</p>
+<p>4、falcon工作基本流程</p>
+<p>简化的falcon基本工作流程可描述如下图所示：</p>
+<p><img src="/images/open-falcon-simple.png" alt="image"><br>ps：更加详细的流程可以去看顶部的详细架构图</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> open-falcon </tag>
+            
+        </tags>
+        
+    </entry>
+    
+  
+  
+</search>

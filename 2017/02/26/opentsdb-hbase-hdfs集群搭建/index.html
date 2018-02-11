@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="opentsdb、hbase、hdfs集群搭建"/>
+
+
+
+
+  <meta name="keywords" content="hdfs,hbase,opentsdb," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2017/02/26/opentsdb-hbase-hdfs集群搭建/"/>
+
+
+<meta name="description" content="HBase通过访问Zookeeper来获取-ROOT-表所在地址，通过-ROOT-表得到相应.META.表信息，从而获取数据存储的region位置 hadoop搭建：参考网址：http://www.alexjf.net/blog/distributed-systems/hadoop-yarn-installation-definitive-guide/#single-node-installati">
+<meta name="keywords" content="hdfs,hbase,opentsdb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="opentsdb、hbase、hdfs集群搭建">
+<meta property="og:url" content="https://aprilnops.github.io/2017/02/26/opentsdb-hbase-hdfs集群搭建/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="HBase通过访问Zookeeper来获取-ROOT-表所在地址，通过-ROOT-表得到相应.META.表信息，从而获取数据存储的region位置 hadoop搭建：参考网址：http://www.alexjf.net/blog/distributed-systems/hadoop-yarn-installation-definitive-guide/#single-node-installati">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://aprilnops.github.io/images/1481795557150.jpg">
+<meta property="og:image" content="https://aprilnops.github.io/images/1481795825889.jpg">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="opentsdb、hbase、hdfs集群搭建">
+<meta name="twitter:description" content="HBase通过访问Zookeeper来获取-ROOT-表所在地址，通过-ROOT-表得到相应.META.表信息，从而获取数据存储的region位置 hadoop搭建：参考网址：http://www.alexjf.net/blog/distributed-systems/hadoop-yarn-installation-definitive-guide/#single-node-installati">
+<meta name="twitter:image" content="https://aprilnops.github.io/images/1481795557150.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> opentsdb、hbase、hdfs集群搭建 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          opentsdb、hbase、hdfs集群搭建
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年2月26日
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#hadoop搭建："><span class="toc-text">hadoop搭建：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#单节点搭建"><span class="toc-text">单节点搭建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#集群安装"><span class="toc-text">集群安装</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hbase集群搭建"><span class="toc-text">hbase集群搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#opentsdb安装"><span class="toc-text">opentsdb安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#openfalcon配置修改"><span class="toc-text">openfalcon配置修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#grafana配置"><span class="toc-text">grafana配置</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>HBase通过访问Zookeeper来获取-ROOT-表所在地址，通过-ROOT-表得到相应.META.表信息，从而获取数据存储的region位置</p>
+<h3 id="hadoop搭建："><a href="#hadoop搭建：" class="headerlink" title="hadoop搭建："></a>hadoop搭建：</h3><p>参考网址：<a href="http://www.alexjf.net/blog/distributed-systems/hadoop-yarn-installation-definitive-guide/#single-node-installation" target="_blank" rel="noopener">http://www.alexjf.net/blog/distributed-systems/hadoop-yarn-installation-definitive-guide/#single-node-installation</a></p>
+<h4 id="单节点搭建"><a href="#单节点搭建" class="headerlink" title="单节点搭建"></a>单节点搭建</h4><ol>
+<li>下载hadoop压缩包，hadoop-2.5.2.tar.gz并解压.进入解压目录，修改jdk路径，修改文件etc/hadoop/hadoop-env.sh<br><code>export JAVA_HOME=/usr/local/jdk/</code></li>
+</ol>
+<p>2.修改bashrc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">export HADOOP_PREFIX=&quot;/home/worker/hadoop-2.5.2&quot;</span><br><span class="line">export HADOOP_HOME=$HADOOP_PREFIX</span><br><span class="line">export HADOOP_COMMON_HOME=$HADOOP_PREFIX</span><br><span class="line">export HADOOP_CONF_DIR=$HADOOP_PREFIX/etc/hadoop</span><br><span class="line">export HADOOP_HDFS_HOME=$HADOOP_PREFIX</span><br><span class="line">export HADOOP_MAPRED_HOME=$HADOOP_PREFIX</span><br><span class="line">export HADOOP_YARN_HOME=$HADOOP_PREFIX</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>3.配置hdfs<br>修改<code>$HADOOP_PREFIX/etc/hadoop/hdfs-site.xml</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;file:///home/alex/Programs/hadoop-2.2.0/hdfs/datanode&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Comma separated list of paths on the local filesystem of a DataNode where it should store its blocks.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;file:///home/alex/Programs/hadoop-2.2.0/hdfs/namenode&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Path on the local filesystem where the NameNode stores the namespace and transaction logs persistently.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>修改<code>$HADOOP_PREFIX/etc/hadoop/core-site.xml</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;hdfs://localhost/&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;NameNode URI&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>4.配置yarn<br>修改<code>$HADOOP_PREFIX/etc/hadoop/yarn-site.xml.</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.minimum-allocation-mb&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;128&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Minimum limit of memory to allocate to each container request at the Resource Manager.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.maximum-allocation-mb&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;2048&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Maximum limit of memory to allocate to each container request at the Resource Manager.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.minimum-allocation-vcores&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;1&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;The minimum allocation for every container request at the RM, in terms of virtual CPU cores. Requests lower than this won&apos;t take effect, and the specified value will get allocated the minimum.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.maximum-allocation-vcores&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;2&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;The maximum allocation for every container request at the RM, in terms of virtual CPU cores. Requests higher than this won&apos;t take effect, and will get capped to this value.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.nodemanager.resource.memory-mb&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;4096&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Physical memory, in MB, to be made available to running containers&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.nodemanager.resource.cpu-vcores&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;4&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Number of CPU cores that can be allocated for containers.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>5.启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">## Start HDFS daemons</span><br><span class="line"># Format the namenode directory (DO THIS ONLY ONCE, THE FIRST TIME)</span><br><span class="line">$HADOOP_PREFIX/bin/hdfs namenode -format</span><br><span class="line"># Start the namenode daemon</span><br><span class="line">$HADOOP_PREFIX/sbin/hadoop-daemon.sh start namenode</span><br><span class="line"># Start the datanode daemon</span><br><span class="line">$HADOOP_PREFIX/sbin/hadoop-daemon.sh start datanode</span><br><span class="line"></span><br><span class="line">## Start YARN daemons</span><br><span class="line"># Start the resourcemanager daemon</span><br><span class="line">$HADOOP_PREFIX/sbin/yarn-daemon.sh start resourcemanager</span><br><span class="line"># Start the nodemanager daemon</span><br><span class="line">$HADOOP_PREFIX/sbin/yarn-daemon.sh start nodemanager</span><br></pre></td></tr></table></figure></p>
+<h4 id="集群安装"><a href="#集群安装" class="headerlink" title="集群安装"></a>集群安装</h4><p>三台机器，运行一个namenode实例、一个resourcemanager实例，三个机器都运行datanode和nodemanager<br>1.接上一步操作，直接在单节点机器上操作，修改配置文件<br>修改<code>$HADOOP_PREFIX/etc/hadoop/core-site.xml</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;hdfs://namenode.alexjf.net/&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;NameNode URI&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>修改<code>yarn-site.xml</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.resourcemanager.hostname&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;resourcemanager.alexjf.net&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;The hostname of the RM.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>2.将整个hadoop文件夹拷贝到另外两个机器上<br><strong>注意删除hdfs目录下datanode和namenode目录,否则会出现总有几个datanode无法起来的情况</strong></p>
+<p>3.启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">## Start HDFS daemons</span><br><span class="line"># Format the namenode directory (DO THIS ONLY ONCE, THE FIRST TIME)</span><br><span class="line"># ONLY ON THE NAMENODE NODE</span><br><span class="line">$HADOOP_PREFIX/bin/hdfs namenode -format</span><br><span class="line"># Start the namenode daemon</span><br><span class="line"># ONLY ON THE NAMENODE NODE</span><br><span class="line">$HADOOP_PREFIX/sbin/hadoop-daemon.sh start namenode</span><br><span class="line"># Start the datanode daemon</span><br><span class="line"># ON ALL SLAVES</span><br><span class="line">$HADOOP_PREFIX/sbin/hadoop-daemon.sh start datanode</span><br><span class="line"></span><br><span class="line">## Start YARN daemons</span><br><span class="line"># Start the resourcemanager daemon</span><br><span class="line"># ONLY ON THE RESOURCEMANAGER NODE</span><br><span class="line">$HADOOP_PREFIX/sbin/yarn-daemon.sh start resourcemanager</span><br><span class="line"># Start the nodemanager daemon</span><br><span class="line"># ON ALL SLAVES</span><br><span class="line">$HADOOP_PREFIX/sbin/yarn-daemon.sh start nodemanager</span><br></pre></td></tr></table></figure></p>
+<h3 id="hbase集群搭建"><a href="#hbase集群搭建" class="headerlink" title="hbase集群搭建"></a>hbase集群搭建</h3><p>参考网址：<a href="https://hbase.apache.org/book.html#quickstart" target="_blank" rel="noopener">https://hbase.apache.org/book.html#quickstart</a></p>
+<p>准备：</p>
+<p>a,b,c三台机器都下载hbase的bin包(hbase-1.2.4-bin.tar.gz)，并解压<br>进入解压后的目录，修改 <code>conf/hbase-env.sh</code>，配置java_home</p>
+<p>节点安排：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a:master,zookeeper</span><br><span class="line">b:master(backup),zookeeper,regionserver</span><br><span class="line">c:zookeeper,regionserver</span><br></pre></td></tr></table></figure></p>
+<p>1.配置a节点ssh无密码登陆a,b,c。<br><strong>注意,也要配置a机器本身</strong><br>由于b节点作为备份的master，同样设置b节点ssh无密码登陆a,b,c</p>
+<p><strong>注意删除know_hosts文件中的相关记录，否则可能出现hostkey验证失败错误</strong></p>
+<p>2.修改<code>conf/regionservers</code><br>删除localhost，添加b、和c的hostname或者ip<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-29-sh-100-i05 hbase-1.2.4]# cat conf/regionservers </span><br><span class="line">10.103.16.28</span><br><span class="line">10.101.1.229</span><br></pre></td></tr></table></figure></p>
+<p>3.新增文件conf/backup-masters:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-29-sh-100-i05 hbase-1.2.4]# cat conf/backup-masters </span><br><span class="line">103-16-28-sh-100-i05.yidian.com</span><br></pre></td></tr></table></figure></p>
+<p>4.配置zookeeper<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;node-a.example.com,node-b.example.com,node-c.example.com&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.zookeeper.property.dataDir&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;/usr/local/zookeeper&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure></p>
+<p>5.配置b和c机器<br>将a机器的配置文件目录conf文件夹拷贝到b和c对应的位置</p>
+<p>6.在a机器启动所有实例<br>确认所有机器都没有hmaster、HRegionServer, and HQuorumPeer实例在运行，执行<code>bin/start-hbase.sh</code></p>
+<p>此时可能需要输入yes，同时<strong>注意删除know_hosts文件中的相关记录，否则可能出现hostkey验证失败错误</strong></p>
+<p>若启动成功，在三台机器都使用jps命令将看到各个实例都已启动。</p>
+<p>7.webui查看<br>master机器上登陆ip:16010可看到web 界面</p>
+<h3 id="opentsdb安装"><a href="#opentsdb安装" class="headerlink" title="opentsdb安装"></a>opentsdb安装</h3><p>1.依赖安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gnuplot</span><br></pre></td></tr></table></figure></p>
+<p>2.下载rpm包，安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -iv opentsdb-2.2.1.rpm</span><br></pre></td></tr></table></figure></p>
+<p>安装后程序目录结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/etc/opentsdb - Configuration files</span><br><span class="line">/tmp/opentsdb - Temporary cache files</span><br><span class="line">/usr/share/opentsdb - Application files</span><br><span class="line">/usr/share/opentsdb/bin - The &quot;tsdb&quot; startup script that launches a TSD or commandline tools</span><br><span class="line">/usr/share/opentsdb/lib - Java JAR library files</span><br><span class="line">/usr/share/opentsdb/plugins - Location for plugin files and dependencies</span><br><span class="line">/usr/share/opentsdb/static - Static files for the GUI</span><br><span class="line">/usr/share/opentsdb/tools - Scripts and other tools</span><br><span class="line">/var/log/opentsdb - Logs</span><br></pre></td></tr></table></figure></p>
+<p>3.修改配置文件<code>/etc/opentsdb/opentsdb.conf</code><br>修改以下几项：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tsd.core.auto_create_metrics = true</span><br><span class="line">tsd.core.meta.enable_realtime_ts = true</span><br><span class="line">tsd.storage.hbase.zk_quorum = localhost(若hbase安装在本机可以不修改此项)</span><br></pre></td></tr></table></figure></p>
+<p>4.创建opentsdb表：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">env COMPRESSION=NONE HBASE_HOME=path/to/hbase-0.94.X /usr/share/opentsdb/tools/create_table.sh</span><br></pre></td></tr></table></figure></p>
+<p>5.启动tsd<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup /bin/tsdb tsd &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure></p>
+<p>日志会自动写入/var/log/opentsdb/opentsdb.log</p>
+<p>6.登陆http:127.0.0.1:4242查看界面</p>
+<h3 id="openfalcon配置修改"><a href="#openfalcon配置修改" class="headerlink" title="openfalcon配置修改"></a>openfalcon配置修改</h3><p>修改falcon-transfer配置文件，修改enable和address两厢，其余保持默认即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&quot;tsdb&quot;: &#123;</span><br><span class="line">        &quot;enabled&quot;: true,</span><br><span class="line">        &quot;batch&quot;: 200,</span><br><span class="line">        &quot;connTimeout&quot;: 1000,</span><br><span class="line">        &quot;callTimeout&quot;: 5000,</span><br><span class="line">        &quot;maxConns&quot;: 32,</span><br><span class="line">        &quot;maxIdle&quot;: 32,</span><br><span class="line">        &quot;retry&quot;: 3,</span><br><span class="line">        &quot;address&quot;: &quot;10.103.16.29:4242&quot;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>重启transfer，之后数据便会存储到opentsdb中。<br>通过登陆opentsdb的web界面可以查看。</p>
+<h3 id="grafana配置"><a href="#grafana配置" class="headerlink" title="grafana配置"></a>grafana配置</h3><p>1.下载grafana的rpm包，安装,启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service grafana-server start</span><br></pre></td></tr></table></figure></p>
+<p>2.添加opentsdb源<br><img src="/images/1481795557150.jpg" alt="opentsdb数据源" title="1481795557150.jpg"></p>
+<p>3.添加监控趋势图：<br><img src="/images/1481795825889.jpg" alt="监控图" title="1481795825889.jpg"></p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/hdfs/">hdfs</a>
+          
+            <a href="/tags/hbase/">hbase</a>
+          
+            <a href="/tags/opentsdb/">opentsdb</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/02/26/nginx max_fails及proxy_next_upstream研究/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">nginx max_fails及proxy_next_upstream研究</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/26/opentsdb学习/">
+        <span class="next-text nav-default">opentsdb学习</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

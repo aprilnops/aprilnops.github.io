@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="2018-02-11-几种增量更新方案"/>
+
+
+
+
+  <meta name="keywords" content="增量更新," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2018/02/11/几种增量更新方案/"/>
+
+
+<meta name="description" content="问题需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。 分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意 初步想法一个while循环，每次更新前1分钟的数据： 12345# 伪代码while True:    now = time.time()    sync_to_local(update_time&amp;g">
+<meta name="keywords" content="增量更新">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2018-02-11-几种增量更新方案">
+<meta property="og:url" content="https://aprilnops.github.io/2018/02/11/几种增量更新方案/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="问题需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。 分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意 初步想法一个while循环，每次更新前1分钟的数据： 12345# 伪代码while True:    now = time.time()    sync_to_local(update_time&amp;g">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2018-02-11-几种增量更新方案">
+<meta name="twitter:description" content="问题需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。 分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意 初步想法一个while循环，每次更新前1分钟的数据： 12345# 伪代码while True:    now = time.time()    sync_to_local(update_time&amp;g">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> 2018-02-11-几种增量更新方案 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          2018-02-11-几种增量更新方案
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年2月11日
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#问题"><span class="toc-text">问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#初步想法"><span class="toc-text">初步想法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#改进1"><span class="toc-text">改进1</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#改进2"><span class="toc-text">改进2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#改进3"><span class="toc-text">改进3</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#改进4"><span class="toc-text">改进4</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。</p>
+<p><strong>分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意</strong></p>
+<h1 id="初步想法"><a href="#初步想法" class="headerlink" title="初步想法"></a>初步想法</h1><p>一个while循环，每次更新前1分钟的数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 伪代码</span><br><span class="line">while True:</span><br><span class="line">    now = time.time()</span><br><span class="line">    sync_to_local(update_time&gt;=now)</span><br><span class="line">    time.sleep(interval)</span><br></pre></td></tr></table></figure>
+<p>存在的问题：</p>
+<p>如果程序崩溃，不知道上一次同步结束的时间点，无法知道下一次增量更新的时间起始点</p>
+<h1 id="改进1"><a href="#改进1" class="headerlink" title="改进1"></a>改进1</h1><p>记录下每次更新后的时间戳last_sync_timestamp，使用定时任务下一次更新时从last_sync_timestamp拉取数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 伪代码</span><br><span class="line">sync_to_local(update_time&gt;last_sync_timestamp)</span><br></pre></td></tr></table></figure>
+<p>存在问题：记录丢失<br>同步的时候，如果使用：update_time&gt;last_sync_timestamp,则可能出现记录丢失的问题</p>
+<h1 id="改进2"><a href="#改进2" class="headerlink" title="改进2"></a>改进2</h1><p>改成大于等于：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sync_to_local(update_time&gt;=last_sync_timestamp)</span><br></pre></td></tr></table></figure>
+<p>存在问题：记录重复</p>
+<p>假设服务器存在如下记录：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0002</td>
+</tr>
+</tbody>
+</table>
+<p>每次获取2条记录，<br>第一次同步后，last_sync_timestamp=0001<br>本地同步到的记录为：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0001</td>
+</tr>
+</tbody>
+</table>
+<p>第二次继续同步2条记录，last_sync_timestamp=0001</p>
+<p>那么id为1，2的记录会重复获取。永远获取不到后面的记录</p>
+<h1 id="改进3"><a href="#改进3" class="headerlink" title="改进3"></a>改进3</h1><p>除了时间戳，还可在client端增加记录的唯一id，通过id+时间戳来去重。 </p>
+<p>假设服务器存在如下记录：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0002</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0002</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0002</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0003</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0003</td>
+</tr>
+</tbody>
+</table>
+<p>1）第一次获取数据：<br>last_sync_timestamp&gt;=0001</p>
+<p>假设返回数据：<br>count=2,total=6（count表示每页记录数，total表示总共符合条件的记录数）<br>则本地更新内容为：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0002</td>
+</tr>
+</tbody>
+</table>
+<p>本地记录下last_sync_timestamp和id，<br>last_sync_timestamp：0002<br>id：2</p>
+<p>2）第二次获取数据<br>last_sync_timestamp&gt;=0002 &amp;&amp; id not in (2)</p>
+<p>返回数据为：<br>count=2，total=4，</p>
+<p>更新后本地数据为：<br>id|update_time<br>—|—<br>1|0001<br>2|0002<br>3|0002<br>4|0002</p>
+<p>last_sync_timestamp=0002，<br>id=2,3,4</p>
+<p>4）第四次获取数据<br>last_sync_timestamp&gt;=0002 &amp;&amp; id not in (2,3,4)</p>
+<p>返回数据：count=2，total=2<br>更新后本地数据为：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0002</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0003</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0003</td>
+</tr>
+</tbody>
+</table>
+<p>last_sync_timestamp=0003，id=5,6</p>
+<h1 id="改进4"><a href="#改进4" class="headerlink" title="改进4"></a>改进4</h1><p>每条记录增加一个字段status，<br>indexed：表示记录是否已经被同步<br>unindexed：表示尚未同步</p>
+<p>获取记录的时候只需要给出条件：<br>status==unindexed并且按照update_time排序</p>
+<p>本地同步完成之后，更新服务器端响应记录的status即可</p>
+<p>问题：<br>使用场景受限，允许客户端更新服务端状态，不适用于例如微博客户端本地增量更新的场景</p>
+<p>参考文章：<br><a href="http://blog.csdn.net/newjueqi/article/details/19114469" target="_blank" rel="noopener">http://blog.csdn.net/newjueqi/article/details/19114469</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/增量更新/">增量更新</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/02/11/状态机设计模式简述/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">2018-02-11-python状态机设计模式</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/26/golang基础学习/">
+        <span class="next-text nav-default">golang基础学习</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

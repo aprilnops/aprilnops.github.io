@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="rrdtool原理"/>
+
+
+
+
+  <meta name="keywords" content="rrdtool," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2017/02/26/rrdtool原理/"/>
+
+
+<meta name="description" content="RRD全称是Round Roubin Database，即环形数据库，他是一种循环使用存储空间的数据库，在创建的时候就一定定义好了大小（通过RRA），因此他所创建的数据库大小可控，不会线性增长。(一个rrd文件就是一个数据库文件) 创建一个rrd文件时需要设定以下几个参数：创建 RRD 基本语法  rrdtool create filename[–start|-b start-time][–ste">
+<meta name="keywords" content="rrdtool">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rrdtool原理">
+<meta property="og:url" content="https://aprilnops.github.io/2017/02/26/rrdtool原理/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="RRD全称是Round Roubin Database，即环形数据库，他是一种循环使用存储空间的数据库，在创建的时候就一定定义好了大小（通过RRA），因此他所创建的数据库大小可控，不会线性增长。(一个rrd文件就是一个数据库文件) 创建一个rrd文件时需要设定以下几个参数：创建 RRD 基本语法  rrdtool create filename[–start|-b start-time][–ste">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="rrdtool原理">
+<meta name="twitter:description" content="RRD全称是Round Roubin Database，即环形数据库，他是一种循环使用存储空间的数据库，在创建的时候就一定定义好了大小（通过RRA），因此他所创建的数据库大小可控，不会线性增长。(一个rrd文件就是一个数据库文件) 创建一个rrd文件时需要设定以下几个参数：创建 RRD 基本语法  rrdtool create filename[–start|-b start-time][–ste">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> rrdtool原理 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          rrdtool原理
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年2月26日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        <p>RRD全称是Round Roubin Database，即环形数据库，他是一种循环使用存储空间的数据库，在创建的时候就一定定义好了大小（通过RRA），因此他所创建的数据库大小可控，不会线性增长。(一个rrd文件就是一个数据库文件)</p>
+<p>创建一个rrd文件时需要设定以下几个参数：<br>创建 RRD 基本语法</p>
+<blockquote>
+<p>rrdtool create filename<br>[–start|-b start-time]<br>[–step|-s step]<br>[DS:ds-name:DST:dst-arguments]<br>[RRA:CF:xff:step:rows]</p>
+</blockquote>
+<a id="more"></a>
+<p>其中：<br>–start指定存放数据的起始时间戳<br>–step设定数据存入的时间间隔<br>ds：数据源名称，是一个变量，通常设定为metric的名字<br>dst：数据源的类型，主要有以下几种：</p>
+<blockquote>
+<p>GAUGE：保持上传的原始值<br>COUNTER：只能递增的数值（例如汽车里程，网卡流量），保存时保存的是平均值即变化率，计算方法：(本次值-上次值)/step<br>DRIVE:和COUNTER类似，数据可以递增也可以递减<br>ABSOLUTE：假定上一次的值为0，然后求变化率。计算方法：(本次值-0)/step</p>
+</blockquote>
+<p>rra：归档模型，假如每秒上传一个值，每次上传的值都存储，一年后将有1<em>60秒</em>60分<em>24小时</em>365天个数值，这么多个数据点根本无法通过图像展示。因此需要利用rra进行数据归档。</p>
+<p>RRA:AVERAGE:0.5:2:8：表示保存平均值，有效因子为50%，即必须至少有一个周期的值是有效的才能计算得到最终的值，否则将归档为UNKNOWN。每2个周期保存一个值，一个保存8个值。</p>
+<p>创建rrd文件举例：</p>
+<blockquote>
+<p>rrdtool create test.rrd –start 920804400<br>DS:speed:COUNTER:600:U:U<br>RRA:AVERAGE:0.5:1:24<br>RRA:AVERAGE:0.5:6:10</p>
+</blockquote>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/rrdtool/">rrdtool</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/02/26/php参数研究/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">php参数研究</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/26/python学习笔记/">
+        <span class="next-text nav-default">python学习笔记</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

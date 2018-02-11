@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="hdfs架构学习"/>
+
+
+
+
+  <meta name="keywords" content="hdfs," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2017/02/26/hdfs架构学习/"/>
+
+
+<meta name="description" content="特点： 大文件存储，单个文件可达到G 关注高吞吐量而非低延迟 块大小默认为64MB，大文件会分为多个文件块存储在不同的datanode几点上。小文件单独占用块，多个小文件不会合并到一个块中。因此hdfs更加喜欢大文件。  架构图  NameNode 负责存放文件元数据，文件系统命名空间的维护，任何对命名空间的更改，例如属性、名字等都将记录到NameNode中 不记录文件保存的位置，文件位置信息会由">
+<meta name="keywords" content="hdfs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hdfs架构学习">
+<meta property="og:url" content="https://aprilnops.github.io/2017/02/26/hdfs架构学习/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="特点： 大文件存储，单个文件可达到G 关注高吞吐量而非低延迟 块大小默认为64MB，大文件会分为多个文件块存储在不同的datanode几点上。小文件单独占用块，多个小文件不会合并到一个块中。因此hdfs更加喜欢大文件。  架构图  NameNode 负责存放文件元数据，文件系统命名空间的维护，任何对命名空间的更改，例如属性、名字等都将记录到NameNode中 不记录文件保存的位置，文件位置信息会由">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://aprilnops.github.io/images/1481871142257.jpg">
+<meta property="og:image" content="https://aprilnops.github.io/images/1481873643673.jpg">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hdfs架构学习">
+<meta name="twitter:description" content="特点： 大文件存储，单个文件可达到G 关注高吞吐量而非低延迟 块大小默认为64MB，大文件会分为多个文件块存储在不同的datanode几点上。小文件单独占用块，多个小文件不会合并到一个块中。因此hdfs更加喜欢大文件。  架构图  NameNode 负责存放文件元数据，文件系统命名空间的维护，任何对命名空间的更改，例如属性、名字等都将记录到NameNode中 不记录文件保存的位置，文件位置信息会由">
+<meta name="twitter:image" content="https://aprilnops.github.io/images/1481871142257.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> hdfs架构学习 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          hdfs架构学习
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年2月26日
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#特点："><span class="toc-text">特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#架构图"><span class="toc-text">架构图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#NameNode"><span class="toc-text">NameNode</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fsimage"><span class="toc-text">fsimage</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#edits"><span class="toc-text">edits</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SecondNameNode"><span class="toc-text">SecondNameNode</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DataNode"><span class="toc-text">DataNode</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h4 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li>大文件存储，单个文件可达到G</li>
+<li>关注高吞吐量而非低延迟</li>
+<li>块大小默认为64MB，大文件会分为多个文件块存储在不同的datanode几点上。小文件单独占用块，多个小文件不会合并到一个块中。因此hdfs更加喜欢大文件。</li>
+</ul>
+<h4 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h4><p><img src="/images/1481871142257.jpg" alt="hdfs架构图1" title="1481871142257.jpg"><br> <img src="/images/1481873643673.jpg" alt="hdfs架构图2" title="1481873643673.jpg"></p>
+<h4 id="NameNode"><a href="#NameNode" class="headerlink" title="NameNode"></a>NameNode</h4><ul>
+<li>负责存放文件元数据，文件系统命名空间的维护，任何对命名空间的更改，例如属性、名字等都将记录到NameNode中</li>
+<li><strong>不记录文件保存的位置</strong>，文件位置信息会由DataNode上报并保存在内存中，同时也会持久化到本地文件系统(fsimage和edits)</li>
+<li>NameNode消耗大量内存和I/O资源。因此其不存储用户数据，也不进行mapreduce任务。<a id="more"></a>
+<h4 id="fsimage"><a href="#fsimage" class="headerlink" title="fsimage"></a>fsimage</h4></li>
+<li>hdfs文件元数据持久化点，保存了hdfs文件系统所有的命名空间和block块信息。</li>
+</ul>
+<h4 id="edits"><a href="#edits" class="headerlink" title="edits"></a>edits</h4><ul>
+<li>存放hdfs文件系统的更新操作</li>
+</ul>
+<h4 id="SecondNameNode"><a href="#SecondNameNode" class="headerlink" title="SecondNameNode"></a>SecondNameNode</h4><p>hdfs只使用一个NameNode存在单点故障问题，解决办法：</p>
+<ul>
+<li>元数据定期持久化到本地文件系统中</li>
+<li>namenode在重启的过程中需要合并edits和fsimage文件，获取文件元数据信息，但是这个动作会影响namenode启动的速度，因此通过SecondNameNode定期进行edits文件和fsimage文件的合并。</li>
+</ul>
+<h4 id="DataNode"><a href="#DataNode" class="headerlink" title="DataNode"></a>DataNode</h4><ul>
+<li>数据真正存放的地方，以块存储。为客户端提供读写服务</li>
+<li>向NameNode发送心跳数据，汇报文件包含的块列表和备份个数</li>
+<li>DataNode之间也会通信，进行数据库的负载，实现冗余备份</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/hdfs/">hdfs</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/02/26/golang基础学习/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">golang基础学习</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/26/http状态码/">
+        <span class="next-text nav-default">http协议学习</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

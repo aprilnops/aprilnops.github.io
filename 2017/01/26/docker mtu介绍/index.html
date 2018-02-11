@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="docker mtu介绍"/>
+
+
+
+
+  <meta name="keywords" content="mtu," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2017/01/26/docker mtu介绍/"/>
+
+
+<meta name="description" content="本文所述内容是针对旧版本docker（doker 1.10版本以下不包括1.10版本） docker mtu By default, the Docker server creates and configures the host system’s docker0 interface as an Ethernet bridge inside the Linux kernel that can p">
+<meta name="keywords" content="mtu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker mtu介绍">
+<meta property="og:url" content="https://aprilnops.github.io/2017/01/26/docker mtu介绍/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="本文所述内容是针对旧版本docker（doker 1.10版本以下不包括1.10版本） docker mtu By default, the Docker server creates and configures the host system’s docker0 interface as an Ethernet bridge inside the Linux kernel that can p">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker mtu介绍">
+<meta name="twitter:description" content="本文所述内容是针对旧版本docker（doker 1.10版本以下不包括1.10版本） docker mtu By default, the Docker server creates and configures the host system’s docker0 interface as an Ethernet bridge inside the Linux kernel that can p">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> docker mtu介绍 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          docker mtu介绍
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年1月26日
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-mtu"><span class="toc-text">docker mtu</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-mtu值测试"><span class="toc-text">docker mtu值测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#环境：centos7-docker-1-8-2"><span class="toc-text">环境：centos7 docker 1.8.2</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主机mtu与docker-mtu不匹配带来的问题"><span class="toc-text">主机mtu与docker mtu不匹配带来的问题</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p><strong>本文所述内容是针对旧版本docker（doker 1.10版本以下不包括1.10版本）</strong></p>
+<h3 id="docker-mtu"><a href="#docker-mtu" class="headerlink" title="docker mtu"></a>docker mtu</h3><blockquote>
+<p>By default, the Docker server creates and configures the host system’s docker0 interface as an Ethernet bridge inside the Linux kernel that can pass packets back and forth between other physical or virtual network interfaces so that they behave as a single Ethernet network.</p>
+</blockquote>
+<p>==启动docker时==,docker服务器会在内核中创建一个docker0网卡接口作为网桥，通过此网桥，虚拟网卡和物理网卡之间可以互相传输数据包。</p>
+<blockquote>
+<p>Docker configures docker0 with an IP address, netmask and IP allocation range. The host machine can both receive and send packets to containers connected to the bridge, and gives it an MTU – the maximum transmission unit or largest packet length that the interface will allow – of either 1,500 bytes or else a more specific value copied from the Docker host’s interface that supports its default route. These options are configurable at server startup:</p>
+</blockquote>
+<p>具体的，docker会为docker0配置一个IP地址、子网掩码和ip地址池，物理机可以与连接到docker0的任何容器传输数据。同时设置docker0的mtu值为1500或者宿主机默认网卡的mtu值（==docker1.10以下版本==）。这些工作在docker启动时进行。</p>
+<blockquote>
+<p>Once you have one or more containers up and running, you can confirm that Docker has properly connected them to the docker0 bridge by running the brctl command on the host machine and looking at the interfaces column of the output. Here is a host with two different containers connected:</p>
+</blockquote>
+<p>一旦启动一个容器，docker便会将这个容器连接到docker0上。可通过<code>sudo brctl show</code>命令查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo brctl show</span><br><span class="line">bridge name     bridge id               STP enabled     interfaces</span><br><span class="line">docker0         8000.3a1d7362b4ee       no              veth65f9</span><br><span class="line">                                                        vethdda6</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<blockquote>
+<p>Finally, the docker0 Ethernet bridge settings are used every time you create a new container. Docker selects a free IP address from the range available on the bridge each time you docker run a new container, and configures the container’s eth0 interface with that IP address and the bridge’s netmask. The Docker host’s own IP address on the bridge is used as the default gateway by which each container reaches the rest of the Internet.</p>
+</blockquote>
+<p>最后，每当新建一个容器时，docker会使用docker0的配置新建容器的eth0网卡。包括从ip地址池选择一个ip地址、配置eth0，物理机的ip地址将作为网关，供容器访问网络。<br><a href="https://github.com/docker/docker/blob/43077f9b6406e3d5e401a361b4c9742c00be528b/docs/userguide/networking/default_network/custom-docker0.md" target="_blank" rel="noopener">参考网址</a></p>
+<p>总结：docker会使用当前host主机的默认网卡的mtu值作为容器的mtu值（其次使用1500），在==运行一个新的容器或者重启容器时==docker server会自动修改docker0的mtu值为物理机的mtu值。具体看下文测试</p>
+<p>docker1.10之后的版本改掉了这个设置，原因是：</p>
+<blockquote>
+<ul>
+<li>本机网卡mtu可能被随时更改，</li>
+<li>本机可能有多个默认route，</li>
+<li>docker可能不走默认route，</li>
+<li>kernel的path mtu discovery机制可以解决这个问题。</li>
+</ul>
+</blockquote>
+<p>==<strong>docker1.10版本后采用的方案是仅使用默认值1500，不再根据主机默认网卡mtu设定dockermtu，由内核的PMTUD机制解决mtu值问题</strong>==<br><a href="https://github.com/docker/docker/pull/18108" target="_blank" rel="noopener">参考网址</a></p>
+<p>最新版本docker mtu说明如下：</p>
+<blockquote>
+<p>Docker configures docker0 with an IP address, netmask and IP allocation range. The host machine can both receive and send packets to containers connected to the bridge, and gives it an MTU – the maximum transmission unit or largest packet length that the interface will allow – ==of 1,500bytes==. These options are configurable at server startup:</p>
+</blockquote>
+<p><a href="https://docs.docker.com/engine/userguide/networking/default_network/custom-docker0/" target="_blank" rel="noopener">详见官方文档</a></p>
+<h3 id="docker-mtu值测试"><a href="#docker-mtu值测试" class="headerlink" title="docker mtu值测试"></a>docker mtu值测试</h3><h4 id="环境：centos7-docker-1-8-2"><a href="#环境：centos7-docker-1-8-2" class="headerlink" title="环境：centos7 docker 1.8.2"></a>环境：centos7 docker 1.8.2</h4><p>当前mtu值 主机eth0：1500，docker0：1500：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-30-sh-100-i05 ~]# ifconfig</span><br><span class="line">docker0: flags=4099  mtu 1500</span><br><span class="line">        inet 172.17.42.1  netmask 255.255.0.0  broadcast 0.0.0.0</span><br><span class="line">        ether 02:42:de:68:5d:70  txqueuelen 0  (Ethernet)</span><br><span class="line">        RX packets 14195  bytes 4644224 (4.4 MiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 19776  bytes 24864803 (23.7 MiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">eth0: flags=4163  mtu 1500</span><br><span class="line">        inet 10.103.16.30  netmask 255.255.248.0  broadcast 10.103.23.255</span><br><span class="line">        ether 90:b1:1c:41:55:55  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 57092433  bytes 5068956141 (4.7 GiB)</span><br><span class="line">        RX errors 0  dropped 1295  overruns 0  frame 0</span><br><span class="line">        TX packets 22613383  bytes 4554035489 (4.2 GiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line">        device interrupt 16</span><br></pre></td></tr></table></figure></p>
+<p>更改主机eth0的mtu值为1460：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-30-sh-100-i05 ~]# ifconfig</span><br><span class="line">docker0: flags=4099  mtu 1500</span><br><span class="line">        inet 172.17.42.1  netmask 255.255.0.0  broadcast 0.0.0.0</span><br><span class="line">        ether 02:42:de:68:5d:70  txqueuelen 0  (Ethernet)</span><br><span class="line">        RX packets 14195  bytes 4644224 (4.4 MiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 19776  bytes 24864803 (23.7 MiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">eth0: flags=4163  mtu 1460</span><br><span class="line">        inet 10.103.16.30  netmask 255.255.248.0  broadcast 10.103.23.255</span><br><span class="line">        ether 90:b1:1c:41:55:55  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 57097432  bytes 5069384517 (4.7 GiB)</span><br><span class="line">        RX errors 0  dropped 1295  overruns 0  frame 0</span><br><span class="line">        TX packets 22614564  bytes 4554268290 (4.2 GiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line">        device interrupt 16</span><br></pre></td></tr></table></figure></p>
+<p>运行一个新的容器：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-30-sh-100-i05 ~]# docker run busybox ifconfig</span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:01  </span><br><span class="line">          inet addr:172.17.0.1  Bcast:0.0.0.0  Mask:255.255.0.0</span><br><span class="line">          UP BROADCAST MULTICAST  MTU:1460  Metric:1</span><br><span class="line">          RX packets:0 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)</span><br></pre></td></tr></table></figure></p>
+<p>再次查看mtu值已经改变：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@103-16-30-sh-100-i05 ~]# ifconfig</span><br><span class="line">docker0: flags=4099  mtu 1460</span><br><span class="line">        inet 172.17.42.1  netmask 255.255.0.0  broadcast 0.0.0.0</span><br><span class="line">        ether 02:42:de:68:5d:70  txqueuelen 0  (Ethernet)</span><br><span class="line">        RX packets 14195  bytes 4644224 (4.4 MiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 19776  bytes 24864803 (23.7 MiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">eth0: flags=4163  mtu 1460</span><br><span class="line">        inet 10.103.16.30  netmask 255.255.248.0  broadcast 10.103.23.255</span><br><span class="line">        ether 90:b1:1c:41:55:55  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 57099443  bytes 5069560510 (4.7 GiB)</span><br><span class="line">        RX errors 0  dropped 1295  overruns 0  frame 0</span><br><span class="line">        TX packets 22615341  bytes 4554430631 (4.2 GiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line">        device interrupt 16</span><br></pre></td></tr></table></figure></p>
+<p>==docker1.10之后的版本默认使用1500作为mtu值，不再使用主机默认网卡的mtu值==。实验步骤相同，实验结果不再贴出。</p>
+<h3 id="主机mtu与docker-mtu不匹配带来的问题"><a href="#主机mtu与docker-mtu不匹配带来的问题" class="headerlink" title="主机mtu与docker mtu不匹配带来的问题"></a>主机mtu与docker mtu不匹配带来的问题</h3><p>当docker的mtu值与主机网卡的mtu值不匹配时可能会带来严重的问题。例如：<br>docker0 mtu=1500<br>host eth0=1400<br>可能出现的问题：在docker中发出的包经过主机eth0时都会被丢弃，例如apt-get update会卡住，提示<code>waiting for headers</code>详情见：<a href="https://github.com/docker/docker/issues/22028以及https://github.com/docker/docker/issues/12565" target="_blank" rel="noopener">https://github.com/docker/docker/issues/22028以及https://github.com/docker/docker/issues/12565</a></p>
+<p>出现这个问题的主要原因：<br>PMTUD未正确工作，原因可能是ICMP黑洞问题（ICMP-FRAGMENTATION-NEEDED包丢失）</p>
+<p>解决办法：</p>
+<ol>
+<li><p>最简单的办法是将docker的mtu与主机mtu设置一致。通过docker daemon的”–mtu”参数设置docker的mtu值。若是docker1.10以下版本，通过重启docker和容器即可以将docker的mtu值设置为主机默认的mtu值</p>
+</li>
+<li><p>另外一种办法是确保PMTUD正确执行</p>
+</li>
+</ol>
+<ul>
+<li>检查PMTU参数配置是否正确<br><code>/proc/sys/net/ipv4/ip_no_pmtu_disc=0（0表示启用PMTUD）</code></li>
+<li>增加一条路由表设置<br><code>iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu（通过PMTUD机制设定MSS值）</code></li>
+<li>确保ICMP包未丢失</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/mtu/">mtu</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/02/26/教程-利用aws ec2搭建shadowshocks服务/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">教程-利用aws ec2搭建shadowshocks服务</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2016/12/20/TCP分片机制介绍/">
+        <span class="next-text nav-default">TCP分片机制介绍</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

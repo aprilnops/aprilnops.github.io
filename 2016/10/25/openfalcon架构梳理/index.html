@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="本文主要对open-falcon的整体架构及各个主要组件进行详细的介绍。"/>
+
+
+
+
+  <meta name="keywords" content="open-falcon," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2016/10/25/openfalcon架构梳理/"/>
+
+
+<meta name="description" content="本文主要对open-falcon的整体架构及各个主要组件进行详细的介绍。">
+<meta name="keywords" content="open-falcon">
+<meta property="og:type" content="article">
+<meta property="og:title" content="open-falcon架构介绍">
+<meta property="og:url" content="https://aprilnops.github.io/2016/10/25/openfalcon架构梳理/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="本文主要对open-falcon的整体架构及各个主要组件进行详细的介绍。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://aprilnops.github.io/images/open-falcon-architecture.png?raw=True">
+<meta property="og:image" content="https://aprilnops.github.io/images/open-falcon-simple.png">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="open-falcon架构介绍">
+<meta name="twitter:description" content="本文主要对open-falcon的整体架构及各个主要组件进行详细的介绍。">
+<meta name="twitter:image" content="https://aprilnops.github.io/images/open-falcon-architecture.png?raw=True">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> open-falcon架构介绍 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          open-falcon架构介绍
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016年10月25日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        <p>1.open-falcon整体架构</p>
+<p>下图是open-falcon的整体架构，模块比较多，可以看完整篇文章介绍再回头看这个架构图。<br>注：图中的memcache并未使用，uic模块现已更名为fe<br><img src="/images/open-falcon-architecture.png?raw=True" alt="architecture"></p>
+<p>2.主要组件</p>
+<p>open-falcon主要包括以下几大组件</p>
+<p><strong>核心组件</strong>：</p>
+<ul>
+<li>agent：    数据采集组件，需要部署到每台需要监控的机器上，会自动采集一些基础监控信息并上报。</li>
+<li>transfer： 数据接收及转发组件</li>
+<li>graph：    历史数据存储组件，接收transfer发送的监控数据并保存在rrd数据库中</li>
+<li>judge：    告警判断组件，接收transfer发送的监控数据，并根据告警策略判断事件是否需要告警。</li>
+<li>hbs：       心跳服务器，用于接收agent心跳数据、向agent同步其他监控项、从mysql中同步告警策略。</li>
+<li>query：    数据查询组件，面向终端用户，主要用于查询graph绘图数据并返回给用户</li>
+<li>alarm：    告警组件，judge组件判断后需要告警的事件会写入redis，alarm组件负责定期去redis中读取事件，并对告警事件进行处理转化为短信及邮件。</li>
+<li>sender      告警信息发送组件，alarm组件处理完成的短信及邮件会分别写入短信以及邮件redis队列中，sender组件定期从中读取短信和邮件内容，调用公司自己提供的短信和邮件发送接口，                  发送告警信息。</li>
+</ul>
+<p><strong>web组件</strong>：</p>
+<ul>
+<li>dashboard：绘图展示组件，所有的监控数据都可以在此界面上查看，只要提供endpoint、metric就可以查看绘图数据。</li>
+<li>portal        ：策略配置界面，用于配置告警策略，保存在mysql数据库中。</li>
+<li>fe              ：后台管理界面统一入口，可跳转到dashboard、portal界面，并提供用户信息管理，告警接收人，告警接收分组等。</li>
+</ul>
+<p><strong>非必须组件</strong>：</p>
+<ul>
+<li>nodata     ：用于数据上报丢失的监控。例如，当几分钟之内接收不到某机器的agent.alive的信息，可以说明该机器agent崩溃或该机器网络异常或该机器死机。</li>
+<li>links         ：报警合并组件，alarm中会对低优先级的事件进行报警合并，需要用到此模块产生一个短url链接并将合并后的报警内容保存到mysql数据库中。</li>
+<li>aggregator：集群监控组件。可提供某一个集群机器的某项监控数据。比如某一个分组（多台机器）的网络流量</li>
+</ul>
+<p><strong>数据存储组件</strong>：</p>
+<ul>
+<li>rrd           ：基于时间序列的数据库，用于存储上报的历史监控数据</li>
+<li>mysql      ：作为web界面的数据库，保存用户信息、告警策略、机器信息、监控screen信息、索引信息等等</li>
+<li>redis        ：模块与模块之间提供数据缓存队列，保存告警事件、告警合并后事件、告警短信。</li>
+</ul>
+<p>3.主要组件详细介绍</p>
+<p>1）agent</p>
+<p>每台需要监控的机器都要部署一个agent，进行监控数据采集，采集的数据可分为以下几类：</p>
+<ul>
+<li>agent默认会去采集一些基础监控信息，例如cpu、磁盘、内存、网络流量等等</li>
+<li>用户配置的需要主动监控的信息，目前包括：端口存活（port.listen）、目录磁盘使用量（du -bs）、url监控（否是返回200）</li>
+<li>用户主动上报的监控数据（agent提供一个http接口，用于接收用户主动push的监控数据，数据格式符合规范即可）<br>agent支持用户自定义上传的监控数据格式如下：</li>
+<li>endpoint：某一监控项所属的机器，open-falcon使用的是机器的hostname</li>
+<li>metric：具体的监控项名词，例如cpu.idle表示cpu空闲时间</li>
+<li>timestamp:时间戳，监控数据上报的时间</li>
+<li>step：某一监控数据上报的时间周期，默认60s上报一次</li>
+<li>counterType：rrd数据库支持的数据格式，主要有GAUGE、COUNTER等，详细信息可搜索下rrdtool。</li>
+<li>tags：标签，用于更加细致的区分监控数据，方便告警。例如cpu.idle/group=ops，project=ceph表示ops组的ceph项目上传的cpu.idle监控数据。</li>
+</ul>
+<p>2）HBS</p>
+<p>HBS（HeartBeat server）主要负责以下几个功能：</p>
+<ul>
+<li>agent自动发现功能。部署了agent的机器会定期向HBS发送心跳数据，其中包含了该机器的ip、hostname、agent版本。</li>
+<li>自定义监控配置同步。agent定期从HBS获取用户自定义的监控配置项，然后进行数据采集上报</li>
+<li>从mysql中同步告警策略。HBS定期从mysql中同步告警策略，并保存在内存中，供judge组件查询。</li>
+</ul>
+<p>3）transfer</p>
+<p>transfer模块接收到agent模块上报的数据后，会将其转发给graph组件和judge组件，分别用于存储历史数据和告警判断。</p>
+<p>为保证可用性，可以配置多个transfer实例，目前我们配置2个。agent在上报数据时，随机选择一个transfer发送，若发送失败才会尝试选择另外一个transfer发送数据。可以保证在一个transfer崩溃时，数据依然可以正常上报。</p>
+<p>graph和judge同样可配置多个实例，目前我们是各配置2个。transfer模块在向graph和judge转发数据时，使用一致性hash算法，选择将数据发送给某一台graph/judge实例。</p>
+<p>4）graph</p>
+<p>由于监控数据量庞大，单独使用一个graph实例，在数据量逐渐增长后会出现磁盘空间不够的情况。因此根据监控的数据量的大小，graph通常需要配置多个实例，实现一个graph集群。</p>
+<p>transfer在转发数据给graph时，会根据一致性hash算法选择转发到哪台graph。</p>
+<p>graph数据存储选择的是rrd数据库，详细信息科查询rrdtool相关概念</p>
+<p>5）judge</p>
+<p>通graph一样，每一条上报的监控数据都需要judge进行告警判断，对于大量的监控数据来说，一台judge压力过大。因此同样可配置多个judge实例，由一致性hash算法选择将数据发送给任意一台judge进行告警判断。</p>
+<p>juege组件定期从hbs组件同步告警策略，一条监控数据上报后，judge查询该数据对应的告警策略，然后进行告警判断，最后将满足告警条件的事件按照优先级分别写入不同的redis队列。</p>
+<p>6）alarm</p>
+<p>judge组件进行告警判断后会将需要告警的事件按照优先级写入redis队列，alarm组件定期去读取这个队列，然后将告警事件转换为告警短息，主要包括：从告警事件中提取告警内容，根据公司短息格式要求产生告警短信内容，读取告警接收人信息，最后组合成一条条告警短信写入redis短信队列。对于低优先级的告警事件，alarm同时进行告警合并，并将告警合并后的短信写入redis短信队列。</p>
+<p>7）sender</p>
+<p>sender组件定期从redis短息队列和邮件队列中读取短信和邮件，调用短信和邮件接口发送告警信息。将告警短息放入redis中可以防止短信量过大导致短信接口发送不完全，最后导致信息丢失。</p>
+<p>8）nodata</p>
+<p>falcon可以通过agent主动上报监控数据，根据监控数据来判断系统是否异常。但是无法应对由于某些原因（网络故障、机器死机、agent崩溃等）导致监控数据未上报的情况。</p>
+<p>nodata的作用就是在发现监控数据未上报时，由nodata主动上报一个伪数据，用户创建相关的nodata告警策略，当接收到此伪数据告警时便可以发现某个监控指标数据未上报。</p>
+<p>我们目前主要使用nodata进行宕机监控。</p>
+<p>4、falcon工作基本流程</p>
+<p>简化的falcon基本工作流程可描述如下图所示：</p>
+<p><img src="/images/open-falcon-simple.png" alt="image"><br>ps：更加详细的流程可以去看顶部的详细架构图</p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/open-falcon/">open-falcon</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2016/12/20/TCP分片机制介绍/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">TCP分片机制介绍</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="golang基础学习"/>
+
+
+
+
+  <meta name="keywords" content="学习," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2017/02/26/golang基础学习/"/>
+
+
+<meta name="description" content="golang基础类型 bool:(true,false) int:32位或者64位整型 int8,int16,int32,int64:8位、16位、32位、64位整型 uint8,uint16,uint32,uint64:无符号8、16、32、64位整型 byte:等价于uint8 rune:等价于int32 float32,float64:浮点32、64位 complex32,complex64">
+<meta name="keywords" content="学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang基础学习">
+<meta property="og:url" content="https://aprilnops.github.io/2017/02/26/golang基础学习/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="golang基础类型 bool:(true,false) int:32位或者64位整型 int8,int16,int32,int64:8位、16位、32位、64位整型 uint8,uint16,uint32,uint64:无符号8、16、32、64位整型 byte:等价于uint8 rune:等价于int32 float32,float64:浮点32、64位 complex32,complex64">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://aprilnops.github.io/images/1482581650243.jpg">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="golang基础学习">
+<meta name="twitter:description" content="golang基础类型 bool:(true,false) int:32位或者64位整型 int8,int16,int32,int64:8位、16位、32位、64位整型 uint8,uint16,uint32,uint64:无符号8、16、32、64位整型 byte:等价于uint8 rune:等价于int32 float32,float64:浮点32、64位 complex32,complex64">
+<meta name="twitter:image" content="https://aprilnops.github.io/images/1482581650243.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> golang基础学习 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          golang基础学习
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年2月26日
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#golang基础类型"><span class="toc-text">golang基础类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#默认值"><span class="toc-text">默认值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#string字符串"><span class="toc-text">string字符串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#UTF-8编码："><span class="toc-text">UTF-8编码：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#内存分配"><span class="toc-text">内存分配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#duck-typing"><span class="toc-text">duck typing</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#包"><span class="toc-text">包</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h4 id="golang基础类型"><a href="#golang基础类型" class="headerlink" title="golang基础类型"></a>golang基础类型</h4><ul>
+<li><code>bool:(true,false)</code></li>
+<li><code>int:32位或者64位整型</code></li>
+<li><code>int8,int16,int32,int64:8位、16位、32位、64位整型</code></li>
+<li><code>uint8,uint16,uint32,uint64:无符号8、16、32、64位整型</code></li>
+<li><code>byte:等价于uint8</code></li>
+<li><code>rune:等价于int32</code></li>
+<li><code>float32,float64:浮点32、64位</code></li>
+<li><code>complex32,complex64:复数32位、64位</code><br><strong>除非非常明确符号及位数，否则通常的整型最好都使用int</strong></li>
+</ul>
+<h4 id="默认值"><a href="#默认值" class="headerlink" title="默认值"></a>默认值</h4><p>各个类型都有默认值，基础类型的默认值通常为0或者false，<br>map、slice等的默认值为nil，因此nil只能赋值给指针、channel、func、interface、map或slice类型的变量。如果<br>用int于nil进行比较，会造成panic</p>
+<h4 id="string字符串"><a href="#string字符串" class="headerlink" title="string字符串"></a>string字符串</h4><p>raw字符串：使用``括起来的字符串将按照字面意思解释，不会进行转义</p>
+<h4 id="UTF-8编码："><a href="#UTF-8编码：" class="headerlink" title="UTF-8编码："></a>UTF-8编码：</h4><p>go源文件都以utf-8作为默认编码<br><img src="/images/1482581650243.jpg" alt="utf-8" title="1482581650243.jpg"><br><a id="more"></a></p>
+<h4 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h4><ul>
+<li><p>new<br>go中使用new分配内存，返回一个指针。例如：new(T) 分配了零值填充的T类型的内存空间,并且返回其地址,一个 *T 类型的值</p>
+</li>
+<li><p>make<br>内建函数 make(T, args) 与 new(T) 有着不同的功能。它只能创建 slice,map 和 channel,并且返回一个有初始值(非零)的 T 类型,而不是 *T。本质原因是数据结构的引用在使用前必须初始化。因此make函数封装了对引用对象的初始化。而new并不会进行初始化，只会分配对象内存（零值）并返回一个指向该内存的指针。</p>
+</li>
+</ul>
+<p>举例make和new的区别：<br>对于一个slice，其初始化值应该包括三个部分：一个底层数组array，一个长度length以及容量capacity。而零值则是直接都复制为0。make会分配内存并进行初始化，返回引用，new分配内存并分配零值返回指针。</p>
+<p>总结：</p>
+<blockquote>
+<p>上面的两段可以简单总结为:<br>• new(T)返回*T指向一个零值T<br>• make(T)返回初始化后的T<br>当然 make 仅适用于 slice,map 和 channel。</p>
+</blockquote>
+<h4 id="duck-typing"><a href="#duck-typing" class="headerlink" title="duck typing"></a>duck typing</h4><p>只要一个对象实现了一个接口所包含的所有方法，那么就可以将其看做该接口类型，无须显示声明。维基百科上的形象解释：</p>
+<blockquote>
+<p>When I see a bird that walks like a duck and swims like a duck and quacks like a duck, I call that bird a duck.</p>
+</blockquote>
+<h4 id="包"><a href="#包" class="headerlink" title="包"></a>包</h4><p>只引入包的全局变量和init函数：<br><code>import _ &quot;path/to/package&quot;</code></p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/学习/">学习</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/02/11/几种增量更新方案/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">2018-02-11-几种增量更新方案</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/26/hdfs架构学习/">
+        <span class="next-text nav-default">hdfs架构学习</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

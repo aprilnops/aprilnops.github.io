@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="教程-利用aws ec2搭建shadowshocks服务"/>
+
+
+
+
+  <meta name="keywords" content="shadowsocks,ec2," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2017/02/26/教程-利用aws ec2搭建shadowshocks服务/"/>
+
+
+<meta name="description" content="1. 申请一台aws ec2服务器（可免费使用一年）注册完amazon账户后，1申请一台虚拟机并启动。详细过程参考网上教程。这里提别提醒一点网上没有提到的内容：需要打开两个端口， 一个是用于远程ssh登录的22端口,另一个是shadowsocks server所使用的端口号，否则无法使用翻墙功能。如下图所示 另外还可以申请一个==弹性IP==，绑定到实例上（aws为避免IP滥用，如果不绑定将会收取">
+<meta name="keywords" content="shadowsocks,ec2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="教程-利用aws ec2搭建shadowshocks服务">
+<meta property="og:url" content="https://aprilnops.github.io/2017/02/26/教程-利用aws ec2搭建shadowshocks服务/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="1. 申请一台aws ec2服务器（可免费使用一年）注册完amazon账户后，1申请一台虚拟机并启动。详细过程参考网上教程。这里提别提醒一点网上没有提到的内容：需要打开两个端口， 一个是用于远程ssh登录的22端口,另一个是shadowsocks server所使用的端口号，否则无法使用翻墙功能。如下图所示 另外还可以申请一个==弹性IP==，绑定到实例上（aws为避免IP滥用，如果不绑定将会收取">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://aprilnops.github.io/images/1479619965462.jpg">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="教程-利用aws ec2搭建shadowshocks服务">
+<meta name="twitter:description" content="1. 申请一台aws ec2服务器（可免费使用一年）注册完amazon账户后，1申请一台虚拟机并启动。详细过程参考网上教程。这里提别提醒一点网上没有提到的内容：需要打开两个端口， 一个是用于远程ssh登录的22端口,另一个是shadowsocks server所使用的端口号，否则无法使用翻墙功能。如下图所示 另外还可以申请一个==弹性IP==，绑定到实例上（aws为避免IP滥用，如果不绑定将会收取">
+<meta name="twitter:image" content="https://aprilnops.github.io/images/1479619965462.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> 教程-利用aws ec2搭建shadowshocks服务 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          教程-利用aws ec2搭建shadowshocks服务
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年2月26日
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-申请一台aws-ec2服务器（可免费使用一年）"><span class="toc-text">1. 申请一台aws ec2服务器（可免费使用一年）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-安装shaodowsocks服务端，编写如下配置文件"><span class="toc-text">2. 安装shaodowsocks服务端，编写如下配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-启动shadowsocks服务器"><span class="toc-text">3.启动shadowsocks服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-配置客户端访问"><span class="toc-text">4.配置客户端访问</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h3 id="1-申请一台aws-ec2服务器（可免费使用一年）"><a href="#1-申请一台aws-ec2服务器（可免费使用一年）" class="headerlink" title="1. 申请一台aws ec2服务器（可免费使用一年）"></a>1. 申请一台aws ec2服务器（可免费使用一年）</h3><p>注册完amazon账户后，1申请一台虚拟机并启动。详细过程参考网上教程。这里提别提醒一点网上没有提到的内容：需要打开两个端口，<br> 一个是用于远程ssh登录的22端口,另一个是shadowsocks server所使用的端口号，否则无法使用翻墙功能。如下图所示<br><img src="/images/1479619965462.jpg" alt="入站规则配置" title="1479619965462.jpg"></p>
+<p>另外还可以申请一个==弹性IP==，绑定到实例上（aws为避免IP滥用，如果不绑定将会收取一定费用），公有ip在每次重启实例后ip地址会改变，弹性ip的好处是只要绑定到实例上不释放，重启实例ip也不会改变</p>
+<h3 id="2-安装shaodowsocks服务端，编写如下配置文件"><a href="#2-安装shaodowsocks服务端，编写如下配置文件" class="headerlink" title="2. 安装shaodowsocks服务端，编写如下配置文件"></a>2. 安装shaodowsocks服务端，编写如下配置文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/shaodowsocks/config.json</span><br><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:&quot;0.0.0.0&quot;,</span><br><span class="line">    &quot;server_port&quot;:9999,</span><br><span class="line">    &quot;local_address&quot;:&quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;local_port&quot;:8888,</span><br><span class="line">    &quot;password&quot;:&quot;yourpassword&quot;,</span><br><span class="line">    &quot;timeout&quot;:600,</span><br><span class="line">    &quot;method&quot;:&quot;aes-256-cfb&quot;,</span><br><span class="line">    &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="3-启动shadowsocks服务器"><a href="#3-启动shadowsocks服务器" class="headerlink" title="3.启动shadowsocks服务器"></a>3.启动shadowsocks服务器</h3><h3 id="4-配置客户端访问"><a href="#4-配置客户端访问" class="headerlink" title="4.配置客户端访问"></a>4.配置客户端访问</h3>
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/shadowsocks/">shadowsocks</a>
+          
+            <a href="/tags/ec2/">ec2</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/02/26/基础学习-ss命令/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">基础学习-ss命令</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/01/26/docker mtu介绍/">
+        <span class="next-text nav-default">docker mtu介绍</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

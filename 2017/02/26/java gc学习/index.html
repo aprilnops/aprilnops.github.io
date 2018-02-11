@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="java gc学习"/>
+
+
+
+
+  <meta name="keywords" content="java," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2017/02/26/java gc学习/"/>
+
+
+<meta name="description" content="java堆内存结构 gc相关参数123-Xms 10m：最小堆内存10M-Xmx 10G：最大堆内存10G-Xmn 10m：新生代大小10M 123-XX:NewRatio:新生代和老年代的比例-XX:SurvivorRatio：s0、s1和eden的比例-XX:NewSize：新生代大小">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java gc学习">
+<meta property="og:url" content="https://aprilnops.github.io/2017/02/26/java gc学习/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="java堆内存结构 gc相关参数123-Xms 10m：最小堆内存10M-Xmx 10G：最大堆内存10G-Xmn 10m：新生代大小10M 123-XX:NewRatio:新生代和老年代的比例-XX:SurvivorRatio：s0、s1和eden的比例-XX:NewSize：新生代大小">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://aprilnops.github.io/images/1482475434784.jpg">
+<meta property="og:image" content="https://aprilnops.github.io/images/1482484140112.jpg">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java gc学习">
+<meta name="twitter:description" content="java堆内存结构 gc相关参数123-Xms 10m：最小堆内存10M-Xmx 10G：最大堆内存10G-Xmn 10m：新生代大小10M 123-XX:NewRatio:新生代和老年代的比例-XX:SurvivorRatio：s0、s1和eden的比例-XX:NewSize：新生代大小">
+<meta name="twitter:image" content="https://aprilnops.github.io/images/1482475434784.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> java gc学习 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          java gc学习
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年2月26日
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#java堆内存结构"><span class="toc-text">java堆内存结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#gc相关参数"><span class="toc-text">gc相关参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#垃圾收集算法"><span class="toc-text">垃圾收集算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#gc垃圾收集器"><span class="toc-text">gc垃圾收集器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#gc正常情况参考"><span class="toc-text">gc正常情况参考</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#gc调试命令"><span class="toc-text">gc调试命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#gc问题"><span class="toc-text">gc问题</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h4 id="java堆内存结构"><a href="#java堆内存结构" class="headerlink" title="java堆内存结构"></a>java堆内存结构</h4><p><img src="/images/1482475434784.jpg" alt="java堆内存结构" title="1482475434784.jpg"></p>
+<h4 id="gc相关参数"><a href="#gc相关参数" class="headerlink" title="gc相关参数"></a>gc相关参数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-Xms 10m：最小堆内存10M</span><br><span class="line">-Xmx 10G：最大堆内存10G</span><br><span class="line">-Xmn 10m：新生代大小10M</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-XX:NewRatio:新生代和老年代的比例</span><br><span class="line">-XX:SurvivorRatio：s0、s1和eden的比例</span><br><span class="line">-XX:NewSize：新生代大小</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h4 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h4><ul>
+<li>标记-清除：先标记对象为不可达，然后回收内存，容易产生内存碎片</li>
+<li>标记-压缩：先标记对象不可达，然后统一将可达对象移动到内存的一端，然后统一回收边界外所有内存。有效解决内存碎片的问题（<strong>适合老年代</strong>）</li>
+<li>复制算法：<strong>针对新生代</strong>，将内存分为完全相同的两块，每次只用一块，gc时，将存活对象移到另一个空闲的内存块，然后清除整块内存。</li>
+<li><h4 id="gc垃圾收集器"><a href="#gc垃圾收集器" class="headerlink" title="gc垃圾收集器"></a>gc垃圾收集器</h4></li>
+<li>串行收集器，单线程进行垃圾回收，新生代采用标记-复制算法，老年代采用标记-压缩算法</li>
+<li>并行收集器ParNew：<strong>不适用于老年代</strong>，多个线程同时进行gc，<strong>采用标记-复制算法</strong></li>
+<li>CMS并发标记清除收集器：<strong>只能用于老年代</strong>gc和应用程序并发执行，很少的时间会出现stop the world现象。<strong>不适用压缩算法</strong>。</li>
+</ul>
+<p>串行收集器和cms对比图：<br><img src="/images/1482484140112.jpg" alt="对比" title="1482484140112.jpg"></p>
+<ul>
+<li><h4 id="gc正常情况参考"><a href="#gc正常情况参考" class="headerlink" title="gc正常情况参考"></a>gc正常情况参考</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">如果GC执行时间满足以下判断条件，那么GC调优并没那么必须。</span><br><span class="line"></span><br><span class="line">Minor GC执行迅速(50毫秒以内)</span><br><span class="line">Minor GC执行不频繁(间隔10秒左右一次)</span><br><span class="line">Full GC执行迅速(1秒以内)</span><br><span class="line">Full GC执行不频繁(间隔10分钟左右一次)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="gc调试命令"><a href="#gc调试命令" class="headerlink" title="gc调试命令"></a>gc调试命令</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">jstat:</span><br><span class="line"></span><br><span class="line">命令格式：jstat - [-t] [-h]  []]</span><br><span class="line">其中：</span><br><span class="line">option：</span><br><span class="line">     class:加载的类的数量及大小统计</span><br><span class="line">     gc：查看gc的次数和各个代容量大小及当前使用量，可以查看堆空间分配的容量大小</span><br><span class="line">     gccapacity:显示三代对象内存的使用情况，当前使用大小和总容量大小</span><br><span class="line">     gcutil:统计gc信息，各个堆内存剩余空间百分比，gc次数及时间。无法查看各个堆空间的大小</span><br><span class="line">     gcnew：查看年轻代gc统计信息</span><br><span class="line">     gcnewcapacity:查看年轻代空间容量统计信息</span><br><span class="line">     gcold:老年代gc统计信息</span><br><span class="line">     gcoldcapacity：老年代空间容量统计信息</span><br></pre></td></tr></table></figure>
+<p><strong>关键词解释</strong>：<br>以下容量的单位为kb，时间单位为秒<br><strong>jstat -gc</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">S0C：年轻代中第一个 survivor 的容量</span><br><span class="line">S1C：年轻代中第二个 survivor 的容量</span><br><span class="line">S0U：年轻代中第一个 survivor 已经使用的空间</span><br><span class="line">S1U：年轻代中第二个 survivor 已经使用的空间</span><br><span class="line">EC：年轻代中 eden 的总容量</span><br><span class="line">EU：年轻代中 eden 的已经使用容量</span><br><span class="line">OC：老年代（old）区域的总容量</span><br><span class="line">OU：老年代（old）区域已经使用的容量</span><br><span class="line">MC：元数据（Metaspace）区大小</span><br><span class="line">MU：元数据（Metaspace）区已经使用的空间</span><br><span class="line">CCSC：压缩类空间的大小</span><br><span class="line">CCSU：压缩类空间已经使用的大小</span><br><span class="line">YGC：年轻代垃圾回收的次数</span><br><span class="line">YGCT：年轻代垃圾回收所用的时间</span><br><span class="line">FGC：full gc 的次数</span><br><span class="line">FGCT：full gc 的总消耗时间</span><br><span class="line">GCT：从程序启动到程序统计时，gc 的总消耗时间</span><br></pre></td></tr></table></figure></p>
+<p><strong>jstat -gccapacity</strong>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">NGCMN：年轻代（young）的初始化内存容量</span><br><span class="line">NGCMX：年轻代（young）的最大内存容量</span><br><span class="line">NGC：年轻代（young）当前的容量</span><br><span class="line">S0C：当前 survivor 0 的容量</span><br><span class="line">S1C：当前 survivo 1 的容量</span><br><span class="line">EC：eden 的容量</span><br><span class="line">OGCMN：老年代（old）的最小容量</span><br><span class="line">OGCMX ：老年代（old）的最大容量</span><br><span class="line">OGC ：老年代（old）当前的容量</span><br><span class="line">OC：OGC=sum(all OC),hotspot中老年代空间个数为1个，年轻代为3个（eden，s0，s1），因此OGC==OC</span><br><span class="line">MCMN：元数据（Metaspace）区的最小容量</span><br><span class="line">MCMX： 元数据（Metaspace）区的最大容量</span><br><span class="line">MC：元数据（Metaspace）区当前的容量</span><br><span class="line">CCSMN：压缩类空间的最小容量</span><br><span class="line">CCSMX：压缩类空间的最大容量</span><br><span class="line">CCSC：压缩类空间的当前容量</span><br><span class="line">YGC：年轻代 gc 次数</span><br><span class="line">FGC：full gc 次数</span><br></pre></td></tr></table></figure></p>
+<p><strong>jstat -gcutil</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">S0：survivo 1 当前所用的比例</span><br><span class="line">S1： survivor 2 当前所用的比例</span><br><span class="line">E：eden 区所使用的比例</span><br><span class="line">O：老年代（old 区）所使用的比例</span><br><span class="line">M：元数据（Metaspace）区 所使用的比例</span><br><span class="line">CCS：压缩类使用的比例</span><br><span class="line">YGC：年轻代 gc 的次数</span><br><span class="line">YGCT：年轻代 gc 消耗的时间</span><br><span class="line">FGC：full gc的次数</span><br><span class="line">FGCT：full gc消耗的时间</span><br><span class="line">GCT：gc 消耗的总时间</span><br></pre></td></tr></table></figure></p>
+<p><strong>jstat -gccause</strong>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">与gcutil相比多了两列，上一次gc原因和当前gc原因。</span><br><span class="line">LGCC：Last Garbage Collection Cause.上一次gc原因</span><br><span class="line">GCC：Current Garbage Collection Cause.当前gc原因</span><br></pre></td></tr></table></figure></p>
+<h4 id="gc问题"><a href="#gc问题" class="headerlink" title="gc问题"></a>gc问题</h4><ul>
+<li><p>full gc频繁</p>
+</li>
+<li><p>full gc时间过久</p>
+</li>
+<li><p>young gc时间太久</p>
+</li>
+<li><p>young gc频繁</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/java/">java</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/02/26/http状态码/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">http协议学习</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/26/linux内核一些参数研究/">
+        <span class="next-text nav-default">linux内核一些参数研究</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>

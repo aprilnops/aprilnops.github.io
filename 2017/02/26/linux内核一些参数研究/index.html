@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="linux内核一些参数研究"/>
+
+
+
+
+  <meta name="keywords" content="tcp，linux," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nops Blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.2.x" />
+
+
+
+<link rel="canonical" href="https://aprilnops.github.io/2017/02/26/linux内核一些参数研究/"/>
+
+
+<meta name="description" content="linux内核中的参数： tcp_syncookies用于防止syn攻击。要慎用此参数，因为这与tcp协议的其他部分冲突。 SYN攻击：正常情况下，服务器收到客户端的连接SYN包后会将客户端加入半连接队列（SYN队列，这个队列长度有限，由==tcp_max_syn_backlog==参数控制）并回复一个ack包并等待客户端的确认，且超时会进行重试。重试次数由参数tcp_synack_retries">
+<meta name="keywords" content="tcp，linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux内核一些参数研究">
+<meta property="og:url" content="https://aprilnops.github.io/2017/02/26/linux内核一些参数研究/index.html">
+<meta property="og:site_name" content="Nops Blog">
+<meta property="og:description" content="linux内核中的参数： tcp_syncookies用于防止syn攻击。要慎用此参数，因为这与tcp协议的其他部分冲突。 SYN攻击：正常情况下，服务器收到客户端的连接SYN包后会将客户端加入半连接队列（SYN队列，这个队列长度有限，由==tcp_max_syn_backlog==参数控制）并回复一个ack包并等待客户端的确认，且超时会进行重试。重试次数由参数tcp_synack_retries">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://aprilnops.github.io/images/1484299490829.jpg">
+<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux内核一些参数研究">
+<meta name="twitter:description" content="linux内核中的参数： tcp_syncookies用于防止syn攻击。要慎用此参数，因为这与tcp协议的其他部分冲突。 SYN攻击：正常情况下，服务器收到客户端的连接SYN包后会将客户端加入半连接队列（SYN队列，这个队列长度有限，由==tcp_max_syn_backlog==参数控制）并回复一个ack包并等待客户端的确认，且超时会进行重试。重试次数由参数tcp_synack_retries">
+<meta name="twitter:image" content="https://aprilnops.github.io/images/1484299490829.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    search: {
+      enable: true,
+      path: "/search.xml",
+    },
+    navbar: {
+      enable: true
+    },
+    fancybox: {
+      enable: true
+    },
+    toc: {
+      enable: true
+    },
+  };
+</script>
+
+
+
+  
+
+
+
+    <title> linux内核一些参数研究 · Nops Blog </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Nops Blog</a>
+</div>
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              主页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+<div class="mobile-navbar">
+  <div class="mobile-header">
+    <div class="mobile-header-logo">
+      <a href="/." class="logo">Nops Blog</a>
+    </div>
+
+    <div class="mobile-header-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav class="mobile-menu">
+    
+      <a class="mobile-menu-item" href="/">
+        
+        
+          主页
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/tags">
+        
+        
+          标签
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/categories">
+        
+        
+          分类
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/about">
+        
+        
+          关于
+        
+      </a>
+    
+      <a class="mobile-menu-item" href="/archives/">
+        
+        
+          归档
+        
+      </a>
+    
+  </nav>
+</div>
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          linux内核一些参数研究
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年2月26日
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#linux内核中的参数："><span class="toc-text">linux内核中的参数：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#time-wait"><span class="toc-text">time_wait</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#nf-conntrack-max"><span class="toc-text">nf_conntrack_max</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tcp-max-orphans"><span class="toc-text">tcp_max_orphans</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tcp-RST"><span class="toc-text">tcp RST</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vm-dirty-ratio-hugepage"><span class="toc-text">vm.dirty_ratio/hugepage/</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SO-REUSEADDR"><span class="toc-text">SO_REUSEADDR</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h1 id="linux内核中的参数："><a href="#linux内核中的参数：" class="headerlink" title="linux内核中的参数："></a>linux内核中的参数：</h1><ul>
+<li><strong>tcp_syncookies</strong><br>用于防止syn攻击。<strong>要慎用此参数</strong>，因为这与tcp协议的其他部分冲突。<blockquote>
+<p>SYN攻击：正常情况下，服务器收到客户端的连接SYN包后会将客户端加入半连接队列（SYN队列，这个队列长度有限，由==tcp_max_syn_backlog==参数控制）并回复一个ack包并等待客户端的确认，且超时会进行重试。重试次数由参数<code>tcp_synack_retries</code>==指定,重试间隔时间依次为1,2,4,8,16s,加上最后一次重试后等待32s，因此需要总共等待63s。<br>利用这种机制，攻击者向服务器发送大量SYN包，然后立即断开。会导致服务器的SYN队列长时间溢出，无法接受新的正常的连接。</p>
+</blockquote>
+</li>
+</ul>
+<p>==tcp_syncookies==设置为1后，当syn队列溢出后，服务器端将不再使用syn队列，对于新来的syn包服务器端TCP会利用源端地址、端口号和时间戳生成一个序号（也叫cookie）并返回给客户端（不再将其放入syn队列并分配内存），正常客户端会给出正确的响应，服务器端收到响应后直接建立连接（即使客户端不再SYN队列中），进入established状态。非正常连接不会给出正确响应同时不再被加入SYN队列也不会建立连接。</p>
+<p>虽然tcp<em>syncookies可以一定程度上使得在遭受DDos攻击时依然可以对外响应请求。<strong>但是正常情况下并不应该依赖此参数</strong>。因为在正常情况下，如果打开此参数会发哦之服务器真正过载时无法看到正确的错误日志。并且此参数使得TCP协议改变（妥协版TCP），</em><strong>TCP滑动窗口机制失效（有待验证）</strong>_</p>
+<p>正常情况下，对于并发量过高的问题，应该依赖以下三个参数解决：</p>
+<blockquote>
+<p>tcp_max_syn_backlog<br><br>tcp_synack_retries<br><br>tcp_abort_on_overflow </p>
+</blockquote>
+<a id="more"></a>
+<ul>
+<li><strong>tcp_synack_retries</strong><br>指服务器端TCP接受到客户端SYN包并返回ack+SYN后超时重试的次数。</li>
+<li><strong>tcp_syn_retries</strong><br>主动发送TCP连接的一方重试发送SYN的次数</li>
+<li><p>__tcp_max_syn_backlog<br>半连接队列最大长度，并发量过高时可适当增加此值。</p>
+</li>
+<li><p><strong>somaxconn</strong><br>established队列长度（完成三次握手），可以由listen函数中的backlog参数指定，但必须小于配置文件中somaxconn的值。</p>
+</li>
+<li><strong>tcp_abort_on_overflow</strong><br>设置服务器过载无法接受新的连接时直接返回RST包给客户端。默认不启用，<strong><em>慎用此参数</em></strong></li>
+<li><strong>tcp_tw_reuse</strong><br>time<em>wait端口重用,</em><strong>慎用</strong>_。NAT环境下会导致tcp连接建立错误，<strong>仅适用于客户端，对作为服务器端的机器无用</strong>。<br>使用要求客户端和服务器端都必须开启tcp_timestamps选项。内核依靠tcp_timestamps这个参数判断是旧的连接还是新的连接。旧连接直接丢弃，新连接复用端口号。</li>
+<li><strong>tcp_tw_recycle</strong><br>time<em>wait端口快速回收,</em><strong>慎用</strong>_。NAT环境下会导致tcp连接建立错误。打开此选项后，time_wait状态的端口会被快速回收，然后接收新的连接。linux内核通过timestamps防止旧的数据发送到新的连接上。这会导致NAT环境下客户端建立连接失败。原因：NAT下的多个客户端请求服务器时，源端地址相同，当第一个客户端建立短连接然后立马释放进入time_wait状态然后被回收后，另一个客户端再次以相同的端口号连接时，服务器端比较时间戳就认为是一个旧的数据，直接丢失，造成新的合法的连接失败。</li>
+<li><strong>tcp_timestamps</strong><br>tcp_tw_reuse和tcp_tw_recycle都需要同时设置此参数</li>
+<li><strong>tcp_max_tw_buckets</strong><br>设置time_wait状态连接的数量。这个参数只是为了防止简单的ddos攻击。默认值为180000，平时不要人为降低。当受到ddos攻击是，降低这个值可以快速清除time_wait状态的连接。</li>
+<li><p><strong>msl</strong>：<br>最大报文生存时间</p>
+<blockquote>
+<p>30s or 1min or 2min,通常为2分钟</p>
+</blockquote>
+</li>
+<li><p><strong>ip_local_port_range</strong><br>客户单允许使用的端口范围</p>
+</li>
+</ul>
+<h3 id="time-wait"><a href="#time-wait" class="headerlink" title="time_wait"></a>time_wait</h3><p>time_wait状态的tcp仍然占用端口号，因此如果time_wait状态的socket连接过多过导致系统剩余端口号不足，从而无法接受新的连接。</p>
+<p>主动关闭的一方才会进入time_wait状态，在传统c/s架构的系统中，通常是c端主动关闭连接；在http和ftp服务器上，通常是server主动关闭连接。</p>
+<h3 id="nf-conntrack-max"><a href="#nf-conntrack-max" class="headerlink" title="nf_conntrack_max"></a>nf_conntrack_max</h3><p>nf_conntrack是一个内核模块，用于跟踪一个连接的状态。这个连接状态可供其他模块使用，例如iptables的nat和state模块。（state模块用于定义防火墙规则，使用的连接的状态就是由nf_conntrack模块提供）。nf_conntrack_max记录了可以跟踪的最大连接个数，centos默认值为65536。如果iptable的防火墙规则太多，而服务器的连接数又非常多，容易出现如下错误：<br><code>kernel nf_conntrack table full dropping packet</code><br>解决办法是增大nf_conntrack_max的值（治标），如果无法解决，需要修改防火墙规则或者关闭iptables（治本）或者直接移除nf_conntrack模块。</p>
+<p>查看当前最大值：<br><code>cat /proc/sys/net/netfilter/nf_conntrack_max</code><br>或者<br><code>sysctl -a|grep nf_conntrack_max</code></p>
+<p>查看当前值：<br><code>cat /proc/sys/net/netfilter/nf_conntrack_count</code></p>
+<p>暂时修改：<br><code>sysctl -w nf_conntrack_max=6553600</code></p>
+<p>若需要永久更改（防止重启网卡或者系统失效）：<br>需要将设置写入/etc/sysctl.conf文件<br>执行<code>sysctl -p</code>会立即将配置文件/etc/sysctl.conf中的参数生效。</p>
+<h3 id="tcp-max-orphans"><a href="#tcp-max-orphans" class="headerlink" title="tcp_max_orphans"></a>tcp_max_orphans</h3><h3 id="tcp-RST"><a href="#tcp-RST" class="headerlink" title="tcp RST"></a>tcp RST</h3><h3 id="vm-dirty-ratio-hugepage"><a href="#vm-dirty-ratio-hugepage" class="headerlink" title="vm.dirty_ratio/hugepage/"></a>vm.dirty_ratio/hugepage/</h3><p>linux默认使用当前可用内存的40%作为文件系统的缓存，当文件缓存超过</p>
+<h3 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a>SO_REUSEADDR</h3><p>这个参数作用：<br>1）如果服务器端使用端口号8888开启一个server socket，然后由于某种原因服务端重启服务。如果不设置此参数，由于旧的socket处于timewait状态（通常持续2分钟）此时端口号8888被占用，服务将重启失败。因此需要设置SO_REUSEADDR参数，保证可以快速重用处于timewait状态的socket端口。</p>
+<p>2）若不设置此参数<br>如果使用如下方式绑定一个端口时：<br><code>0.0.0.0:port</code><br>将不再可以使用其他的ip绑定相同的port<br><code>10.103.16.30:port</code>将会失败</p>
+<p><a href="http://stackoverflow.com/questions/14388706/socket-options-so-reuseaddr-and-so-reuseport-how-do-they-differ-do-they-mean-t" target="_blank" rel="noopener">参考网址</a></p>
+<p><img src="/images/1484299490829.jpg" alt="enter description here" title="1484299490829.jpg"></p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-tags">
+          
+            <a href="/tags/tcp，linux/">tcp，linux</a>
+          
+        </div>
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/02/26/java gc学习/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">java gc学习</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/26/nginx max_fails及proxy_next_upstream研究/">
+        <span class="next-text nav-default">nginx max_fails及proxy_next_upstream研究</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:zkwhu@@foxmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/aprilnops" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Nops</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.2.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.2.x"></script>
+
+  </body>
+</html>
