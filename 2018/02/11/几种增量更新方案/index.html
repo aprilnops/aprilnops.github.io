@@ -34,18 +34,18 @@
 <link rel="canonical" href="https://aprilnops.github.io/2018/02/11/几种增量更新方案/"/>
 
 
-<meta name="description" content="问题需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。 分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意 初步想法一个while循环，每次更新前1分钟的数据： 12345# 伪代码while True:    now = time.time()    sync_to_local(update_time&amp;g">
+<meta name="description" content="问题需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。 分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意">
 <meta name="keywords" content="增量更新">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2018-02-11-几种增量更新方案">
 <meta property="og:url" content="https://aprilnops.github.io/2018/02/11/几种增量更新方案/index.html">
 <meta property="og:site_name" content="Nops Blog">
-<meta property="og:description" content="问题需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。 分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意 初步想法一个while循环，每次更新前1分钟的数据： 12345# 伪代码while True:    now = time.time()    sync_to_local(update_time&amp;g">
+<meta property="og:description" content="问题需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。 分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta property="og:updated_time" content="2018-02-11T10:01:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2018-02-11-几种增量更新方案">
-<meta name="twitter:description" content="问题需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。 分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意 初步想法一个while循环，每次更新前1分钟的数据： 12345# 伪代码while True:    now = time.time()    sync_to_local(update_time&amp;g">
+<meta name="twitter:description" content="问题需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。 分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
@@ -239,7 +239,7 @@
     <div class="post-content">
       
         <h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>需要从server端同步数据到client端，server端数据量很大，并且通常需要进行分页，限制一次更新的数量，只能增量更新。</p>
-<p><strong>分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意</strong></p>
+<p><strong>分页机制的引入会导致增量更新方案变的更加复杂，有很多地方需要注意</strong><br><a id="more"></a></p>
 <h1 id="初步想法"><a href="#初步想法" class="headerlink" title="初步想法"></a>初步想法</h1><p>一个while循环，每次更新前1分钟的数据：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 伪代码</span><br><span class="line">while True:</span><br><span class="line">    now = time.time()</span><br><span class="line">    sync_to_local(update_time&gt;=now)</span><br><span class="line">    time.sleep(interval)</span><br></pre></td></tr></table></figure>
 <p>存在的问题：</p>

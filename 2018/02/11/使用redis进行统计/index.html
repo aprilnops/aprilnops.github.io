@@ -34,18 +34,18 @@
 <link rel="canonical" href="https://aprilnops.github.io/2018/02/11/使用redis进行统计/"/>
 
 
-<meta name="description" content="按照日期统计次数，不关心次数高低问题描述：需要统计事件a、b、c每个小时、每天、每月的发生次数 使用redis hash结构即可满足此需求 key设计举例：    key field value 说明     a 2018-02-11-08 10 事件a在2018-02-11早上8点一个小时内发生的次数   a 2018-02-11-09 11    b 2018-02-11-08 10    b">
+<meta name="description" content="按照日期统计次数，不关心次数高低问题描述：需要统计事件a、b、c每个小时、每天、每月的发生次数">
 <meta name="keywords" content="redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2018-02-11-使用redis做相关统计">
 <meta property="og:url" content="https://aprilnops.github.io/2018/02/11/使用redis进行统计/index.html">
 <meta property="og:site_name" content="Nops Blog">
-<meta property="og:description" content="按照日期统计次数，不关心次数高低问题描述：需要统计事件a、b、c每个小时、每天、每月的发生次数 使用redis hash结构即可满足此需求 key设计举例：    key field value 说明     a 2018-02-11-08 10 事件a在2018-02-11早上8点一个小时内发生的次数   a 2018-02-11-09 11    b 2018-02-11-08 10    b">
+<meta property="og:description" content="按照日期统计次数，不关心次数高低问题描述：需要统计事件a、b、c每个小时、每天、每月的发生次数">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2018-02-11T09:45:50.000Z">
+<meta property="og:updated_time" content="2018-02-11T10:01:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2018-02-11-使用redis做相关统计">
-<meta name="twitter:description" content="按照日期统计次数，不关心次数高低问题描述：需要统计事件a、b、c每个小时、每天、每月的发生次数 使用redis hash结构即可满足此需求 key设计举例：    key field value 说明     a 2018-02-11-08 10 事件a在2018-02-11早上8点一个小时内发生的次数   a 2018-02-11-09 11    b 2018-02-11-08 10    b">
+<meta name="twitter:description" content="按照日期统计次数，不关心次数高低问题描述：需要统计事件a、b、c每个小时、每天、每月的发生次数">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.2.x" />
@@ -239,6 +239,7 @@
     <div class="post-content">
       
         <h1 id="按照日期统计次数，不关心次数高低"><a href="#按照日期统计次数，不关心次数高低" class="headerlink" title="按照日期统计次数，不关心次数高低"></a>按照日期统计次数，不关心次数高低</h1><p>问题描述：<br>需要统计事件a、b、c每个小时、每天、每月的发生次数</p>
+<a id="more"></a>
 <p>使用redis hash结构即可满足此需求</p>
 <p>key设计举例：</p>
 <table>
