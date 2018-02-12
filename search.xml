@@ -861,7 +861,7 @@
         
         <tags>
             
-            <tag> rrdtool </tag>
+            <tag> rrdtool，监控 </tag>
             
         </tags>
         
@@ -1285,6 +1285,8 @@
         <tags>
             
             <tag> open-falcon </tag>
+            
+            <tag> 监控 </tag>
             
         </tags>
         
