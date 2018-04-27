@@ -328,7 +328,33 @@
 <p>本地记录下last_sync_timestamp和id，<br>last_sync_timestamp：0002<br>id：2</p>
 <p>2）第二次获取数据<br>last_sync_timestamp&gt;=0002 &amp;&amp; id not in (2)</p>
 <p>返回数据为：<br>count=2，total=4，</p>
-<p>更新后本地数据为：<br>id|update_time<br>—|—<br>1|0001<br>2|0002<br>3|0002<br>4|0002</p>
+<p>更新后本地数据为：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0001</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0002</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0002</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0002</td>
+</tr>
+</tbody>
+</table>
 <p>last_sync_timestamp=0002，<br>id=2,3,4</p>
 <p>4）第四次获取数据<br>last_sync_timestamp&gt;=0002 &amp;&amp; id not in (2,3,4)</p>
 <p>返回数据：count=2，total=2<br>更新后本地数据为：</p>
