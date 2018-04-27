@@ -4,6 +4,168 @@
   
     
     <entry>
+      <title></title>
+      <url>https://aprilnops.github.io/2018/04/25/graph%E6%A8%A1%E5%9D%97%E6%80%BB%E7%BB%93/</url>
+      <content type="html"><![CDATA[<h1 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h1><p>graph模块负责将agent采集到的监控数据存储到rrd中。根据源代码整理了如下流程图。</p>
+<p>需要了解四个关键的数据结构:</p>
+<ul>
+<li>GraphItems:一个用来保存接收到的所有监控数据（之后会定期写入磁盘rrd文件中）</li>
+<li>HistoryCache: 保存最近三次接收到的历史数据（主要用于绘图数据的查询）</li>
+<li>IndexedItemCache: 已经写入mysql的索引数据</li>
+<li>UnIndexedItemCache: 尚未写入mysql的索引</li>
+</ul>
+<p>大致流程为：</p>
+<ol>
+<li>接收数据=&gt;保存监控数据=&gt;保存索引=&gt;保存历史数据</li>
+<li>定期将内存数据GraphItems写入磁盘</li>
+<li>定期更新索引到mysql</li>
+</ol>
+<p>1,2,3这三个过程并行运行</p>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><p><img src="media/graph.png" alt="graph"></p>
+<h1 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>首先说明falcon需要扩容的场景：数据量过大，整个graph集群中，单台graph占用的内存达到机器的瓶颈，若短期内不处理，机器的内存使用将超限，严重的将导致机器宕机。</p>
+<p>因此，扩容的意思即是：增加graph集群使用的机器数量，分散监控数据，使得单台graph占用的机器内存减小。</p>
+<p>falcon绘图数据的存储使用的是rrd，依据的算法是一致性hash算法。因此，增加机器意味着之前写入A机器的数据现在可能写入新增加的机器B，必须要把旧机器上A的数据迁移到新的机器B上，才能保证查询数据的正确性。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>知道了为什么扩容以及扩容的基础知识，就可以更好的理解其原理了。</p>
+<ol>
+<li>当增加机器时，部分数据会写入新机器B（这些数据在未扩容之前是写入A机器），数据写入时，先不落盘，而是先从旧的机器A上拉取历史数据（就是一个rrd文件），拉取成功，则将整个文件写入本地磁盘。若拉取超时（1s），则将新接收到的数据传送给旧的A机器。待下一个周期再重复此过程，直到A机器上的历史数据写入本地磁盘成功。</li>
+<li>为保证扩容过程中依然可以查看绘图数据，当查询数据时落到新加的机器时，若本地有数据则直接返回本地数据，若本地没有数据则从旧的机器A上查询并与本地cache合并返回给用户。</li>
+</ol>
+<h2 id="流程图-1"><a href="#流程图-1" class="headerlink" title="流程图"></a>流程图</h2><p><img src="media/%E6%89%A9%E5%AE%B9%E6%B5%81%E7%A8%8B-1.png" alt="扩容流程"></p>
+<h2 id="扩容过程"><a href="#扩容过程" class="headerlink" title="扩容过程"></a>扩容过程</h2><ol>
+<li>配置新的graph实例</li>
+<li>重启所有graph(<strong>最好一台一台重启，防止重启过程中丢失数据</strong>)</li>
+<li>修改transfer配置，加入新graph，重启</li>
+<li>修改api配置，加入新graph，重启</li>
+<li>等待扩容完毕</li>
+</ol>
+<blockquote>
+<p>此过程可参见作者写的详细文档<a href="https://www.jianshu.com/p/16baba04c959" target="_blank" rel="noopener">扩容操作过程</a></p>
+</blockquote>
+<h2 id="扩容过程监控"><a href="#扩容过程监控" class="headerlink" title="扩容过程监控"></a>扩容过程监控</h2><p> <strong>一些关键指标</strong></p>
+<ul>
+<li>扩容相关</li>
+</ul>
+<p><code>curl http://localhost:6071/api/v2/counter/migrate</code></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FETCH_S_ERR</td>
+<td>拉取rrd文件失败</td>
+<td>严重错误，数据堆积内存，无法写入本地磁盘</td>
+</tr>
+<tr>
+<td>FETCH_S_SUCCESS</td>
+<td>拉入rrd文件成功</td>
+<td>成功标识</td>
+</tr>
+<tr>
+<td>FETCH_S_ISNOTEXIST</td>
+<td>远端机器没有rrd文件</td>
+<td>直接将数据写入本地，成功标识</td>
+</tr>
+<tr>
+<td>SEND_S_SUCCESS</td>
+<td>向远端机器发送数据成功</td>
+<td>说明fetch超时了，将数据写入远端成功</td>
+</tr>
+<tr>
+<td>SEND_S_ERR</td>
+<td>向远端机器发送数据失败</td>
+<td>说明fetch超时了，写入远端也失败了，将会有数据丢失</td>
+</tr>
+<tr>
+<td>QUERY_S_SUCCESS</td>
+<td>查询成功</td>
+<td>扩容过程中有查询操作，从远端查询数据成功</td>
+</tr>
+<tr>
+<td>QUERY_S_ERR</td>
+<td>查询失败</td>
+<td>扩容过程中有查询操作，从远端查询数据失败（不影响扩容）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>graph相关</li>
+</ul>
+<p><code>curl http://localhost:6071/counter/all</code></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GraphRpcRecvCnt</td>
+<td>graph接收到的数据个数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="监控图"><a href="#监控图" class="headerlink" title="监控图"></a>监控图</h3><p><img src="media/15248190064892.jpg" alt=""></p>
+<blockquote>
+<p>参考</p>
+</blockquote>
+<ul>
+<li><a href="https://www.jianshu.com/p/16baba04c959" target="_blank" rel="noopener">扩容操作过程</a></li>
+<li><a href="http://book.open-falcon.org/zh_0_2/practice/graph-scaling.html" target="_blank" rel="noopener">扩容二三事</a></li>
+</ul>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[2018-03-17-利用docker构建golang开发不换]]></title>
+      <url>https://aprilnops.github.io/2018/03/17/%E5%88%A9%E7%94%A8docker%E6%9E%84%E5%BB%BAgolang%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</url>
+      <content type="html"><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>很多时候我们本地开发环境和线上环境是不一致的，一般我们的做法是在本地开发完程序，将代码上传到git，然后到服务器上把代码clone下来，编译然后再部署到服务器上运行。或者在本地进行交叉编译。</p>
+<p>一种更好的方式是使用docker构建本地编译环境，可以非常方便的编译适合各个平台的程序版本</p>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>原理很简单，就是利用官方提供的golang镜像，将本地的代码通过挂载的方式，挂载到容器中，然后再容器中编译即可。</p>
+<p>golang开发环境的镜像我们这里选择golang:1.8(也可以选择其他的镜像），这个镜像的目录结构为：<br>/go/bin<br>/go/src</p>
+<p>他的gopath 为 /go</p>
+<p>可以通过以下命令查看：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm golang:1.8 go env</span><br></pre></td></tr></table></figure>
+<p>具体可以参考官方dockerfile文件，搜索gopath即可。<br><a href="https://github.com/docker-library/golang/blob/9bf6daddb324a4d8e82b0613cf348a6eff363f95/1.10/stretch/Dockerfile" target="_blank" rel="noopener">https://github.com/docker-library/golang/blob/9bf6daddb324a4d8e82b0613cf348a6eff363f95/1.10/stretch/Dockerfile</a></p>
+<p>因此，我们可以将本地的gopath映射到容器的/go目录（这样我们项目依赖的go包也会自动挂载到容器的gopath目录下）<br>将要编译的本地程序映射到容器的/go/src/myapp 目录下，然后执行编译即可。</p>
+<h1 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h1><p>一条命令就可以搞定：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -v &quot;$GOPATH&quot;:/go --rm -v &quot;$PWD&quot;:/go/src/myapp -w /go/src/myapp -e GOOS=&quot;darwin&quot; -e GOARCH=&quot;amd64&quot; golang:1.8 go build -v</span><br></pre></td></tr></table></figure>
+<p>解释下这句话的意思：</p>
+<p>–rm ：会在每次执行完编译后自动删除容器（不加这个参数，使用docker ps -a会看到我们上一次执行结束的容器）</p>
+<p>-v “$GOPATH”:/go:将本地gopath映射到容器中，这样容器中就不会提示缺少包</p>
+<p>-v “$PWD”:/go/src/myapp:将本地代码映射到容器中，本地代码目录为myapp</p>
+<p>-e GOOS/-e GOARCH:指定编译平台，可以很方便的进行交叉编译</p>
+<p>golang：1.8：镜像名称</p>
+<p>这样，我们只需要在我们的代码目录下，增加一个脚本build.sh, 内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -v &quot;$GOPATH&quot;:/go --rm -v &quot;$PWD&quot;:/go/src/myapp -w /go/src/myapp -e GOOS=&quot;darwin&quot; -e GOARCH=&quot;amd64&quot; golang:1.8 go build -v</span><br></pre></td></tr></table></figure>
+<p>可以根据需求，自己修改这个脚本。</p>
+<p>然后再需要编译的时候，直接执行这个脚本就会在本地目录下生成编译好的二进制文件，非常方便</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> golang，docker </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[2018-02-11-使用redis做相关统计]]></title>
       <url>https://aprilnops.github.io/2018/02/11/%E4%BD%BF%E7%94%A8redis%E8%BF%9B%E8%A1%8C%E7%BB%9F%E8%AE%A1/</url>
       <content type="html"><![CDATA[<h1 id="按照日期统计次数，不关心次数高低"><a href="#按照日期统计次数，不关心次数高低" class="headerlink" title="按照日期统计次数，不关心次数高低"></a>按照日期统计次数，不关心次数高低</h1><p>问题描述：<br>需要统计事件a、b、c每个小时、每天、每月的发生次数</p>
@@ -110,28 +272,6 @@
         <tags>
             
             <tag> redis </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
-      <title><![CDATA[2018-02-11-python状态机设计模式]]></title>
-      <url>https://aprilnops.github.io/2018/02/11/%E7%8A%B6%E6%80%81%E6%9C%BA%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AE%80%E8%BF%B0/</url>
-      <content type="html"><![CDATA[<h1 id="python-demo"><a href="#python-demo" class="headerlink" title="python demo"></a>python demo</h1><a id="more"></a>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="string">'''状态机设计模式-demo'''</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Machine</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">'''糖果机类'''</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, num)</span>:</span></span><br><span class="line">        self.num = num</span><br><span class="line">        self.set_state(<span class="string">'no_coin'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">set_state</span><span class="params">(self, state)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.num &lt;= <span class="number">0</span>:</span><br><span class="line">            self.state = <span class="string">'sold_out'</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.state = state</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_state</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.state == <span class="string">'coin_in'</span>:</span><br><span class="line">            <span class="keyword">return</span> CoinInState(self)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.state == <span class="string">'no_coin'</span>:</span><br><span class="line">            <span class="keyword">return</span> NoCoinState(self)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.state == <span class="string">'sold'</span>:</span><br><span class="line">            <span class="keyword">return</span> SoldState(self)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.state == <span class="string">'winner'</span>:</span><br><span class="line">            <span class="keyword">return</span> WinnerState(self)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> SoldOutState(self)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sub</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.num &gt; <span class="number">0</span>:</span><br><span class="line">            self.num -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.get_state().coin_in()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.get_state().coin_out()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.get_state().turn()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">out</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.get_state().out()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">State</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">'''状态基类'''</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NoCoinState</span><span class="params">(State)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, machine)</span>:</span></span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'你投入了5元'</span>)</span><br><span class="line">        self.machine.set_state(<span class="string">'coin_in'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'您还没有投币，不能退币，想多了吧？'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'您还没有投币，不能转动手柄，想多了吧？'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CoinInState</span><span class="params">(State)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, machine)</span>:</span></span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'您已经投入了5元，无需再次投入'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'ok,马上退回您的5元'</span>)</span><br><span class="line">        self.machine.set_state(<span class="string">'no_coin'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'ok, 稍等片刻，马上给您饮料'</span>)</span><br><span class="line">        winner = random.randint(<span class="number">1</span>, <span class="number">10</span>)</span><br><span class="line">        <span class="keyword">if</span> winner == <span class="number">1</span>:</span><br><span class="line">            self.machine.set_state(<span class="string">'winner'</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.machine.set_state(<span class="string">'sold'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SoldState</span><span class="params">(State)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, machine)</span>:</span></span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'您已经投了5元，不要再投了'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'已经转动了手柄，不能再退回钱了'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'别着急，您已经转动了手柄，请稍等片刻取走您的商品'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">out</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">'''售卖机内部动作,无需手动调用，由售卖机自动调用'''</span></span><br><span class="line">        self.machine.sub()</span><br><span class="line">        self.machine.set_state(<span class="string">'no_coin'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SoldOutState</span><span class="params">(State)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, machine)</span>:</span></span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"所有商品已售完"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"所有商品已售完"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"所有商品已售完"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"所有商品已售完"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WinnerState</span><span class="params">(State)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, machine)</span>:</span></span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'您已经投了5元，不要再投了'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'已经转动了手柄，不能再退回钱了'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'别着急，您已经转动了手柄，请稍等片刻取走您的商品'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'中奖了，多赠送一个'</span>)</span><br><span class="line">        self.machine.sub()</span><br><span class="line">        <span class="keyword">if</span> self.machine.num &gt; <span class="number">0</span>:</span><br><span class="line">            self.machine.sub()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(<span class="string">'悲哀，库存不存，只能白中奖了'</span>)</span><br><span class="line">        self.machine.set_state(<span class="string">'no_coin'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    machine = Machine(<span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">        machine.coin_in()</span><br><span class="line">        machine.turn()</span><br><span class="line">        machine.out()</span><br></pre></td></tr></table></figure>
-]]></content>
-      
-        <categories>
-            
-            <category> 技术 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> 状态机，设计模式 </tag>
             
         </tags>
         
@@ -325,6 +465,28 @@
     </entry>
     
     <entry>
+      <title><![CDATA[2018-02-11-python状态机设计模式]]></title>
+      <url>https://aprilnops.github.io/2018/02/11/%E7%8A%B6%E6%80%81%E6%9C%BA%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AE%80%E8%BF%B0/</url>
+      <content type="html"><![CDATA[<h1 id="python-demo"><a href="#python-demo" class="headerlink" title="python demo"></a>python demo</h1><a id="more"></a>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="string">'''状态机设计模式-demo'''</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Machine</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">'''糖果机类'''</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, num)</span>:</span></span><br><span class="line">        self.num = num</span><br><span class="line">        self.set_state(<span class="string">'no_coin'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">set_state</span><span class="params">(self, state)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.num &lt;= <span class="number">0</span>:</span><br><span class="line">            self.state = <span class="string">'sold_out'</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.state = state</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_state</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.state == <span class="string">'coin_in'</span>:</span><br><span class="line">            <span class="keyword">return</span> CoinInState(self)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.state == <span class="string">'no_coin'</span>:</span><br><span class="line">            <span class="keyword">return</span> NoCoinState(self)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.state == <span class="string">'sold'</span>:</span><br><span class="line">            <span class="keyword">return</span> SoldState(self)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.state == <span class="string">'winner'</span>:</span><br><span class="line">            <span class="keyword">return</span> WinnerState(self)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> SoldOutState(self)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sub</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.num &gt; <span class="number">0</span>:</span><br><span class="line">            self.num -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.get_state().coin_in()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.get_state().coin_out()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.get_state().turn()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">out</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.get_state().out()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">State</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">'''状态基类'''</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NoCoinState</span><span class="params">(State)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, machine)</span>:</span></span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'你投入了5元'</span>)</span><br><span class="line">        self.machine.set_state(<span class="string">'coin_in'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'您还没有投币，不能退币，想多了吧？'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'您还没有投币，不能转动手柄，想多了吧？'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CoinInState</span><span class="params">(State)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, machine)</span>:</span></span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'您已经投入了5元，无需再次投入'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'ok,马上退回您的5元'</span>)</span><br><span class="line">        self.machine.set_state(<span class="string">'no_coin'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'ok, 稍等片刻，马上给您饮料'</span>)</span><br><span class="line">        winner = random.randint(<span class="number">1</span>, <span class="number">10</span>)</span><br><span class="line">        <span class="keyword">if</span> winner == <span class="number">1</span>:</span><br><span class="line">            self.machine.set_state(<span class="string">'winner'</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.machine.set_state(<span class="string">'sold'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SoldState</span><span class="params">(State)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, machine)</span>:</span></span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'您已经投了5元，不要再投了'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'已经转动了手柄，不能再退回钱了'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'别着急，您已经转动了手柄，请稍等片刻取走您的商品'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">out</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">'''售卖机内部动作,无需手动调用，由售卖机自动调用'''</span></span><br><span class="line">        self.machine.sub()</span><br><span class="line">        self.machine.set_state(<span class="string">'no_coin'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SoldOutState</span><span class="params">(State)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, machine)</span>:</span></span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"所有商品已售完"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"所有商品已售完"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"所有商品已售完"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"所有商品已售完"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WinnerState</span><span class="params">(State)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, machine)</span>:</span></span><br><span class="line">        self.machine = machine</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_in</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'您已经投了5元，不要再投了'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">coin_out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'已经转动了手柄，不能再退回钱了'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">turn</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'别着急，您已经转动了手柄，请稍等片刻取走您的商品'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">out</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'中奖了，多赠送一个'</span>)</span><br><span class="line">        self.machine.sub()</span><br><span class="line">        <span class="keyword">if</span> self.machine.num &gt; <span class="number">0</span>:</span><br><span class="line">            self.machine.sub()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(<span class="string">'悲哀，库存不存，只能白中奖了'</span>)</span><br><span class="line">        self.machine.set_state(<span class="string">'no_coin'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    machine = Machine(<span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">        machine.coin_in()</span><br><span class="line">        machine.turn()</span><br><span class="line">        machine.out()</span><br></pre></td></tr></table></figure>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 状态机，设计模式 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[2017-03-31-vim快捷键]]></title>
       <url>https://aprilnops.github.io/2017/03/31/vim%E5%BF%AB%E6%8D%B7%E9%94%AE/</url>
       <content type="html"><![CDATA[<p>启动和退出vim</p>
@@ -421,109 +583,6 @@
         <tags>
             
             <tag> vim </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
-      <title><![CDATA[hdfs架构学习]]></title>
-      <url>https://aprilnops.github.io/2017/02/26/hdfs%E6%9E%B6%E6%9E%84%E5%AD%A6%E4%B9%A0/</url>
-      <content type="html"><![CDATA[<h4 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h4><ul>
-<li>大文件存储，单个文件可达到G</li>
-<li>关注高吞吐量而非低延迟</li>
-<li>块大小默认为64MB，大文件会分为多个文件块存储在不同的datanode几点上。小文件单独占用块，多个小文件不会合并到一个块中。因此hdfs更加喜欢大文件。</li>
-</ul>
-<h4 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h4><p><img src="/images/1481871142257.jpg" alt="hdfs架构图1" title="1481871142257.jpg"><br> <img src="/images/1481873643673.jpg" alt="hdfs架构图2" title="1481873643673.jpg"></p>
-<h4 id="NameNode"><a href="#NameNode" class="headerlink" title="NameNode"></a>NameNode</h4><ul>
-<li>负责存放文件元数据，文件系统命名空间的维护，任何对命名空间的更改，例如属性、名字等都将记录到NameNode中</li>
-<li><strong>不记录文件保存的位置</strong>，文件位置信息会由DataNode上报并保存在内存中，同时也会持久化到本地文件系统(fsimage和edits)</li>
-<li>NameNode消耗大量内存和I/O资源。因此其不存储用户数据，也不进行mapreduce任务。<a id="more"></a>
-<h4 id="fsimage"><a href="#fsimage" class="headerlink" title="fsimage"></a>fsimage</h4></li>
-<li>hdfs文件元数据持久化点，保存了hdfs文件系统所有的命名空间和block块信息。</li>
-</ul>
-<h4 id="edits"><a href="#edits" class="headerlink" title="edits"></a>edits</h4><ul>
-<li>存放hdfs文件系统的更新操作</li>
-</ul>
-<h4 id="SecondNameNode"><a href="#SecondNameNode" class="headerlink" title="SecondNameNode"></a>SecondNameNode</h4><p>hdfs只使用一个NameNode存在单点故障问题，解决办法：</p>
-<ul>
-<li>元数据定期持久化到本地文件系统中</li>
-<li>namenode在重启的过程中需要合并edits和fsimage文件，获取文件元数据信息，但是这个动作会影响namenode启动的速度，因此通过SecondNameNode定期进行edits文件和fsimage文件的合并。</li>
-</ul>
-<h4 id="DataNode"><a href="#DataNode" class="headerlink" title="DataNode"></a>DataNode</h4><ul>
-<li>数据真正存放的地方，以块存储。为客户端提供读写服务</li>
-<li>向NameNode发送心跳数据，汇报文件包含的块列表和备份个数</li>
-<li>DataNode之间也会通信，进行数据库的负载，实现冗余备份</li>
-</ul>
-]]></content>
-      
-        <categories>
-            
-            <category> 技术 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> hdfs </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
-      <title><![CDATA[http协议学习]]></title>
-      <url>https://aprilnops.github.io/2017/02/26/http%E7%8A%B6%E6%80%81%E7%A0%81/</url>
-      <content type="html"><![CDATA[<h2 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h2><h3 id="502"><a href="#502" class="headerlink" title="502"></a>502</h3><p>==502 Bad Gateway==</p>
-<blockquote>
-<p>The HTTP 502 Bad Gateway server error response code indicates that the server, while acting as a gateway or proxy, received an invalid response from the upstream server.</p>
-</blockquote>
-<p>502错误通常是指==网关或者代理==(例如<em>nginx</em>)从==后端服务器==接收到==无效的响应==。这个无效的响应包括以下几个方面：</p>
-<ul>
-<li>响应为空（连接失败，没有建立连接）</li>
-<li>不完整的响应头或者body</li>
-</ul>
-<h3 id="503"><a href="#503" class="headerlink" title="503"></a>503</h3><blockquote>
-<p>The 503 (Service Unavailable) status code indicates that the server is currently unable to handle the request due to a temporary overloador scheduled maintenance, which will likely be alleviated after some delay.  The server MAY send a Retry-After header field to suggest an appropriate amount of time for the client to wait before retrying the request.</p>
-</blockquote>
-<p>503服务不可用，当后端服务器并发请求量+队列满了的时候，新来的请求就会出现503错误。<br>可以携带一个Retry-After头表明客户端需要等待多久再重试请求。<br>503表明后端服务器没有足够的资源（cpu、内存）接收请求或者需要调整tcp、文件打开数等相关参数<br><a id="more"></a></p>
-<h3 id="504-Gateway-Timeout"><a href="#504-Gateway-Timeout" class="headerlink" title="504 Gateway Timeout"></a>504 Gateway Timeout</h3><p>后端超时，可能得原因：</p>
-<ul>
-<li>网络差</li>
-<li>服务器性能变差，资源不够用</li>
-<li>超时时间设置太短</li>
-</ul>
-<h2 id="建立http连接过程"><a href="#建立http连接过程" class="headerlink" title="建立http连接过程"></a>建立http连接过程</h2><h3 id="http请求"><a href="#http请求" class="headerlink" title="http请求"></a>http请求</h3><p>请求行、header、空行、body</p>
-<ul>
-<li>请求行<br>请求方法  请求url  协议版本<br>get /index.html http/1.1</li>
-<li>请求头</li>
-</ul>
-<p><img src="/images/1482897161638.jpg" alt="http请求格式" title="1482897161638.jpg"></p>
-<ul>
-<li>例如：</li>
-<li><img src="/images/1482898239710.jpg" alt="http请求实例" title="1482898239710.jpg"></li>
-</ul>
-<p>http响应</p>
-<ul>
-<li><img src="/images/1482897503763.jpg" alt="http响应格式" title="1482897503763.jpg"><br>举例：</li>
-<li><p><img src="/images/1482898383557.jpg" alt="http响应" title="1482898383557.jpg"></p>
-</li>
-<li><p>http请求过程描述：<br>HTTP通信机制是在一次完整的HTTP通信过程中，Web浏览器与Web服务器之间将完成下列7个步骤：<br>（1）    建立TCP连接<br>在HTTP工作开始之前，Web浏览器首先要通过网络与Web服务器建立连接，该连接是通过TCP来完成的，该协议与IP协议共同构建Internet，即著名的TCP/IP协议族，因此Internet又被称作是TCP/IP网络。HTTP是比TCP更高层次的应用层协议，根据规则，只有低层协议建立之后才能，才能进行更层协议的连接，因此，首先要建立TCP连接，一般TCP连接的端口号是80<br>（2）    Web浏览器向Web服务器发送请求命令<br>一旦建立了TCP连接，Web浏览器就会向Web服务器发送请求命令<br>例如：GET/sample/hello.jsp HTTP/1.1<br>（3）    Web浏览器发送请求头信息<br>浏览器发送其请求命令之后，还要以头信息的形式向Web服务器发送一些别的信息，之后浏览器发送了一空白行来通知服务器，它已经结束了该头信息的发送。<br>（4）    Web服务器应答<br>客户机向服务器发出请求后，服务器会客户机回送应答，<br>HTTP/1.1 200 OK<br>应答的第一部分是协议的版本号和应答状态码<br>（5）    Web服务器发送应答头信息<br>正如客户端会随同请求发送关于自身的信息一样，服务器也会随同应答向用户发送关于它自己的数据及被请求的文档。<br>（6）    Web服务器向浏览器发送数据<br>Web服务器向浏览器发送头信息后，它会发送一个空白行来表示头信息的发送到此为结束，接着，它就以Content-Type应答头信息所描述的格式发送用户所请求的实际数据<br>（7）    Web服务器关闭TCP连接<br>一般情况下，一旦Web服务器向浏览器发送了请求数据，它就要关闭TCP连接，然后如果浏览器或者服务器在其头信息加入了这行代码<br>Connection:keep-alive<br>TCP连接在发送后将仍然保持打开状态，于是，浏览器可以继续通过相同的连接发送请求。保持连接节省了为每个请求建立新连接所需的时间，还节约了网络带宽。</p>
-</li>
-</ul>
-]]></content>
-      
-        <categories>
-            
-            <category> 学习 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> http </tag>
             
         </tags>
         
@@ -1064,6 +1123,109 @@
         <tags>
             
             <tag> 学习 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[hdfs架构学习]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/hdfs%E6%9E%B6%E6%9E%84%E5%AD%A6%E4%B9%A0/</url>
+      <content type="html"><![CDATA[<h4 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li>大文件存储，单个文件可达到G</li>
+<li>关注高吞吐量而非低延迟</li>
+<li>块大小默认为64MB，大文件会分为多个文件块存储在不同的datanode几点上。小文件单独占用块，多个小文件不会合并到一个块中。因此hdfs更加喜欢大文件。</li>
+</ul>
+<h4 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h4><p><img src="/images/1481871142257.jpg" alt="hdfs架构图1" title="1481871142257.jpg"><br> <img src="/images/1481873643673.jpg" alt="hdfs架构图2" title="1481873643673.jpg"></p>
+<h4 id="NameNode"><a href="#NameNode" class="headerlink" title="NameNode"></a>NameNode</h4><ul>
+<li>负责存放文件元数据，文件系统命名空间的维护，任何对命名空间的更改，例如属性、名字等都将记录到NameNode中</li>
+<li><strong>不记录文件保存的位置</strong>，文件位置信息会由DataNode上报并保存在内存中，同时也会持久化到本地文件系统(fsimage和edits)</li>
+<li>NameNode消耗大量内存和I/O资源。因此其不存储用户数据，也不进行mapreduce任务。<a id="more"></a>
+<h4 id="fsimage"><a href="#fsimage" class="headerlink" title="fsimage"></a>fsimage</h4></li>
+<li>hdfs文件元数据持久化点，保存了hdfs文件系统所有的命名空间和block块信息。</li>
+</ul>
+<h4 id="edits"><a href="#edits" class="headerlink" title="edits"></a>edits</h4><ul>
+<li>存放hdfs文件系统的更新操作</li>
+</ul>
+<h4 id="SecondNameNode"><a href="#SecondNameNode" class="headerlink" title="SecondNameNode"></a>SecondNameNode</h4><p>hdfs只使用一个NameNode存在单点故障问题，解决办法：</p>
+<ul>
+<li>元数据定期持久化到本地文件系统中</li>
+<li>namenode在重启的过程中需要合并edits和fsimage文件，获取文件元数据信息，但是这个动作会影响namenode启动的速度，因此通过SecondNameNode定期进行edits文件和fsimage文件的合并。</li>
+</ul>
+<h4 id="DataNode"><a href="#DataNode" class="headerlink" title="DataNode"></a>DataNode</h4><ul>
+<li>数据真正存放的地方，以块存储。为客户端提供读写服务</li>
+<li>向NameNode发送心跳数据，汇报文件包含的块列表和备份个数</li>
+<li>DataNode之间也会通信，进行数据库的负载，实现冗余备份</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> hdfs </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[http协议学习]]></title>
+      <url>https://aprilnops.github.io/2017/02/26/http%E7%8A%B6%E6%80%81%E7%A0%81/</url>
+      <content type="html"><![CDATA[<h2 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h2><h3 id="502"><a href="#502" class="headerlink" title="502"></a>502</h3><p>==502 Bad Gateway==</p>
+<blockquote>
+<p>The HTTP 502 Bad Gateway server error response code indicates that the server, while acting as a gateway or proxy, received an invalid response from the upstream server.</p>
+</blockquote>
+<p>502错误通常是指==网关或者代理==(例如<em>nginx</em>)从==后端服务器==接收到==无效的响应==。这个无效的响应包括以下几个方面：</p>
+<ul>
+<li>响应为空（连接失败，没有建立连接）</li>
+<li>不完整的响应头或者body</li>
+</ul>
+<h3 id="503"><a href="#503" class="headerlink" title="503"></a>503</h3><blockquote>
+<p>The 503 (Service Unavailable) status code indicates that the server is currently unable to handle the request due to a temporary overloador scheduled maintenance, which will likely be alleviated after some delay.  The server MAY send a Retry-After header field to suggest an appropriate amount of time for the client to wait before retrying the request.</p>
+</blockquote>
+<p>503服务不可用，当后端服务器并发请求量+队列满了的时候，新来的请求就会出现503错误。<br>可以携带一个Retry-After头表明客户端需要等待多久再重试请求。<br>503表明后端服务器没有足够的资源（cpu、内存）接收请求或者需要调整tcp、文件打开数等相关参数<br><a id="more"></a></p>
+<h3 id="504-Gateway-Timeout"><a href="#504-Gateway-Timeout" class="headerlink" title="504 Gateway Timeout"></a>504 Gateway Timeout</h3><p>后端超时，可能得原因：</p>
+<ul>
+<li>网络差</li>
+<li>服务器性能变差，资源不够用</li>
+<li>超时时间设置太短</li>
+</ul>
+<h2 id="建立http连接过程"><a href="#建立http连接过程" class="headerlink" title="建立http连接过程"></a>建立http连接过程</h2><h3 id="http请求"><a href="#http请求" class="headerlink" title="http请求"></a>http请求</h3><p>请求行、header、空行、body</p>
+<ul>
+<li>请求行<br>请求方法  请求url  协议版本<br>get /index.html http/1.1</li>
+<li>请求头</li>
+</ul>
+<p><img src="/images/1482897161638.jpg" alt="http请求格式" title="1482897161638.jpg"></p>
+<ul>
+<li>例如：</li>
+<li><img src="/images/1482898239710.jpg" alt="http请求实例" title="1482898239710.jpg"></li>
+</ul>
+<p>http响应</p>
+<ul>
+<li><img src="/images/1482897503763.jpg" alt="http响应格式" title="1482897503763.jpg"><br>举例：</li>
+<li><p><img src="/images/1482898383557.jpg" alt="http响应" title="1482898383557.jpg"></p>
+</li>
+<li><p>http请求过程描述：<br>HTTP通信机制是在一次完整的HTTP通信过程中，Web浏览器与Web服务器之间将完成下列7个步骤：<br>（1）    建立TCP连接<br>在HTTP工作开始之前，Web浏览器首先要通过网络与Web服务器建立连接，该连接是通过TCP来完成的，该协议与IP协议共同构建Internet，即著名的TCP/IP协议族，因此Internet又被称作是TCP/IP网络。HTTP是比TCP更高层次的应用层协议，根据规则，只有低层协议建立之后才能，才能进行更层协议的连接，因此，首先要建立TCP连接，一般TCP连接的端口号是80<br>（2）    Web浏览器向Web服务器发送请求命令<br>一旦建立了TCP连接，Web浏览器就会向Web服务器发送请求命令<br>例如：GET/sample/hello.jsp HTTP/1.1<br>（3）    Web浏览器发送请求头信息<br>浏览器发送其请求命令之后，还要以头信息的形式向Web服务器发送一些别的信息，之后浏览器发送了一空白行来通知服务器，它已经结束了该头信息的发送。<br>（4）    Web服务器应答<br>客户机向服务器发出请求后，服务器会客户机回送应答，<br>HTTP/1.1 200 OK<br>应答的第一部分是协议的版本号和应答状态码<br>（5）    Web服务器发送应答头信息<br>正如客户端会随同请求发送关于自身的信息一样，服务器也会随同应答向用户发送关于它自己的数据及被请求的文档。<br>（6）    Web服务器向浏览器发送数据<br>Web服务器向浏览器发送头信息后，它会发送一个空白行来表示头信息的发送到此为结束，接着，它就以Content-Type应答头信息所描述的格式发送用户所请求的实际数据<br>（7）    Web服务器关闭TCP连接<br>一般情况下，一旦Web服务器向浏览器发送了请求数据，它就要关闭TCP连接，然后如果浏览器或者服务器在其头信息加入了这行代码<br>Connection:keep-alive<br>TCP连接在发送后将仍然保持打开状态，于是，浏览器可以继续通过相同的连接发送请求。保持连接节省了为每个请求建立新连接所需的时间，还节约了网络带宽。</p>
+</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 学习 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> http </tag>
             
         </tags>
         
