@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="linux," />
+  <meta name="keywords" content="falcon," />
 
 
 
@@ -79,18 +79,22 @@
 
 
 
-<meta name="description" content="命令格式ss [option] [filter]option:      -V:显示当前ss版本 -n:不解析服务名字(默认端口号可能会被解析为服务的名字）.例如不加n参数，80端口可能显示为http，22端口显示为ssh。 -a 显示所有的连接 -l 仅显示处于listen状态的socket -o 显示计时器信息，例如timer:(keepalive,24sec,0) -m 显示端口socket">
-<meta name="keywords" content="linux">
+<meta name="description" content="数据存储graph模块负责将agent采集到的监控数据存储到rrd中。根据源代码整理了如下流程图。 需要了解四个关键的数据结构:  GraphItems:一个用来保存接收到的所有监控数据（之后会定期写入磁盘rrd文件中） HistoryCache: 保存最近三次接收到的历史数据（主要用于绘图数据的查询） IndexedItemCache: 已经写入mysql的索引数据 UnIndexedItemC">
+<meta name="keywords" content="falcon">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基础学习-ss命令">
-<meta property="og:url" content="https://aprilnops.github.io/2017/02/26/基础学习-ss命令/index.html">
+<meta property="og:title" content="2018-04-25-falcon-plus之graph模块详解.md">
+<meta property="og:url" content="https://aprilnops.github.io/2018/04/25/falcon-plus之graph模块详解/index.html">
 <meta property="og:site_name" content="Nops Blog">
-<meta property="og:description" content="命令格式ss [option] [filter]option:      -V:显示当前ss版本 -n:不解析服务名字(默认端口号可能会被解析为服务的名字）.例如不加n参数，80端口可能显示为http，22端口显示为ssh。 -a 显示所有的连接 -l 仅显示处于listen状态的socket -o 显示计时器信息，例如timer:(keepalive,24sec,0) -m 显示端口socket">
+<meta property="og:description" content="数据存储graph模块负责将agent采集到的监控数据存储到rrd中。根据源代码整理了如下流程图。 需要了解四个关键的数据结构:  GraphItems:一个用来保存接收到的所有监控数据（之后会定期写入磁盘rrd文件中） HistoryCache: 保存最近三次接收到的历史数据（主要用于绘图数据的查询） IndexedItemCache: 已经写入mysql的索引数据 UnIndexedItemC">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-11T08:58:42.000Z">
+<meta property="og:image" content="https://aprilnops.github.io/images/15248389274271.jpg">
+<meta property="og:image" content="https://aprilnops.github.io/images/%E6%89%A9%E5%AE%B9%E6%B5%81%E7%A8%8B-1.png">
+<meta property="og:image" content="https://aprilnops.github.io/images/15248190064892.jpg">
+<meta property="og:updated_time" content="2018-04-27T14:54:59.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="基础学习-ss命令">
-<meta name="twitter:description" content="命令格式ss [option] [filter]option:      -V:显示当前ss版本 -n:不解析服务名字(默认端口号可能会被解析为服务的名字）.例如不加n参数，80端口可能显示为http，22端口显示为ssh。 -a 显示所有的连接 -l 仅显示处于listen状态的socket -o 显示计时器信息，例如timer:(keepalive,24sec,0) -m 显示端口socket">
+<meta name="twitter:title" content="2018-04-25-falcon-plus之graph模块详解.md">
+<meta name="twitter:description" content="数据存储graph模块负责将agent采集到的监控数据存储到rrd中。根据源代码整理了如下流程图。 需要了解四个关键的数据结构:  GraphItems:一个用来保存接收到的所有监控数据（之后会定期写入磁盘rrd文件中） HistoryCache: 保存最近三次接收到的历史数据（主要用于绘图数据的查询） IndexedItemCache: 已经写入mysql的索引数据 UnIndexedItemC">
+<meta name="twitter:image" content="https://aprilnops.github.io/images/15248389274271.jpg">
 
 
 
@@ -120,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="https://aprilnops.github.io/2017/02/26/基础学习-ss命令/"/>
+  <link rel="canonical" href="https://aprilnops.github.io/2018/04/25/falcon-plus之graph模块详解/"/>
 
 
 
 
 
-  <title>基础学习-ss命令 | Nops Blog</title>
+  <title>2018-04-25-falcon-plus之graph模块详解.md | Nops Blog</title>
   
 
 
@@ -233,7 +237,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://aprilnops.github.io/2017/02/26/基础学习-ss命令/">
+    <link itemprop="mainEntityOfPage" href="https://aprilnops.github.io/2018/04/25/falcon-plus之graph模块详解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Nops">
@@ -250,7 +254,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">基础学习-ss命令</h1>
+          <h1 class="post-title" itemprop="name headline">2018-04-25-falcon-plus之graph模块详解.md</h1>
         
 
         <div class="post-meta">
@@ -262,8 +266,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-26T00:00:00+08:00">
-                2017-02-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-25T00:00:00+08:00">
+                2018-04-25
               </time>
             
 
@@ -285,8 +289,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/学习/" itemprop="url" rel="index">
-                    <span itemprop="name">学习</span>
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
                   </a>
                 </span>
 
@@ -322,41 +326,122 @@
       
 
       
-        <h3 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h3><p>ss [option] [filter]<br><strong>option</strong>:    </p>
+        <h1 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h1><p>graph模块负责将agent采集到的监控数据存储到rrd中。根据源代码整理了如下流程图。</p>
+<p>需要了解四个关键的数据结构:</p>
 <ul>
-<li>-V:显示当前ss版本</li>
-<li>-n:不解析服务名字(默认端口号可能会被解析为服务的名字）.例如不加n参数，80端口可能显示为http，22端口显示为ssh。</li>
-<li>-a 显示所有的连接</li>
-<li>-l 仅显示处于listen状态的socket</li>
-<li>-o 显示计时器信息，例如timer:(keepalive,24sec,0)</li>
-<li><p>-m 显示端口socket内存占用，</p>
-<blockquote>
-<p>r: represents the read (inbound) buffer<br>w represents the write (outbound) buffer<br>f represents the “forward allocated memory” (memory available to the socket)<br>t represents the transmit queue (stuff waiting to be sent or waiting on an ACK)</p>
-<a id="more"></a>
-</blockquote>
-</li>
-<li><p>-p:显示套接字进程信息，用户，程序等</p>
-</li>
-<li>-4：仅显示ipv4套接字</li>
-<li>-6：仅显示ipv6套接字</li>
-<li>-t：仅显示tcp套接字</li>
-<li>-u：仅显示udp套接字</li>
-<li>-w：仅显示原始套接字</li>
-<li>-d：仅显示dccp套接字</li>
-<li>-x：仅显示unix套接字</li>
-<li>-f：显示family套接字，支持：unix，inet,inet6,link,netlink</li>
-<li><p>ss state状态过滤</p>
-<blockquote>
-<p>ss -ta state established ‘( dport = :http or sport = :http )’ </p>
-</blockquote>
-</li>
-<li><p>ss src:过滤原地址，格式ip:port</p>
-</li>
-<li>ss dst:过滤目的地址</li>
-<li>ss sport：源端口过滤，sport = xx</li>
-<li>ss dport：目的端口过滤</li>
+<li>GraphItems:一个用来保存接收到的所有监控数据（之后会定期写入磁盘rrd文件中）</li>
+<li>HistoryCache: 保存最近三次接收到的历史数据（主要用于绘图数据的查询）</li>
+<li>IndexedItemCache: 已经写入mysql的索引数据</li>
+<li>UnIndexedItemCache: 尚未写入mysql的索引</li>
 </ul>
-<h3 id="orphans"><a href="#orphans" class="headerlink" title="orphans"></a>orphans</h3>
+<p>大致流程为：</p>
+<ol>
+<li>接收数据=&gt;保存监控数据=&gt;保存索引=&gt;保存历史数据</li>
+<li>定期将内存数据GraphItems写入磁盘</li>
+<li>定期更新索引到mysql</li>
+</ol>
+<p>1、2、3这三个过程并行运行</p>
+<a id="more"></a>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><p><img src="/images/15248389274271.jpg" alt="graph数据存储流程图"></p>
+<h1 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>首先说明falcon需要扩容的场景：数据量过大，整个graph集群中，单台graph占用的内存达到机器的瓶颈，若短期内不处理，机器的内存使用将超限，严重的将导致机器宕机。</p>
+<p>因此，扩容的意思即是：增加graph集群使用的机器数量，分散监控数据，使得单台graph占用的机器内存减小。</p>
+<p>falcon绘图数据的存储使用的是rrd，依据的算法是一致性hash算法。因此，增加机器意味着之前写入A机器的数据现在可能写入新增加的机器B，必须要把旧机器上A的数据迁移到新的机器B上，才能保证查询数据的正确性。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>知道了为什么扩容以及扩容的基础知识，就可以更好的理解其原理了。</p>
+<ol>
+<li>当增加机器时，部分数据会写入新机器B（这些数据在未扩容之前是写入A机器），数据写入时，先不落盘，而是先从旧的机器A上拉取历史数据（就是一个rrd文件），拉取成功，则将整个文件写入本地磁盘。若拉取超时（1s），则将新接收到的数据传送给旧的A机器。待下一个周期再重复此过程，直到A机器上的历史数据写入本地磁盘成功。</li>
+<li>为保证扩容过程中依然可以查看绘图数据，当查询数据时落到新加的机器时，若本地有数据则直接返回本地数据，若本地没有数据则从旧的机器A上查询并与本地cache合并返回给用户。</li>
+</ol>
+<h2 id="流程图-1"><a href="#流程图-1" class="headerlink" title="流程图"></a>流程图</h2><p><img src="/images/%E6%89%A9%E5%AE%B9%E6%B5%81%E7%A8%8B-1.png" alt="扩容流程"></p>
+<h2 id="扩容过程"><a href="#扩容过程" class="headerlink" title="扩容过程"></a>扩容过程</h2><ol>
+<li>配置新的graph实例</li>
+<li>重启所有graph(<strong>最好一台一台重启，防止重启过程中丢失数据</strong>)</li>
+<li>修改transfer配置，加入新graph，重启</li>
+<li>修改api配置，加入新graph，重启</li>
+<li>等待扩容完毕</li>
+</ol>
+<blockquote>
+<p>此过程可参见作者写的详细文档<a href="https://www.jianshu.com/p/16baba04c959" target="_blank" rel="noopener">扩容操作过程</a></p>
+</blockquote>
+<h2 id="扩容过程监控"><a href="#扩容过程监控" class="headerlink" title="扩容过程监控"></a>扩容过程监控</h2><p> <strong>一些关键指标</strong></p>
+<ul>
+<li>扩容相关</li>
+</ul>
+<p><code>curl http://localhost:6071/api/v2/counter/migrate</code></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FETCH_S_ERR</td>
+<td>拉取rrd文件失败</td>
+<td>严重错误，数据堆积内存，无法写入本地磁盘</td>
+</tr>
+<tr>
+<td>FETCH_S_SUCCESS</td>
+<td>拉入rrd文件成功</td>
+<td>成功标识</td>
+</tr>
+<tr>
+<td>FETCH_S_ISNOTEXIST</td>
+<td>远端机器没有rrd文件</td>
+<td>直接将数据写入本地，成功标识</td>
+</tr>
+<tr>
+<td>SEND_S_SUCCESS</td>
+<td>向远端机器发送数据成功</td>
+<td>说明fetch超时了，将数据写入远端成功</td>
+</tr>
+<tr>
+<td>SEND_S_ERR</td>
+<td>向远端机器发送数据失败</td>
+<td>说明fetch超时了，写入远端也失败了，将会有数据丢失</td>
+</tr>
+<tr>
+<td>QUERY_S_SUCCESS</td>
+<td>查询成功</td>
+<td>扩容过程中有查询操作，从远端查询数据成功</td>
+</tr>
+<tr>
+<td>QUERY_S_ERR</td>
+<td>查询失败</td>
+<td>扩容过程中有查询操作，从远端查询数据失败（不影响扩容）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>graph相关</li>
+</ul>
+<p><code>curl http://localhost:6071/counter/all</code></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GraphRpcRecvCnt</td>
+<td>graph接收到的数据个数</td>
+</tr>
+</tbody>
+</table>
+<p><strong>监控图</strong></p>
+<p><img src="/images/15248190064892.jpg" alt="指标监控"></p>
+<blockquote>
+<p>参考</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/16baba04c959" target="_blank" rel="noopener">扩容操作过程</a></li>
+<li><a href="http://book.open-falcon.org/zh_0_2/practice/graph-scaling.html" target="_blank" rel="noopener">扩容二三事</a></li>
+</ul>
+</blockquote>
+
       
     </div>
     
@@ -373,7 +458,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/linux/" rel="tag"># linux</a>
+            <a href="/tags/falcon/" rel="tag"># falcon</a>
           
         </div>
       
@@ -386,8 +471,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/26/docker mtu介绍/" rel="next" title="docker mtu介绍">
-                <i class="fa fa-chevron-left"></i> docker mtu介绍
+              <a href="/2018/03/17/利用docker构建golang开发环境/" rel="next" title="2018-03-17-利用docker构建golang开发环境">
+                <i class="fa fa-chevron-left"></i> 2018-03-17-利用docker构建golang开发环境
               </a>
             
           </div>
@@ -395,10 +480,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/26/http状态码/" rel="prev" title="http协议学习">
-                http协议学习 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -530,7 +611,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#命令格式"><span class="nav-number">1.</span> <span class="nav-text">命令格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#orphans"><span class="nav-number">2.</span> <span class="nav-text">orphans</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据存储"><span class="nav-number">1.</span> <span class="nav-text">数据存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#流程图"><span class="nav-number">1.1.</span> <span class="nav-text">流程图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扩容"><span class="nav-number">2.</span> <span class="nav-text">扩容</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">2.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">2.2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程图-1"><span class="nav-number">2.3.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩容过程"><span class="nav-number">2.4.</span> <span class="nav-text">扩容过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩容过程监控"><span class="nav-number">2.5.</span> <span class="nav-text">扩容过程监控</span></a></li></ol></li></ol></div>
             
 
           </div>
