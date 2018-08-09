@@ -1599,7 +1599,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://aprilnops.github.io/2017/01/26/docker mtu介绍/">
+    <link itemprop="mainEntityOfPage" href="https://aprilnops.github.io/2017/02/26/linux内核一些参数研究/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Nops">
@@ -1618,7 +1618,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/01/26/docker mtu介绍/" itemprop="url">docker mtu介绍</a></h1>
+                <a class="post-title-link" href="/2017/02/26/linux内核一些参数研究/" itemprop="url">linux内核一些参数研究</a></h1>
         
 
         <div class="post-meta">
@@ -1630,8 +1630,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-26T00:00:00+08:00">
-                2017-01-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-26T00:00:00+08:00">
+                2017-02-26
               </time>
             
 
@@ -1691,22 +1691,21 @@
 
       
         
-          <p><strong>本文所述内容是针对旧版本docker（doker 1.10版本以下不包括1.10版本）</strong></p>
-<h3 id="docker-mtu"><a href="#docker-mtu" class="headerlink" title="docker mtu"></a>docker mtu</h3><blockquote>
-<p>By default, the Docker server creates and configures the host system’s docker0 interface as an Ethernet bridge inside the Linux kernel that can pass packets back and forth between other physical or virtual network interfaces so that they behave as a single Ethernet network.</p>
+          <h1 id="linux内核中的参数："><a href="#linux内核中的参数：" class="headerlink" title="linux内核中的参数："></a>linux内核中的参数：</h1><ul>
+<li><strong>tcp_syncookies</strong><br>用于防止syn攻击。<strong>要慎用此参数</strong>，因为这与tcp协议的其他部分冲突。<blockquote>
+<p>SYN攻击：正常情况下，服务器收到客户端的连接SYN包后会将客户端加入半连接队列（SYN队列，这个队列长度有限，由==tcp_max_syn_backlog==参数控制）并回复一个ack包并等待客户端的确认，且超时会进行重试。重试次数由参数<code>tcp_synack_retries</code>==指定,重试间隔时间依次为1,2,4,8,16s,加上最后一次重试后等待32s，因此需要总共等待63s。<br>利用这种机制，攻击者向服务器发送大量SYN包，然后立即断开。会导致服务器的SYN队列长时间溢出，无法接受新的正常的连接。</p>
 </blockquote>
-<p>==启动docker时==,docker服务器会在内核中创建一个docker0网卡接口作为网桥，通过此网桥，虚拟网卡和物理网卡之间可以互相传输数据包。</p>
+</li>
+</ul>
+<p>==tcp_syncookies==设置为1后，当syn队列溢出后，服务器端将不再使用syn队列，对于新来的syn包服务器端TCP会利用源端地址、端口号和时间戳生成一个序号（也叫cookie）并返回给客户端（不再将其放入syn队列并分配内存），正常客户端会给出正确的响应，服务器端收到响应后直接建立连接（即使客户端不再SYN队列中），进入established状态。非正常连接不会给出正确响应同时不再被加入SYN队列也不会建立连接。</p>
+<p>虽然tcp<em>syncookies可以一定程度上使得在遭受DDos攻击时依然可以对外响应请求。<strong>但是正常情况下并不应该依赖此参数</strong>。因为在正常情况下，如果打开此参数会发哦之服务器真正过载时无法看到正确的错误日志。并且此参数使得TCP协议改变（妥协版TCP），</em><strong>TCP滑动窗口机制失效（有待验证）</strong>_</p>
+<p>正常情况下，对于并发量过高的问题，应该依赖以下三个参数解决：</p>
 <blockquote>
-<p>Docker configures docker0 with an IP address, netmask and IP allocation range. The host machine can both receive and send packets to containers connected to the bridge, and gives it an MTU – the maximum transmission unit or largest packet length that the interface will allow – of either 1,500 bytes or else a more specific value copied from the Docker host’s interface that supports its default route. These options are configurable at server startup:</p>
+<p>tcp_max_syn_backlog<br><br>tcp_synack_retries<br><br>tcp_abort_on_overflow </p>
 </blockquote>
-<p>具体的，docker会为docker0配置一个IP地址、子网掩码和ip地址池，物理机可以与连接到docker0的任何容器传输数据。同时设置docker0的mtu值为1500或者宿主机默认网卡的mtu值（==docker1.10以下版本==）。这些工作在docker启动时进行。</p>
-<blockquote>
-<p>Once you have one or more containers up and running, you can confirm that Docker has properly connected them to the docker0 bridge by running the brctl command on the host machine and looking at the interfaces column of the output. Here is a host with two different containers connected:</p>
-</blockquote>
-<p>一旦启动一个容器，docker便会将这个容器连接到docker0上。可通过<code>sudo brctl show</code>命令查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo brctl show</span><br><span class="line">bridge name     bridge id               STP enabled     interfaces</span><br><span class="line">docker0         8000.3a1d7362b4ee       no              veth65f9</span><br><span class="line">                                                        vethdda6</span><br></pre></td></tr></table></figure></p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/01/26/docker mtu介绍/#more" rel="contents">
+            <a class="btn" href="/2017/02/26/linux内核一些参数研究/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1794,7 +1793,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

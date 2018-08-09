@@ -232,6 +232,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://aprilnops.github.io/2017/01/26/docker mtu介绍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nops">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nops Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/01/26/docker mtu介绍/" itemprop="url">docker mtu介绍</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-26T00:00:00+08:00">
+                2017-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><strong>本文所述内容是针对旧版本docker（doker 1.10版本以下不包括1.10版本）</strong></p>
+<h3 id="docker-mtu"><a href="#docker-mtu" class="headerlink" title="docker mtu"></a>docker mtu</h3><blockquote>
+<p>By default, the Docker server creates and configures the host system’s docker0 interface as an Ethernet bridge inside the Linux kernel that can pass packets back and forth between other physical or virtual network interfaces so that they behave as a single Ethernet network.</p>
+</blockquote>
+<p>==启动docker时==,docker服务器会在内核中创建一个docker0网卡接口作为网桥，通过此网桥，虚拟网卡和物理网卡之间可以互相传输数据包。</p>
+<blockquote>
+<p>Docker configures docker0 with an IP address, netmask and IP allocation range. The host machine can both receive and send packets to containers connected to the bridge, and gives it an MTU – the maximum transmission unit or largest packet length that the interface will allow – of either 1,500 bytes or else a more specific value copied from the Docker host’s interface that supports its default route. These options are configurable at server startup:</p>
+</blockquote>
+<p>具体的，docker会为docker0配置一个IP地址、子网掩码和ip地址池，物理机可以与连接到docker0的任何容器传输数据。同时设置docker0的mtu值为1500或者宿主机默认网卡的mtu值（==docker1.10以下版本==）。这些工作在docker启动时进行。</p>
+<blockquote>
+<p>Once you have one or more containers up and running, you can confirm that Docker has properly connected them to the docker0 bridge by running the brctl command on the host machine and looking at the interfaces column of the output. Here is a host with two different containers connected:</p>
+</blockquote>
+<p>一旦启动一个容器，docker便会将这个容器连接到docker0上。可通过<code>sudo brctl show</code>命令查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo brctl show</span><br><span class="line">bridge name     bridge id               STP enabled     interfaces</span><br><span class="line">docker0         8000.3a1d7362b4ee       no              veth65f9</span><br><span class="line">                                                        vethdda6</span><br></pre></td></tr></table></figure></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/01/26/docker mtu介绍/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://aprilnops.github.io/2016/12/20/TCP分片机制介绍/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -570,7 +728,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
