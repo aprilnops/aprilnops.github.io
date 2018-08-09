@@ -324,21 +324,18 @@
 
       
         
-          
-            <p>k8s的日志收集有多种方案，其中一种是将pod的日志挂载到node节点，然后在node节点运行单独的日志收集客户端，将日志收集并分发到其他日志分析服务如elasticsearch上。</p>
+          <p>k8s的日志收集有多种方案，其中一种是将pod的日志挂载到node节点，然后在node节点运行单独的日志收集客户端，将日志收集并分发到其他日志分析服务如elasticsearch上。</p>
 <p>一般的方案为：deployment中将目录通过hostPath的方式挂载到node上：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">volumes:</span><br><span class="line">- name: test-volume</span><br><span class="line">  hostPath:</span><br><span class="line">    path: /home/work/logs</span><br><span class="line">    type: DirectoryOrCreate</span><br></pre></td></tr></table></figure>
 <p>但是，如果pod有多个replicas时存在一个问题，多个pod的日志会写到node机器上的同一个文件中。</p>
-<p>解决办法是：利用HOSTNAME这个环境变量（每个pod的HOSTNAME值默认为pod_name）,每个pod将日志写在$HOSTNAME目录下，便可以实现不同的pod日志写到不同目录下</p>
-<p><strong>example</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: extensions/v1beta1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: test-hostpath</span><br><span class="line">spec:</span><br><span class="line">  replicas: 2</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      name: nginx</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        name: nginx</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - image: registry.cn-beijing.aliyuncs.com/opendcp/nginx</span><br><span class="line">        name: nginx</span><br><span class="line">        command: [&quot;/bin/bash&quot;, &quot;-c&quot;]</span><br><span class="line">        args:</span><br><span class="line">        - &quot;mkdir -p /home/mount/$&#123;HOSTNAME&#125; /home/work/logs &amp;&amp; ln -s /home/mount/$&#123;HOSTNAME&#125; /home/work/logs/applogs &amp;&amp; echo $&#123;HOSTNAME&#125; &gt;&gt; /home/work/logs/applogs/nginx.log &amp;&amp; sleep 10000000&quot;</span><br><span class="line"></span><br><span class="line">        volumeMounts:</span><br><span class="line">        - mountPath: /home/mount</span><br><span class="line">          name: test-volume</span><br><span class="line">      volumes:</span><br><span class="line">      - name: test-volume</span><br><span class="line">        hostPath:</span><br><span class="line">          path: /home/work/logs</span><br><span class="line">          type: DirectoryOrCreat</span><br></pre></td></tr></table></figure>
-<p>==注意其中的一个软链接操作==</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /home/mount/$&#123;HOSTNAME&#125; /home/work/logs/applogs</span><br></pre></td></tr></table></figure>
-<p>这样可以保证用户只需要向目录<code>/home/work/logs/applogs</code>中写日志即可自动将日志写到<code>/home/mount/${HOSTNAME}</code>目录下，然后<code>/home/mount</code>这个目录又是使用hostPath挂载到node机器上的（用户不需要关心HOSTNAME），</p>
-<p><strong>结果</strong><br><img src="media/15338222943318.jpg" alt=""></p>
-<p><img src="media/15338223068103.jpg" alt=""></p>
-
-          
+<p>解决办法是：利用HOSTNAME这个环境变量（每个pod的HOSTNAME值默认为pod_name）,每个pod将日志写在$HOSTNAME目录下，便可以实现不同的pod日志写到不同目录下<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/08/09/k8s日志收集-多pod挂载不同目录方案/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
