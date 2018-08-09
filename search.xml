@@ -4,7 +4,7 @@
   
     
     <entry>
-      <title></title>
+      <title><![CDATA[2018-08-09-k8s日志收集-多pod挂载不同目录方案.md]]></title>
       <url>https://aprilnops.github.io/2018/08/09/k8s%E6%97%A5%E5%BF%97%E6%94%B6%E9%9B%86-%E5%A4%9Apod%E6%8C%82%E8%BD%BD%E4%B8%8D%E5%90%8C%E7%9B%AE%E5%BD%95%E6%96%B9%E6%A1%88/</url>
       <content type="html"><![CDATA[<p>k8s的日志收集有多种方案，其中一种是将pod的日志挂载到node节点，然后在node节点运行单独的日志收集客户端，将日志收集并分发到其他日志分析服务如elasticsearch上。</p>
 <p>一般的方案为：deployment中将目录通过hostPath的方式挂载到node上：</p>
@@ -20,6 +20,18 @@
 <p><img src="media/15338223068103.jpg" alt=""></p>
 ]]></content>
       
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> k8s </tag>
+            
+        </tags>
         
     </entry>
     

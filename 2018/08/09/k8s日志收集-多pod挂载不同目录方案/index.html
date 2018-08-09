@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="k8s," />
 
 
 
@@ -80,17 +80,18 @@
 
 
 <meta name="description" content="k8s的日志收集有多种方案，其中一种是将pod的日志挂载到node节点，然后在node节点运行单独的日志收集客户端，将日志收集并分发到其他日志分析服务如elasticsearch上。 一般的方案为：deployment中将目录通过hostPath的方式挂载到node上： 12345volumes:- name: test-volume  hostPath:    path: /home/work/">
+<meta name="keywords" content="k8s">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Nops Blog">
+<meta property="og:title" content="2018-08-09-k8s日志收集-多pod挂载不同目录方案.md">
 <meta property="og:url" content="https://aprilnops.github.io/2018/08/09/k8s日志收集-多pod挂载不同目录方案/index.html">
 <meta property="og:site_name" content="Nops Blog">
 <meta property="og:description" content="k8s的日志收集有多种方案，其中一种是将pod的日志挂载到node节点，然后在node节点运行单独的日志收集客户端，将日志收集并分发到其他日志分析服务如elasticsearch上。 一般的方案为：deployment中将目录通过hostPath的方式挂载到node上： 12345volumes:- name: test-volume  hostPath:    path: /home/work/">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://aprilnops.github.io/2018/08/09/k8s日志收集-多pod挂载不同目录方案/media/15338222943318.jpg">
 <meta property="og:image" content="https://aprilnops.github.io/2018/08/09/k8s日志收集-多pod挂载不同目录方案/media/15338223068103.jpg">
-<meta property="og:updated_time" content="2018-08-09T13:50:55.000Z">
+<meta property="og:updated_time" content="2018-08-09T13:53:52.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Nops Blog">
+<meta name="twitter:title" content="2018-08-09-k8s日志收集-多pod挂载不同目录方案.md">
 <meta name="twitter:description" content="k8s的日志收集有多种方案，其中一种是将pod的日志挂载到node节点，然后在node节点运行单独的日志收集客户端，将日志收集并分发到其他日志分析服务如elasticsearch上。 一般的方案为：deployment中将目录通过hostPath的方式挂载到node上： 12345volumes:- name: test-volume  hostPath:    path: /home/work/">
 <meta name="twitter:image" content="https://aprilnops.github.io/2018/08/09/k8s日志收集-多pod挂载不同目录方案/media/15338222943318.jpg">
 
@@ -128,7 +129,7 @@
 
 
 
-  <title> | Nops Blog</title>
+  <title>2018-08-09-k8s日志收集-多pod挂载不同目录方案.md | Nops Blog</title>
   
 
 
@@ -252,7 +253,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">2018-08-09-k8s日志收集-多pod挂载不同目录方案.md</h1>
         
 
         <div class="post-meta">
@@ -274,6 +275,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -328,6 +351,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/k8s/" rel="tag"># k8s</a>
+          
+        </div>
       
 
       
@@ -436,7 +465,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
